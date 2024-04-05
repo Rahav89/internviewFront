@@ -30,7 +30,6 @@ export default function Login(props) {
         password: false,
     });
 
-
     // פונקציה המטפלת בצ'אק בוקס של הסיסמא - בכל לחיצה נשנה מאמת לשקר ולהפך
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -78,51 +77,75 @@ export default function Login(props) {
         }));
 
         //בדיקה האם המשתמש קיים
-        let currentUser = loginUser(formData.userName, formData.password);
+        let currentUser;
 
-        if (formData.userName === "admin" && formData.password === "ad12343211ad") {
-            Swal.fire("Logged in successfully", "Welcome back!", "success").then((result) => {
-                // Check if the user clicked the "OK" button
-                if (result.isConfirmed) {
-                    sessionStorage.setItem('currentUser', JSON.stringify("admin"));
-                    props.LoggedInAdmin(true);//תציג לי את האדמין
-                    props.LoggedIn(false);//אל תציג את הפרופיל
+        loginUser(formData.userName, formData.password)
+            .then((data) => {
+                currentUser = data;
+                console.log("Current user:", currentUser);
+
+                if (currentUser) {
+                    // Save the user in sessionStorage if found
+                    sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    // props.putLoggedUser(currentUser);
+                    // Show a success message that the user has logged in successfully
+                    Swal.fire("Logged in successfully", "Welcome back!", "success").then((result) => {
+                        if (result.isConfirmed) {
+                            // props.LoggedIn(true); // Show the profile
+                            // props.LoggedInAdmin(false); // Hide the admin
+                        }
+                    });
+                } else {
+                    // The user failed to log in - incorrect username or password
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login failed',
+                        text: 'Username or Password is incorrect.',
+                    });
                 }
+            })
+            .catch((error) => {
+                console.error("Error logging in:", error);
             });
-        } else if (currentUser && isUserNameValid && isPasswordValid) {
-            //לשמור אותו בסטורג אם מצאנו אותו
-            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
-            props.putLoggedUser(currentUser);
-            //הודעה שהיוזר התחבר בהצלחה
-            Swal.fire("Logged in successfully", "Welcome back!", "success").then((result) => {
-                // Check if the user clicked the "OK" button
-                if (result.isConfirmed) {
-                    props.LoggedIn(true);//תציג לי את הפרופיל
-                    props.LoggedInAdmin(false);//אל תציג לי את האדמין
-                }
-            });
-        }
-        else {//היוזר לא הצליח להתחבר - שם או סיסמא לא נכונים
-            Swal.fire({
-                icon: 'error',
-                title: 'Login failed',
-                text: 'Username or Password is incorrect.',
-            });
-        }
     }
 
 
     //פונקציה המקבלת שם משתמש וסיסמה ובודקת אם קיים משתמש שפרטיו זהים
     const loginUser = (username, password) => {
-        console.log(username, password);
-        //רשימה שלוקחים מהאבא
-        let userList = props.usersListFromApp;
-        //חיפוש שם משתמש וסיסמא מתאימים 
-        let foundUser = userList.find(user => user.userName === username && user.password === password);
-        //בדיקה אם מצאנו את היוזר
-        if (foundUser) { return foundUser; }
-        return null;
-    }
+        const userObject = {
+            Id: username,
+            Password_i: password,
+            First_name: "",
+            Last_name: "",
+            Interns_year: "",
+            Interns_rating: 0
+        };
+
+        return fetch('https://localhost:7220/api/Intenrs/LogInIntern', {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(userObject)
+        })
+            .then(response => {
+                console.log('res.status', res.status);
+                console.log('res.ok', res.ok);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log("fetch result = ", result);
+                return result;
+            })
+            .catch(error => {
+                console.error("Error in loginUser: ", error);
+                throw error; // Rethrow the error so it can be handled by the caller
+            });
+    };
 
 
     return (
@@ -196,6 +219,7 @@ export default function Login(props) {
                     {/* </Grid> */}
                 </Box>
             </Box>
+            
         </Container>
 
     );
