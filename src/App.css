@@ -49,5 +49,60 @@
   width: 200px;
   height: 200px;
   margin-top: -100px;
+  margin-bottom: -80px;
+}
+.horizontal-timeline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow-x: auto;
+  padding: 20px;
+}
+
+.horizontal-timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: none; /* Prevent items from stretching */
+}
+
+.horizontal-timeline-connector {
+  position: absolute;
+  top: 50%; /* Center vertically relative to the parent */
+  left: 50%;
+  right: -50%;
+  transform: translateY(-50%); /* Adjust vertical position of the line */
+  height: 2px;
+  background-color: #bdbdbd;
+  z-index: -1; /* Ensure the line is behind the dots */
+}
+
+.horizontal-timeline-connector::before,
+.horizontal-timeline-connector::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 20px; /* Adjust the width of the side connectors */
+  background-color: #bdbdbd;
+}
+
+.horizontal-timeline-connector::before {
+  left: -20px; /* Adjust based on width */
+}
+
+.horizontal-timeline-connector::after {
+  right: -20px; /* Adjust based on width */
+}
+
+/* Hide the connector after the last item */
+.horizontal-timeline-item:last-child .horizontal-timeline-connector {
+  display: none;
+}
+
+.timeline-text-content {
+  text-align: center;
+  margin-top: 8px; /* Adjust the space between the dot and the text */
 }
 

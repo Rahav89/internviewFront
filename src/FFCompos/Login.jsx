@@ -159,7 +159,7 @@ export default function Login(props) {
                 <img className="logoImage" src={logoHomePic} alt="Logo" />
                 <Avatar sx={{ width: 300, height: 300, mb: 1 }} src={doctorHomePic} />
                 <Typography component="h1" variant="h5" sx={{ mb: 4 }}>
-                    Sign in
+                    Login in
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
                     <Grid container spacing={2}>

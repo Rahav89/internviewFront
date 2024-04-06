@@ -1,0 +1,93 @@
+.timeline-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ddd;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+    font-weight: bold;
+  }
+  
+  .active {
+    background-color: blue;
+    color: white;
+  }
+  
+  .line {
+    height: 2px;
+    background-color: black;
+    flex-grow: 1;
+    position: absolute;
+    left: -5%; /* Half of the circle's width */
+    right: -5%; /* Half of the circle's width */
+    z-index: -1; /* Put the line behind the circles */
+  }
+  
+.timeline-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+  }
+  
+  .circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ddd;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px; /* Adjust spacing */
+    position: relative; /* Needed for z-index to work */
+    z-index: 1; /* Ensure circles are above lines */
+  }
+  
+  .active {
+    background-color: blue;
+    color: white;
+  }
+  
+
+  .timeline-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+  }
+  
+  .circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ddd;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px; /* Adjust spacing */
+    position: relative; /* Needed for z-index to work */
+    z-index: 1; /* Ensure circles are above lines */
+  }
+  
+  .active {
+    background-color: blue;
+    color: white;
+  }
+  
+
+    
