@@ -1,17 +1,19 @@
-
-import { BarChart } from '@mui/icons-material'
 import './App.css'
-import Login from './FFCompos/Login'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import InternPage from './FFCompos/InternPage';
+import Login from './FFCompos/Login';
 
 function App() {
-  
-
-  return (
-    <>
-      <Login />
-      <BarChart />
-    </>
-  )
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login/>} />
+                <Route path="/intern" element={<InternPage />} />
+            </Routes>
+        </Router>
+    );
 }
 
-export default App
+export default App;
+

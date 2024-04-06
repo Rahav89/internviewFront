@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,25 +9,25 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-
+import doctorHomePic from '/src/Image/doctorHomePic.png'
+import logoHomePic from '/src/Image/logo.png'
 
 export default function Login(props) {
-
+    const navigate = useNavigate();
     //צאק בוקס של צפייה בסיסמא - useState
     const [showPassword, setShowPassword] = React.useState(false);
 
     // אובייקט של הטופס - useState 
     const [formData, setFormData] = React.useState({
-        userName: '',
+        internId: '',
         password: '',
     });
 
     // אובייקט של שגיאות הטופס - useState 
     const [formErrors, setFormErrors] = React.useState({
-        userName: false,
+        internId: false,
         password: false,
     });
 
@@ -36,10 +37,10 @@ export default function Login(props) {
     };
 
     //פונקציה הבודקת את הולידציה של שם משתמש
-    function validateUserName(userName) {
+    function validateInternId(internId) {
         const regex = /^[0-9]+$/; // תבנית של מספרים בלבד
         // אם המחרוזת עומדת בתנאי התווים של התבנית ואינה מחרוזת ריקה, מחזיר true
-        return regex.test(userName) && userName != '';
+        return regex.test(internId) && internId != '';
     }
 
 
@@ -67,19 +68,19 @@ export default function Login(props) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const isUserNameValid = validateUserName(formData.userName);
+        const isInternIdValid = validateInternId(formData.internId);
         const isPasswordValid = validatePassword(formData.password);
 
         setFormErrors((prevErrors) => ({
             ...prevErrors,
-            userName: !isUserNameValid,
+            internId: !isInternIdValid,
             password: !isPasswordValid,
         }));
 
         //בדיקה האם המשתמש קיים
         let currentUser;
 
-        loginUser(formData.userName, formData.password)
+        loginUser(formData.internId, formData.password)
             .then((data) => {
                 currentUser = data;
                 console.log("Current user:", currentUser);
@@ -91,6 +92,7 @@ export default function Login(props) {
                     // Show a success message that the user has logged in successfully
                     Swal.fire("Logged in successfully", "Welcome back!", "success").then((result) => {
                         if (result.isConfirmed) {
+                            navigate('/intern');
                             // props.LoggedIn(true); // Show the profile
                             // props.LoggedInAdmin(false); // Hide the admin
                         }
@@ -100,7 +102,7 @@ export default function Login(props) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Login failed',
-                        text: 'Username or Password is incorrect.',
+                        text: 'intern Id or Password is incorrect.',
                     });
                 }
             })
@@ -111,39 +113,32 @@ export default function Login(props) {
 
 
     //פונקציה המקבלת שם משתמש וסיסמה ובודקת אם קיים משתמש שפרטיו זהים
-    const loginUser = (username, password) => {
+    const loginUser = (internId, password) => {
         const userObject = {
-            Id: username,
+            Id: internId,
             Password_i: password,
             First_name: "",
             Last_name: "",
             Interns_year: "",
             Interns_rating: 0
         };
-
         return fetch('https://localhost:7220/api/Intenrs/LogInIntern', {
             method: 'POST',
-            headers: new Headers({
+            headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Accept': 'application/json; charset=UTF-8',
-            }),
+            },
             body: JSON.stringify(userObject)
         })
             .then(response => {
-                console.log('res.status', res.status);
-                console.log('res.ok', res.ok);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
             })
-            .then(result => {
-                console.log("fetch result = ", result);
-                return result;
-            })
             .catch(error => {
                 console.error("Error in loginUser: ", error);
-                throw error; // Rethrow the error so it can be handled by the caller
+                throw error;
             });
     };
 
@@ -153,31 +148,32 @@ export default function Login(props) {
             <CssBaseline />
             <Box
                 sx={{
-                    marginTop: 8,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
+                    minHeight: '100vh', // Take at least full height of the viewport
+                    justifyContent: 'flex-start', // Align content to the top
+                    pt: 1, // Add padding top to push content down a bit
                 }}
             >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
+                <img className="logoImage" src={logoHomePic} alt="Logo" />
+                <Avatar sx={{ width: 300, height: 300, mb: 1 }} src={doctorHomePic} />
+                <Typography component="h1" variant="h5" sx={{ mb: 4 }}>
                     Sign in
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} >
+                        <Grid item xs={12}>
                             <TextField
                                 required
                                 fullWidth
                                 autoFocus
-                                name="userName"
-                                id="userName"
-                                label="User Name"
-                                autoComplete="username"
-                                error={formErrors.userName}
-                                helperText={formErrors.userName ? 'User Name must contain foreign letters only, numbers and special characters. No more than 60 characters. ' : ""}
+                                name="internId"
+                                id="internId"
+                                label="intern Id"
+                                autoComplete="internId"
+                                error={formErrors.internId}
+                                helperText={formErrors.internId ? 'The ID must contain nine digits.' : ""}
                                 onChange={handleChange}
                             />
                         </Grid>
@@ -190,7 +186,7 @@ export default function Login(props) {
                                 label="Password"
                                 autoComplete="new-password"
                                 error={formErrors.password}
-                                helperText={formErrors.password ? "Password must be 7-12 characters long and include at least one special character, one uppercase letter, and one digit." : ''}
+                                helperText={formErrors.password ? "The password must contain capital letters and numbers" : ''}
                                 onChange={handleChange}
                                 type={showPassword ? 'text' : 'password'}
                             />
@@ -206,20 +202,12 @@ export default function Login(props) {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                        sx={{ mt: 2, mb: 2 }}
                     >
                         Sign In
                     </Button>
-                    {/* <Grid container>
-            <Grid item>
-              <Link href="#" variant="body2" onClick={changePageToRegister}>
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid> */}
-                    {/* </Grid> */}
                 </Box>
             </Box>
-            
         </Container>
 
     );
