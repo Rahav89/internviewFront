@@ -1,114 +1,51 @@
+
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital'; // Import the doctor icon
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
-import HotelIcon from '@mui/icons-material/Hotel';
-import RepeatIcon from '@mui/icons-material/Repeat';
-import Typography from '@mui/material/Typography';
+import { Grid, Typography, Card, CardContent, Button, useTheme, useMediaQuery } from '@mui/material';
+import RecentAnalysesTimeline from '../FFCompos/RecentSurgeries';
+import FullSyllabus from '../FFCompos/FullSyllabus';
 
 export default function InternPage() {
   const navigate = useNavigate();
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   console.log('Current user:', currentUser);
 
   const handleBackToLogin = () => {
     navigate('/');
   };
 
-  
+
   return (
-    <div>
+    <Grid container spacing={2} direction="column" alignItems="center" sx={{ p: 2 }}>
       <Typography variant="h4" sx={{ mb: 5 }}>
-        👋 ברוך הבא,  {currentUser ? currentUser.first_name : 'Guest'}
+        👋 ברוך הבא, {currentUser ? currentUser.first_name : 'Guest'}
       </Typography>
-      <div className="App">
 
-      </div>
+      <Grid item xs={12} md={8} lg={6}>
+        <Card sx={{ width: '100%', mb: 3, backgroundColor: '#FFFAF0', overflowX: 'auto' }}>
+          <div style={{ minWidth: isMobile ? '300px' : '500px' }}>
+            <CardContent>
+              <FullSyllabus />
+            </CardContent>
+          </div>
+        </Card>
+      </Grid>
 
-      <Timeline className="horizontal">
-      <TimelineItem>
-        <TimelineOppositeContent
-          sx={{ m: 'auto 0' }}
-          variant="body2"
-          color="text.secondary"
-        >
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineConnector />
-          <TimelineDot>
-            <LocalHospitalIcon /> {/* Use the doctor icon here */}
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Consult
-          </Typography>
-          <Typography>Because health matters</Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineOppositeContent
-          sx={{ m: 'auto 0' }}
-          variant="body2"
-          color="text.secondary"
-        >
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineConnector />
-          <TimelineDot color="primary">
-            <LaptopMacIcon />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Code
-          </Typography>
-          <Typography>Because it&apos;s awesome!</Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineSeparator>
-          <TimelineConnector />
-          <TimelineDot color="primary" variant="outlined">
-            <HotelIcon />
-          </TimelineDot>
-          <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Sleep
-          </Typography>
-          <Typography>Because you need rest</Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineSeparator>
-          <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
-          <TimelineDot color="secondary">
-            <RepeatIcon />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Repeat
-          </Typography>
-          <Typography>Because this is the life you love!</Typography>
-        </TimelineContent>
-      </TimelineItem>
-    </Timeline>
-    
 
-      <button onClick={handleBackToLogin}>Back to Login</button>
-    </div>
+      <Grid item xs={12} md={8} lg={6}>
+        <Card sx={{ width: '100%', mb: 3, backgroundColor: '#FFFAF0' }}>
+          <CardContent>
+            <RecentAnalysesTimeline />
+          </CardContent>
+        </Card>
+      </Grid>
+
+      <Button variant="contained" onClick={handleBackToLogin}>
+        Back to Login
+      </Button>
+    </Grid>
   );
 }
