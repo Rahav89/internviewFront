@@ -2,8 +2,10 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Card, CardContent, Button, useTheme, useMediaQuery } from '@mui/material';
-import RecentAnalysesTimeline from '../FFCompos/RecentSurgeries';
+import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
+import MenuLogo from '../FFCompos/MenuLogo';
+
 
 export default function InternPage() {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ export default function InternPage() {
 
   return (
     <Grid container spacing={2} direction="column" alignItems="center" sx={{ p: 2 }}>
+     < MenuLogo/>
       <Typography variant="h4" sx={{ mb: 5 }}>
         👋 ברוך הבא, {currentUser ? currentUser.first_name : 'Guest'}
       </Typography>
@@ -38,7 +41,7 @@ export default function InternPage() {
       <Grid item xs={12} md={8} lg={6}>
         <Card sx={{ width: '100%', mb: 3, backgroundColor: '#FFFAF0' }}>
           <CardContent>
-            <RecentAnalysesTimeline />
+            <RecentSurgeries />
           </CardContent>
         </Card>
       </Grid>
