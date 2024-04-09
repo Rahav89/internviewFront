@@ -1,101 +1,77 @@
 import * as React from 'react';
 import { Typography } from '@mui/material';
-import { Menu } from '@mui/icons-material';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital'; // Import the doctor icon
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
-import HotelIcon from '@mui/icons-material/Hotel';
-import RepeatIcon from '@mui/icons-material/Repeat';
-
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 
 export default function RecentSurgeries() {
-    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-
-    console.log('Current user:', currentUser);
-
-
     return (
-
         <>
             <h3>ניתוחים אחרונים</h3>
             <Timeline className="horizontal">
                 <TimelineItem>
-                    <TimelineOppositeContent
-                        sx={{ m: 'auto 0' }}
-                        variant="body2"
-                        color="text.secondary"
-                    >
-                    </TimelineOppositeContent>
+                    <TimelineContent sx={{ py: '12px', px: 2 }}>
+                        <Typography variant="h6" component="span">
+                            Consult
+                        </Typography>
+                        <Typography>Because health matters</Typography>
+                    </TimelineContent>
                     <TimelineSeparator>
                         <TimelineConnector />
                         <TimelineDot>
-                            <LocalHospitalIcon />
+                            <EventAvailableIcon />
                         </TimelineDot>
                         <TimelineConnector />
                     </TimelineSeparator>
-                    <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span" align="rigth">
-                            Consult
-                        </Typography>
-                        <Typography align="rigth">Because health matters</Typography>
-                    </TimelineContent>
                 </TimelineItem>
                 <TimelineItem>
-                    <TimelineOppositeContent
-                        sx={{ m: 'auto 0' }}
-                        variant="body2"
-                        color="text.secondary"
-                    >
-                    </TimelineOppositeContent>
+                    <TimelineContent sx={{ py: '12px', px: 2 }}>
+                        <Typography variant="h6" component="span">
+                            Code
+                        </Typography>
+                        <Typography>Because it&apos;s awesome!</Typography>
+                    </TimelineContent>
                     <TimelineSeparator>
                         <TimelineConnector />
                         <TimelineDot color="primary">
-                            <LaptopMacIcon />
+                            <EventAvailableIcon />
                         </TimelineDot>
                         <TimelineConnector />
                     </TimelineSeparator>
-                    <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span" align="left">
-                            Code
-                        </Typography>
-                        <Typography align="left">Because it&apos;s awesome!</Typography>
-                    </TimelineContent>
                 </TimelineItem>
                 <TimelineItem>
+                    <TimelineContent sx={{ py: '12px', px: 2 }}>
+                        <Typography variant="h6" component="span">
+                            Sleep
+                        </Typography>
+                        <Typography>Because you need rest</Typography>
+                    </TimelineContent>
                     <TimelineSeparator>
                         <TimelineConnector />
                         <TimelineDot color="primary" variant="outlined">
-                            <HotelIcon />
+                            <EventAvailableIcon />
                         </TimelineDot>
                         <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
                     </TimelineSeparator>
-                    <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span" align="left">
-                            Sleep
-                        </Typography>
-                        <Typography align="left">Because you need rest</Typography>
-                    </TimelineContent>
                 </TimelineItem>
                 <TimelineItem>
+                    <TimelineContent sx={{ py: '12px', px: 2 }}>
+                        <Typography variant="h6" component="span">
+                            Repeat
+                        </Typography>
+                        <Typography>Because this is the life you love!</Typography>
+                    </TimelineContent>
                     <TimelineSeparator>
                         <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
                         <TimelineDot color="secondary">
-                            <RepeatIcon />
+                            <EventAvailableIcon />
                         </TimelineDot>
                         <TimelineConnector />
                     </TimelineSeparator>
-                    <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span" align="left">
-                            Repeat
-                        </Typography>
-                        <Typography align="left">Because this is the life you love!</Typography>
-                    </TimelineContent>
                 </TimelineItem>
             </Timeline>
         </>

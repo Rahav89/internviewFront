@@ -105,7 +105,7 @@ function FullSyllabus() {
 
   return (
     <div>
-      <h1>Full Syllabus</h1>
+      <h3>מעקב אחר הניתוחים </h3>
       <div>
         <label>Sort By: </label>
         <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
