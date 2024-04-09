@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import doctorHomePic from '/src/Image/doctorHomePic.png'
-import logoHomePic from '/src/Image/logo.png'
+import logoHomePic from '/src/Image/InternView.png'
 
 export default function Login(props) {
     const navigate = useNavigate();
@@ -78,7 +78,6 @@ export default function Login(props) {
 
         //בדיקה האם המשתמש קיים
         let currentUser;
-
         loginUser(formData.internId, formData.password)
             .then((data) => {
                 currentUser = data;
@@ -87,15 +86,26 @@ export default function Login(props) {
                 if (currentUser) {
                     // Save the user in sessionStorage if found
                     sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    // props.putLoggedUser(currentUser);
-                    // Show a success message that the user has logged in successfully
-                    Swal.fire("Logged in successfully", "Welcome back!", "success").then((result) => {
-                        if (result.isConfirmed) {
-                            navigate('/intern');
-                            // props.LoggedIn(true); // Show the profile
-                            // props.LoggedInAdmin(false); // Hide the admin
+                    // Show a toast message that the user has logged in successfully
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000, // Adjust the time as needed
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer);
+                            toast.addEventListener('mouseleave', Swal.resumeTimer);
                         }
                     });
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Logged in successfully'
+                    });
+                    // Automatically navigate to '/intern' after the toast message
+                    setTimeout(() => {
+                        navigate('/intern');
+                    }, 3000); // Match this time with the timer above
                 } else {
                     // The user failed to log in - incorrect username or password
                     Swal.fire({
@@ -108,9 +118,8 @@ export default function Login(props) {
             .catch((error) => {
                 console.error("Error logging in:", error);
             });
+
     }
-
-
     //פונקציה המקבלת שם משתמש וסיסמה ובודקת אם קיים משתמש שפרטיו זהים
     const loginUser = (internId, password) => {
         const userObject = {
@@ -164,6 +173,7 @@ export default function Login(props) {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
+                                style={{ backgroundColor: "white" }}
                                 required
                                 fullWidth
                                 autoFocus
@@ -178,6 +188,7 @@ export default function Login(props) {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                style={{ backgroundColor: "white" }}
                                 required
                                 fullWidth
                                 name="password"

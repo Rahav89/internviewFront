@@ -1,54 +1,63 @@
-
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Typography, Card, CardContent, Button, useTheme, useMediaQuery } from '@mui/material';
+import { Grid, Typography, Button, Paper, Container, } from '@mui/material';
 import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
-
+import InternshipYearTimeLine from './InternshipYearTimeLine';
 
 export default function InternPage() {
   const navigate = useNavigate();
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  console.log('Current user:', currentUser);
 
   const handleBackToLogin = () => {
     navigate('/');
   };
 
-
   return (
-    <Grid container spacing={2} direction="column" alignItems="center" sx={{ p: 2 }}>
-     < MenuLogo/>
-      <Typography variant="h4" sx={{ mb: 5 }}>
-        👋 ברוך הבא, {currentUser ? currentUser.first_name : 'Guest'}
-      </Typography>
+    <>
+      <MenuLogo />
+      <Container sx={{ maxWidth: '100%', mb: 3, mt: 8 }} >
+        <Grid container spacing={2} alignItems="center">
+          <Paper sx={{
+            p: 2, m: 2, backgroundColor: '#FFFAFA',
+            display: 'inline-block',
+            width: '100%', // Set the width to 100% to occupy the full line
+          }}>
+            <Typography variant="h5" sx={{ mb: 2, textAlign: 'right' }}>
+              ברוך הבא, {currentUser ? currentUser.first_name : 'Guest'}👋
+            </Typography>
+          </Paper>
 
-      <Grid item xs={12} md={8} lg={6}>
-        <Card sx={{ width: '100%', mb: 3, backgroundColor: '#FFFAF0', overflowX: 'auto' }}>
-          <div style={{ minWidth: isMobile ? '300px' : '500px' }}>
-            <CardContent>
-              <FullSyllabus />
-            </CardContent>
-          </div>
-        </Card>
-      </Grid>
+          <Paper sx={{
+            p: 2, m: 2, backgroundColor: '#FFFAFA', display: 'inline-block',
+            width: '100%',
+          }}>
+            <InternshipYearTimeLine />
+          </Paper>
 
+          <Paper sx={{
+            p: 2, m: 2, backgroundColor: '#FFFAFA',
+            display: 'inline-block',
+            width: '100%', // Set the width to 100% to occupy the full line
+          }}>
+            <FullSyllabus />
+          </Paper>
 
-      <Grid item xs={12} md={8} lg={6}>
-        <Card sx={{ width: '100%', mb: 3, backgroundColor: '#FFFAF0' }}>
-          <CardContent>
+          <Paper sx={{
+            p: 2, m: 2, backgroundColor: '#FFFAFA',
+            display: 'inline-block',
+            width: '100%', // Set the width to 100% to occupy the full line
+          }}>
             <RecentSurgeries />
-          </CardContent>
-        </Card>
-      </Grid>
+          </Paper>
 
-      <Button variant="contained" onClick={handleBackToLogin}>
-        Back to Login
-      </Button>
-    </Grid>
+          <Button variant="contained" onClick={handleBackToLogin} style={{ margin: "auto" }} >
+            Back to Login
+          </Button>
+        </Grid>
+      </Container>
+    </>
   );
 }

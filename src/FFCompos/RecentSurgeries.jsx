@@ -8,71 +8,35 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 
+const timelineData = [
+    { title: "Consult", description: "Because health matters", color: "inherit" },
+    { title: "Code", description: "Because it's awesome!", color: "primary" },
+    { title: "Sleep", description: "Because you need rest", color: "primary", outlined: true },
+    { title: "Repeat", description: "Because this is the life you love!", color: "secondary" }
+];
+
 export default function RecentSurgeries() {
     return (
         <>
             <h3>ניתוחים אחרונים</h3>
-            <Timeline className="horizontal">
-                <TimelineItem>
-                    <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span">
-                            Consult
-                        </Typography>
-                        <Typography>Because health matters</Typography>
-                    </TimelineContent>
-                    <TimelineSeparator>
-                        <TimelineConnector />
-                        <TimelineDot>
-                            <EventAvailableIcon />
-                        </TimelineDot>
-                        <TimelineConnector />
-                    </TimelineSeparator>
-                </TimelineItem>
-                <TimelineItem>
-                    <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span">
-                            Code
-                        </Typography>
-                        <Typography>Because it&apos;s awesome!</Typography>
-                    </TimelineContent>
-                    <TimelineSeparator>
-                        <TimelineConnector />
-                        <TimelineDot color="primary">
-                            <EventAvailableIcon />
-                        </TimelineDot>
-                        <TimelineConnector />
-                    </TimelineSeparator>
-                </TimelineItem>
-                <TimelineItem>
-                    <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span">
-                            Sleep
-                        </Typography>
-                        <Typography>Because you need rest</Typography>
-                    </TimelineContent>
-                    <TimelineSeparator>
-                        <TimelineConnector />
-                        <TimelineDot color="primary" variant="outlined">
-                            <EventAvailableIcon />
-                        </TimelineDot>
-                        <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
-                    </TimelineSeparator>
-                </TimelineItem>
-                <TimelineItem>
-                    <TimelineContent sx={{ py: '12px', px: 2 }}>
-                        <Typography variant="h6" component="span">
-                            Repeat
-                        </Typography>
-                        <Typography>Because this is the life you love!</Typography>
-                    </TimelineContent>
-                    <TimelineSeparator>
-                        <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
-                        <TimelineDot color="secondary">
-                            <EventAvailableIcon />
-                        </TimelineDot>
-                        <TimelineConnector />
-                    </TimelineSeparator>
-                </TimelineItem>
+            <Timeline className="horizontal" style={{ direction: "ltr" }}>
+                {timelineData.map((item, index) => (
+                    <TimelineItem key={index}>
+                        <TimelineContent sx={{ py: '10px', px: 2 }} style={{ textAlign: "right" }} >
+                            <Typography variant="h6" component="span">
+                                {item.title}
+                            </Typography>
+                            <Typography>{item.description}</Typography>
+                        </TimelineContent>
+                        <TimelineSeparator>
+                            <TimelineConnector />
+                            <TimelineDot color={item.color} variant={item.outlined ? "outlined" : undefined}>
+                                <EventAvailableIcon />
+                            </TimelineDot>
+                            <TimelineConnector sx={{ bgcolor: index === timelineData.length - 1 ? 'transparent' : 'secondary.main' }} />
+                        </TimelineSeparator>
+                    </TimelineItem>
+                ))}
             </Timeline>
         </>
     );
