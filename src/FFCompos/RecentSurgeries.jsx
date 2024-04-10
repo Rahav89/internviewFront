@@ -7,37 +7,61 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+//-------------------------------------------------------------------------
+const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
-const timelineData = [
-    { title: "Consult", description: "Because health matters", color: "inherit" },
-    { title: "Code", description: "Because it's awesome!", color: "primary" },
-    { title: "Sleep", description: "Because you need rest", color: "primary", outlined: true },
-    { title: "Repeat", description: "Because this is the life you love!", color: "secondary" }
-];
+const RecentSurgeries = () => {
+    const [timelineData, setTimelineData] = React.useState([]);
 
-export default function RecentSurgeries() {
+    React.useEffect(() => {
+        const internId = currentUser.id;
+        fetch(`https://localhost:7220/api/Intenrs/FiveRecentInternSurgeries?internId=${internId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json; charset=UTF-8',
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                setTimelineData(data);
+            })
+            .catch(error => {
+                console.error("Error in List 5 Recent Surgeries: ", error);
+            });
+    }, []); // Empty dependency array means this effect runs once after the initial render
+
     return (
         <>
             <h3>ניתוחים אחרונים</h3>
-            <Timeline className="horizontal" style={{ direction: "ltr" }}>
+            <Timeline position='right'>
                 {timelineData.map((item, index) => (
                     <TimelineItem key={index}>
-                        <TimelineContent sx={{ py: '10px', px: 2 }} style={{ textAlign: "right" }} >
-                            <Typography variant="h6" component="span">
-                                {item.title}
-                            </Typography>
-                            <Typography>{item.description}</Typography>
-                        </TimelineContent>
                         <TimelineSeparator>
                             <TimelineConnector />
-                            <TimelineDot color={item.color} variant={item.outlined ? "outlined" : undefined}>
+                            <TimelineDot color="primary" variant="outlined">
                                 <EventAvailableIcon />
                             </TimelineDot>
-                            <TimelineConnector sx={{ bgcolor: index === timelineData.length - 1 ? 'transparent' : 'secondary.main' }} />
+                            {/* Remove the last connector */}
+                            {index < timelineData.length - 1 && <TimelineConnector />}
                         </TimelineSeparator>
+                        <TimelineContent sx={{ py: '10px', px: 2 }} align="right">
+                            <Typography variant="h6" component="span">
+                                {item.procedureName}
+                            </Typography>
+                            <Typography>{item.surgery_date}</Typography>
+                        </TimelineContent>
+
                     </TimelineItem>
                 ))}
             </Timeline>
         </>
     );
-}
+};
+
+export default RecentSurgeries;

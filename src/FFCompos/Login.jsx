@@ -91,7 +91,7 @@ export default function Login(props) {
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
-                        timer: 3000, // Adjust the time as needed
+                        timer: 2000, // Adjust the time as needed
                         timerProgressBar: true,
                         didOpen: (toast) => {
                             toast.addEventListener('mouseenter', Swal.stopTimer);
@@ -105,7 +105,7 @@ export default function Login(props) {
                     // Automatically navigate to '/intern' after the toast message
                     setTimeout(() => {
                         navigate('/intern');
-                    }, 3000); // Match this time with the timer above
+                    }, 2000); // Match this time with the timer above
                 } else {
                     // The user failed to log in - incorrect username or password
                     Swal.fire({

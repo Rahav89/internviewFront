@@ -26,7 +26,7 @@ export default function InternPage() {
             width: '100%', // Set the width to 100% to occupy the full line
           }}>
             <Typography variant="h5" sx={{ mb: 2, textAlign: 'right' }}>
-              ברוך הבא, {currentUser ? currentUser.first_name : 'Guest'}👋
+              ברוך הבא, { currentUser.first_name }👋
             </Typography>
           </Paper>
 

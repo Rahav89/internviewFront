@@ -52,7 +52,7 @@ export default function InternshipYearTimeLine() {
                                 {index < 5 && ( // Avoid adding a line after the last icon
                                     <Box
                                         sx={{
-                                            height: '2px',
+                                            height: '3px',
                                             bgcolor: 'text.primary',
                                             margin: 'auto',
                                             width: 10, // Fixed width for the lines
