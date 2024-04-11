@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -7,14 +7,20 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-//-------------------------------------------------------------------------
+
+// קבלת המשתמש הנוכחי מאחסון הפעילות (session storage)
 const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
+// קומפוננטת הניתוחים האחרונים
 const RecentSurgeries = () => {
+    // מערך שמאחסן את הנתונים שיוצגו בציר הזמן
     const [timelineData, setTimelineData] = React.useState([]);
 
+    // טעינת הנתונים מהשרת כאשר הקומפוננטה מוטענת לראשונה
     React.useEffect(() => {
+        // קבלת מזהה המתמחה מהמשתמש הנוכחי
         const internId = currentUser.id;
+        // בקשת GET לשרת כדי לקבל את חמשת הניתוחים האחרונים
         fetch(`https://localhost:7220/api/Intenrs/FiveRecentInternSurgeries?internId=${internId}`, {
             method: 'GET',
             headers: {
@@ -29,37 +35,43 @@ const RecentSurgeries = () => {
                 return response.json();
             })
             .then(data => {
-                setTimelineData(data);
+                // עיבוד הנתונים שהתקבלו כדי להפריד בין התאריך לשעה
+                setTimelineData(data.map(item => {
+                    const [surgeryDate, surgeryTime] = item.surgery_date.split('T');
+                    return { ...item, surgeryDate, surgeryTime };
+                }));
             })
             .catch(error => {
                 console.error("Error in List 5 Recent Surgeries: ", error);
             });
-    }, []); // Empty dependency array means this effect runs once after the initial render
+    }, []);
 
+    // רינדור של הקומפוננטה עם ציר הזמן והנתונים
     return (
         <>
             <h3>ניתוחים אחרונים</h3>
-            <Timeline position='right'>
-                {timelineData.map((item, index) => (
-                    <TimelineItem key={index}>
-                        <TimelineSeparator>
-                            <TimelineConnector />
-                            <TimelineDot color="primary" variant="outlined">
-                                <EventAvailableIcon />
-                            </TimelineDot>
-                            {/* Remove the last connector */}
-                            {index < timelineData.length - 1 && <TimelineConnector />}
-                        </TimelineSeparator>
-                        <TimelineContent sx={{ py: '10px', px: 2 }} align="right">
-                            <Typography variant="h6" component="span">
-                                {item.procedureName}
-                            </Typography>
-                            <Typography>{item.surgery_date}</Typography>
-                        </TimelineContent>
-
-                    </TimelineItem>
-                ))}
-            </Timeline>
+            <Box display="flex" justifyContent="flex-end">
+                <Timeline position="right">
+                    {timelineData.map((item, index) => (
+                        <TimelineItem key={index}>
+                            <TimelineContent sx={{ py: '10px', px: 2, textAlign: 'end' }}>
+                                <Typography variant="h6" component="span" >
+                                    {item.procedureName}
+                                </Typography>
+                                <Typography>{item.surgeryDate}</Typography>
+                                <Typography>{item.surgeryTime}</Typography>
+                            </TimelineContent>
+                            <TimelineSeparator>
+                                <TimelineConnector />
+                                <TimelineDot color="primary" variant="outlined">
+                                    <EventAvailableIcon />
+                                </TimelineDot>
+                                {index < timelineData.length - 1 && <TimelineConnector />}
+                            </TimelineSeparator>
+                        </TimelineItem>
+                    ))}
+                </Timeline>
+            </Box>
         </>
     );
 };

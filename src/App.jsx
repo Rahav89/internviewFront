@@ -6,18 +6,19 @@ import Login from './FFCompos/Login';
 import ProfileIntern from './FFCompos/ProfileIntern';
 import { useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ViewFullSyllabus from './FFCompos/ViewFullSyllabus';
 
 const theme = createTheme({
     palette: {
         background: {
-            default: ' #e3f3ff'
+            default: '#F0F8FF'
         },
     },
 });
 
 function App() {
     useEffect(() => {
-        document.body.dir = "rtl"; // Set the direction to right-to-left
+        // document.body.dir = "rtl"; // Set the direction to right-to-left
         document.body.style.backgroundColor = theme.palette.background.default;
     }, []);
     return (
@@ -27,6 +28,7 @@ function App() {
                     <Route path="/" element={<Login />} />
                     <Route path="/intern" element={<InternPage />} />
                     <Route path="/profile" element={<ProfileIntern />} />
+                    <Route path="/viewFullSyllabus" element={<ViewFullSyllabus />} />
                 </Routes>
             </Router>
         </ThemeProvider>

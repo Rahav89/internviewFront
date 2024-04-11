@@ -11,6 +11,10 @@ export default function InternPage() {
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
 
+  const handleViewFullSyllabus = () => {
+    navigate('/viewFullSyllabus');
+  };
+
   const handleBackToLogin = () => {
     navigate('/');
   };
@@ -26,7 +30,7 @@ export default function InternPage() {
             width: '100%', // Set the width to 100% to occupy the full line
           }}>
             <Typography variant="h5" sx={{ mb: 2, textAlign: 'right' }}>
-              ברוך הבא, { currentUser.first_name }👋
+              👋 ברוך הבא, {currentUser.first_name}
             </Typography>
           </Paper>
 
@@ -43,7 +47,11 @@ export default function InternPage() {
             width: '100%', // Set the width to 100% to occupy the full line
           }}>
             <FullSyllabus />
+
           </Paper>
+          <Button variant="contained" onClick={handleViewFullSyllabus} style={{ margin: "auto" }} >
+            צפייה בסילבוס המלא
+          </Button>
 
           <Paper sx={{
             p: 2, m: 2, backgroundColor: '#FFFAFA',
