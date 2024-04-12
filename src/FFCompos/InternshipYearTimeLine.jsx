@@ -1,24 +1,24 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Avatar from '@mui/material/Avatar';
-import PersonIcon from '@mui/icons-material/Person'; // Assuming PersonIcon as a doctor icon
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-//-------------------------------------------------------------
-
-// const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+import doctorImageIcon from '/src/Image/DoctorIcon .png'
+import Avatar from '@mui/material/Avatar';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+//-------------------------------------------
 
 export default function InternshipYearTimeLine() {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const currentYear = 4;
 
     return (
         <Box
             sx={{
                 display: 'flex',
                 alignItems: 'center',
-                flexDirection: 'row-reverse',
+                flexDirection: 'column',
                 p: 2,
             }}
         >
@@ -45,30 +45,50 @@ export default function InternshipYearTimeLine() {
                     <Box
                         sx={{
                             display: 'flex',
-                            flexDirection: 'row-reverse',
+                            flexDirection: 'row', // Changed to 'row' for left to right layout
+                            alignItems: 'center',
                         }}
                     >
                         {Array.from({ length: 6 }).map((_, index) => (
                             <React.Fragment key={index}>
-                                <Avatar
-                                    sx={{
-                                        bgcolor: theme.palette.action.main,
-                                        mx: 1,
-                                        border: '2px solid', // Outline effect
-                                        borderColor: 'secondary' // Customizable color
-                                    }}
-                                >
-                                    <PersonIcon />
-                                </Avatar>
+                                {index + 1 <= currentYear ? (
+                                    <Avatar
+                                        sx={{
+                                            width: 40,
+                                            height: 40,
+                                            mb: 1,
+                                            border: '2px solid',
+                                            borderColor: index + 1 === currentYear ? theme.palette.primary.main : 'green',
+                                            mx: 0.5,
+                                            bgcolor: 'white', // Background color set to white
+                                        }}
+                                        src={index + 1 === currentYear ? doctorImageIcon : undefined}
+                                    >
+                                        {index + 1 < currentYear && <CheckCircleIcon style={{ color: 'green' }} />}
+                                    </Avatar>
+                                ) : (
+                                    <Avatar
+                                        sx={{
+                                            width: 40,
+                                            height: 40,
+                                            mb: 1,
+                                            border: '2px solid',
+                                            borderColor: 'black',
+                                            mx: 0.5,
+                                            bgcolor: 'white'
+                                        }}
+                                    />
+                                )}
                                 {index < 5 && (
                                     <Box
                                         sx={{
-                                            height: '5px', // Increased height for visibility
+                                            height: '2px',
                                             bgcolor: 'text.primary',
-                                            margin: 'auto',
-                                            width: 20, // Increased width to balance the design
+                                            width: 30,
                                             display: 'inline-block',
                                             verticalAlign: 'middle',
+                                            marginLeft: '-5px',
+                                            marginRight: '-5px',
                                         }}
                                     />
                                 )}
