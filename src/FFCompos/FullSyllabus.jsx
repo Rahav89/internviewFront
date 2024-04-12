@@ -1,107 +1,125 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { getSyllabus } from './Server.jsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
 
 Chart.register(CategoryScale, LinearScale, BarElement);
 
 function FullSyllabus() {
-  const dummyData = [
-    { id: 1, name: 'Amit', doneCount: 8, leftCount: 2 },
-    { id: 2, name: 'John', doneCount: 6, leftCount: 9 },
-    { id: 3, name: 'Emma', doneCount: 9, leftCount: 3 },
-    { id: 4, name: 'Sophia', doneCount: 7, leftCount: 5 },
-    { id: 5, name: 'Michael', doneCount: 5, leftCount: 15 },
-    { id: 6, name: 'William', doneCount: 4, leftCount: 14 },
-    { id: 7, name: 'Olivia', doneCount: 3, leftCount: 12 },
-    { id: 8, name: 'James', doneCount: 2, leftCount: 13 },
-    { id: 9, name: 'Alexander', doneCount: 1, leftCount: 10 },
-    { id: 10, name: 'Sophia', doneCount: 7, leftCount: 11 },
-    { id: 11, name: 'Ethan', doneCount: 6, leftCount: 8 },
-    { id: 12, name: 'Isabella', doneCount: 8, leftCount: 4 },
-    { id: 13, name: 'Mia', doneCount: 5, leftCount: 7 },
-    { id: 14, name: 'Daniel', doneCount: 4, leftCount: 6 },
-    { id: 15, name: 'Matthew', doneCount: 3, leftCount: 17 },
-    { id: 16, name: 'David', doneCount: 2, leftCount: 18 },
-    { id: 17, name: 'Olivia', doneCount: 1, leftCount: 19 },
-    { id: 18, name: 'Emma', doneCount: 9, leftCount: 3 },
-    { id: 19, name: 'Elijah', doneCount: 6, leftCount: 9 },
-    { id: 20, name: 'Sophia', doneCount: 7, leftCount: 5 },
-    // Add more dummy data as needed
-  ];
-
-  const [sortBy, setSortBy] = useState('name'); // Default sort by name
-
+  const [data, setData] = useState(null);
+  const [sortBy, setSortBy] = useState('procedureName'); // Default sort by procedureName
   const [searchQuery, setSearchQuery] = useState(''); // Query to search
 
+  useEffect(() => {
+    const getSyllabusDetails = async () => {
+      try {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const syllabusData = await getSyllabus(currentUser.id);
+        setData(syllabusData);
+        console.info(syllabusData)
+      } catch (error) {
+        console.error("Error in getSyllabusDetails: ", error);
+      }
+    };
+    getSyllabusDetails();
+  }, []);
+
+  if (!data) {
+    // Render loading state until data is fetched
+    return <p>Loading...</p>;
+  }
+
   // Filtered data based on search query
-  const filteredData = dummyData.filter(item =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredData = data.filter(item =>
+    item.procedureName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Sort the data based on the selected criteria
   const sortedData = filteredData.sort((a, b) => {
-    if (sortBy === 'name') {
-      return a.name.localeCompare(b.name);
-    } else if (sortBy === 'done') {
-      return b.doneCount - a.doneCount;
+    if (sortBy === 'procedureName') {
+      return a.procedureName.localeCompare(b.procedureName);
+    } else if (sortBy === 'haveDone') {
+      return b.haveDone - a.haveDone;
     } else {
-      return a.leftCount - b.leftCount;
+      return a.need - b.need;
     }
   });
 
-  // Extracting names, done counts, and left counts from the sorted data
-  const names = sortedData.map(item => item.name);
-  const doneCounts = sortedData.map(item => item.doneCount);
-  const leftCounts = sortedData.map(item => item.leftCount);
+  // Extracting procedureNames, haveDone counts, and left counts from the sorted data
+  const procedureNames = sortedData.map(item => item.procedureName);
+  const haveDones = sortedData.map(item => item.haveDone);
+  const needs = sortedData.map(item => item.need);
 
   // Creating data for the chart
   const chartData = {
-    labels: names,
+    labels: procedureNames,
     datasets: [
       {
-        label: 'Surgeries Done',
+        label: 'Surgeries haveDone',
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
-        data: doneCounts,
+        data: haveDones,
       },
       {
         label: 'Surgeries Left',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,
-        data: leftCounts,
+        data: needs,
       },
     ],
   };
 
-  // Options for the chart
+  // Options for the chart Vertical
+  // const chartOptions = {
+  //   plugins: {
+  //     tooltip: {
+  //       mode: 'index',
+  //       intersect: false,
+  //     },
+  //   },
+  //   scales: {
+  //     x: {
+  //       stacked: true,
+  //       ticks: {
+  //         autoSkip: false,
+  //         // maxRotation: 90,
+  //         // minRotation: 90,
+  //       },
+  //     },
+  //     y: {
+  //       stacked: true,
+  //     },
+  //   },
+  // };
+
+  // Options for the chart Horizontal
   const chartOptions = {
-    plugins: {
-      tooltip: {
-        mode: 'index',
-        intersect: false,
+    indexAxis: 'y', // Set index axis to 'y' to make the chart horizontal
+    elements: {
+      bar: {
+        borderWidth: 2,
       },
     },
+    responsive: true,
     scales: {
       x: {
         stacked: true,
-        ticks: {
-          autoSkip: false,
-          maxRotation: 90,
-          minRotation: 90,
-        },
       },
       y: {
         stacked: true,
       },
     },
   };
-  
+
+
   const handleSearchInputChange = event => {
     setSearchQuery(event.target.value);
   };
-
 
   return (
     <div>
@@ -109,21 +127,25 @@ function FullSyllabus() {
       <div>
         <label>Sort By: </label>
         <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
-          <option value="name">Name</option>
-          <option value="done">Surgeries Done</option>
+          <option value="procedureName">Procedure name</option>
+          <option value="haveDone">Surgeries have done</option>
           <option value="left">Surgeries Left</option>
         </select>
       </div>
-      <div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', mb: '5px', }}>
         <input
           type="text"
-          placeholder="Search by name..."
+          placeholder="Search by procedure name..."
           value={searchQuery}
           onChange={handleSearchInputChange}
         />
+        <FontAwesomeIcon icon={faSearch} style={{ color: 'gray' }} />
       </div>
-      <div>
-        <Bar data={chartData} options={chartOptions} />
+
+      <div style={{ height: '450px', overflowY: 'auto', overflowX: 'hidden' }}>
+        <div>
+          <Bar data={chartData} options={chartOptions} />
+        </div>
       </div>
     </div>
   );
