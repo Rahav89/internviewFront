@@ -8,6 +8,8 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 
+//----------------------------------------------------------
+
 // קבלת המשתמש הנוכחי מאחסון הפעילות (session storage)
 const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
@@ -20,7 +22,7 @@ const RecentSurgeries = () => {
     React.useEffect(() => {
         // קבלת מזהה המתמחה מהמשתמש הנוכחי
         const internId = currentUser.id;
-        // בקשת GET לשרת כדי לקבל את חמשת הניתוחים האחרונים
+        // בקשת גאט לשרת כדי לקבל את חמשת הניתוחים האחרונים
         fetch(`https://localhost:7220/api/Intenrs/FiveRecentInternSurgeries?internId=${internId}`, {
             method: 'GET',
             headers: {
@@ -37,8 +39,9 @@ const RecentSurgeries = () => {
             .then(data => {
                 // עיבוד הנתונים שהתקבלו כדי להפריד בין התאריך לשעה
                 setTimelineData(data.map(item => {
-                    const [surgeryDate, surgeryTime] = item.surgery_date.split('T');
-                    return { ...item, surgeryDate, surgeryTime };
+                    const [date, time] = item.surgery_date.split('T');
+                    const [year, month, day] = date.split('-');
+                    return { ...item, surgeryDate: `${day}-${month}-${year}` }; // Reformat the date
                 }));
             })
             .catch(error => {
@@ -54,12 +57,24 @@ const RecentSurgeries = () => {
                 <Timeline position="right">
                     {timelineData.map((item, index) => (
                         <TimelineItem key={index}>
-                            <TimelineContent sx={{ py: '10px', px: 2, textAlign: 'end' }}>
-                                <Typography variant="h6" component="span" >
+                            <TimelineContent sx={{ py: '5px', px: 2, textAlign: 'end' }}>
+                                <Typography
+                                    variant="h6"
+                                    component="h3"
+                                    sx={{
+                                        fontSize: '1rem',
+                                    }}
+                                >
                                     {item.procedureName}
                                 </Typography>
-                                <Typography>{item.surgeryDate}</Typography>
-                                <Typography>{item.surgeryTime}</Typography>
+                                <Typography
+                                    variant="h6"
+                                    component="h3"
+                                    sx={{
+                                        fontSize: '1rem',
+
+                                    }}
+                                >{item.surgeryDate}</Typography>
                             </TimelineContent>
                             <TimelineSeparator>
                                 <TimelineConnector />

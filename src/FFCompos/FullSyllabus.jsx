@@ -17,7 +17,7 @@ function FullSyllabus() {
     const getSyllabusDetails = async () => {
       try {
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-        const syllabusData = await getSyllabus(currentUser.id);
+        const syllabusData = await getSyllabus(currentUser.id);//API קריאה לכתובת 
         setData(syllabusData);
         console.info(syllabusData)
       } catch (error) {

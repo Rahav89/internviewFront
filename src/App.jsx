@@ -8,21 +8,21 @@ import { useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 
-const theme = createTheme({
-    palette: {
-        background: {
-            default: '#edf8ff'
-        },
-    },
-});
+// const theme = createTheme({
+//     palette: {
+//         background: {
+//             default: 'white'
+//         },
+//     },
+// });
 
 function App() {
     useEffect(() => {
-        // document.body.dir = "rtl"; // Set the direction to right-to-left
-        document.body.style.backgroundColor = theme.palette.background.default;
+        document.body.dir = "ltr"; // Set the direction to right-to-left
+    //     document.body.style.backgroundColor = theme.palette.background.default;
     }, []);
     return (
-        <ThemeProvider theme={theme}>
+        // <ThemeProvider theme={theme}>
             <Router>
                 <Routes>
                     <Route path="/" element={<Login />} />
@@ -31,7 +31,7 @@ function App() {
                     <Route path="/TableFullSyllabus" element={<TableFullSyllabus />} />
                 </Routes>
             </Router>
-        </ThemeProvider>
+        // </ThemeProvider>
     );
 }
 

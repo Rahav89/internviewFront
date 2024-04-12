@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import doctorImageIcon from '/src/Image/DoctorIcon .png'
 import Avatar from '@mui/material/Avatar';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-//-------------------------------------------
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import doctorImageIcon from '/src/Image/DoctorIcon.png';
+//------------------------------------------------------
+const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
 export default function InternshipYearTimeLine() {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const currentYear = 4;
+
+    //של שנות ההתמחות של המתמחה כמספר enum
+    const InternshipYears = {
+        א: 1,
+        ב: 2,
+        ג: 3,
+        ד: 4,
+        ה: 5,
+        ו: 6
+    };
+
+    // Convert the Hebrew year from currentUser to a numeric value
+    const currentYearNumeric = InternshipYears[currentUser.interns_year];
+    console.log(currentYearNumeric)
 
     return (
         <Box
@@ -45,26 +59,26 @@ export default function InternshipYearTimeLine() {
                     <Box
                         sx={{
                             display: 'flex',
-                            flexDirection: 'row', // Changed to 'row' for left to right layout
+                            flexDirection: 'row',
                             alignItems: 'center',
                         }}
                     >
                         {Array.from({ length: 6 }).map((_, index) => (
                             <React.Fragment key={index}>
-                                {index + 1 <= currentYear ? (
+                                {index + 1 <= currentYearNumeric ? (
                                     <Avatar
                                         sx={{
                                             width: 40,
                                             height: 40,
                                             mb: 1,
                                             border: '2px solid',
-                                            borderColor: index + 1 === currentYear ? theme.palette.primary.main : 'green',
+                                            borderColor: index + 1 === currentYearNumeric ? theme.palette.primary.main : 'green',
                                             mx: 0.5,
-                                            bgcolor: 'white', // Background color set to white
+                                            bgcolor: 'white',
                                         }}
-                                        src={index + 1 === currentYear ? doctorImageIcon : undefined}
+                                        src={index + 1 === currentYearNumeric ? doctorImageIcon : undefined}
                                     >
-                                        {index + 1 < currentYear && <CheckCircleIcon style={{ color: 'green' }} />}
+                                        {index + 1 < currentYearNumeric && <CheckCircleIcon style={{ color: 'green' }} />}
                                     </Avatar>
                                 ) : (
                                     <Avatar
@@ -75,7 +89,7 @@ export default function InternshipYearTimeLine() {
                                             border: '2px solid',
                                             borderColor: 'black',
                                             mx: 0.5,
-                                            bgcolor: 'white'
+                                            bgcolor: 'GhostWhite'
                                         }}
                                     />
                                 )}
@@ -84,7 +98,7 @@ export default function InternshipYearTimeLine() {
                                         sx={{
                                             height: '2px',
                                             bgcolor: 'text.primary',
-                                            width: 30,
+                                            width: 10,
                                             display: 'inline-block',
                                             verticalAlign: 'middle',
                                             marginLeft: '-5px',

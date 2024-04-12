@@ -5,7 +5,7 @@ import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
 import InternshipYearTimeLine from './InternshipYearTimeLine';
-import '/src/CSS/InternPageStyles.css';
+
 //-----------------------------------------
 export default function InternPage() {
   const navigate = useNavigate();
@@ -16,26 +16,39 @@ export default function InternPage() {
     navigate('/TableFullSyllabus');
   };
 
-  const handleBackToLogin = () => {
-    navigate('/');
-  };
+  // const handleBackToLogin = () => {
+  //   navigate('/');
+  // };
 
   return (
     <>
       <MenuLogo />
       <Container sx={{ maxWidth: '100%', mb: 3, mt: 8 }} >
         <Grid container spacing={2} alignItems="center">
-          <Paper className="welcomePaper">
-            <Typography variant="h6" style={{ marginBottom: 16, textAlign: 'right', fontWeight: 'bold' }}>
+          <Paper sx={{
+            p: 2, m: 2, backgroundColor: '#FFFAFA',
+            display: 'inline-block',
+            width: '100%', // Set the width to 100% to occupy the full line
+          }}>
+            <Typography variant="h6" sx={{ mb: 2, textAlign: 'right', fontWeight: 'bold' }}>
               👋 ברוך הבא, {currentUser.first_name}
             </Typography>
           </Paper>
 
-          <Paper className="welcomePaper">
+          <Paper sx={{
+            p: 2, m: 2, backgroundColor: '#FFFAFA', display: 'inline-block',
+            width: '100%',
+          }}>
             <InternshipYearTimeLine />
           </Paper>
 
-          <Paper className="welcomePaper">
+
+
+          <Paper sx={{
+            p: 2, m: 2, backgroundColor: '#FFFAFA',
+            display: 'inline-block',
+            width: '100%', // Set the width to 100% to occupy the full line
+          }}>
             <FullSyllabus />
           </Paper>
 
@@ -43,13 +56,17 @@ export default function InternPage() {
             צפייה בסילבוס המלא
           </Button>
 
-          <Paper className="welcomePaper">
+          <Paper sx={{
+            p: 2, m: 2, backgroundColor: '#FFFAFA',
+            display: 'inline-block',
+            width: '100%', // Set the width to 100% to occupy the full line
+          }}>
             <RecentSurgeries />
           </Paper>
 
-          <Button variant="contained" onClick={handleBackToLogin} style={{ margin: "auto" }}>
+          {/* <Button variant="contained" onClick={handleBackToLogin} style={{ margin: "auto" }}>
             Back to Login
-          </Button>
+          </Button> */}
         </Grid>
       </Container >
     </>
