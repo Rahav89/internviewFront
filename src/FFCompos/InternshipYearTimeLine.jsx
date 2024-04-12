@@ -24,7 +24,8 @@ export default function InternshipYearTimeLine() {
                     variant="h6"
                     component="h3"
                     sx={{
-                        textAlign: isSmallScreen ? 'center' : 'right', // Center align for small screens, right align for larger screens
+                        textAlign: 'center', // Text is always centered
+                        fontWeight: 'bold', // Make font bold
                         mb: 2, // Increase bottom margin for spacing
                     }}
                 >

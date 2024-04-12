@@ -39,53 +39,54 @@ export default function MenuLogo() {
   };
 
   return (
-    <AppBar>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-            }}
-          >
-            <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
-          </Box>
-
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src="src/Image/doctor1.png" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: isSmallScreen ? '45px' : '0' }} // Adjust margin-top for small screens
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+    (
+      <AppBar>
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
               }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem
-                  key={setting}
-                  onClick={setting === 'Logout' ? handleLogout : (setting === 'Profile' ? handleProfileClick : handleCloseUserMenu)} // Add handleProfileClick for Profile
-                >
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+              <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
+            </Box>
+
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar src="src/Image/doctor1.png" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }} // Adjust margin-top uniformly
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: isSmallScreen ? 'right' : 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: isSmallScreen ? 'right' : 'center',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem
+                    key={setting}
+                    onClick={setting === 'Logout' ? handleLogout : (setting === 'Profile' ? handleProfileClick : handleCloseUserMenu)}
+                  >
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    )
   );
 }

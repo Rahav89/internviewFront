@@ -11,7 +11,7 @@ import ViewFullSyllabus from './FFCompos/ViewFullSyllabus';
 const theme = createTheme({
     palette: {
         background: {
-            default: '#F0F8FF'
+            default: '#ededed36'
         },
     },
 });

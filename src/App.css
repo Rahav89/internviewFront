@@ -3,7 +3,7 @@
   margin: auto;
   margin-top: 1rem;
   text-align: center;
-
+  font-family: "Gill Sans", sans-serif;
 }
 
 @keyframes logo-spin {
@@ -23,7 +23,7 @@
 }
 
 .logoImage {
-  width: 100%;
+  width: 50%;
 }
 
 .timeline-container {
