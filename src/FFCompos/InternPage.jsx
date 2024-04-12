@@ -5,7 +5,7 @@ import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
 import InternshipYearTimeLine from './InternshipYearTimeLine';
-import '/src/CSS/InternPageStyles.css'
+import '/src/CSS/InternPageStyles.css';
 //-----------------------------------------
 export default function InternPage() {
   const navigate = useNavigate();
@@ -31,27 +31,27 @@ export default function InternPage() {
             </Typography>
           </Paper>
 
-          <Paper className="timelinePaper">
+          <Paper className="welcomePaper">
             <InternshipYearTimeLine />
           </Paper>
 
-          <Paper className="syllabusPaper">
+          <Paper className="welcomePaper">
             <FullSyllabus />
           </Paper>
 
-          <Button variant="contained" onClick={handleViewFullSyllabus} className="centerButton">
+          <Button variant="contained" onClick={handleViewFullSyllabus} style={{ margin: "auto" }} >
             צפייה בסילבוס המלא
           </Button>
 
-          <Paper className="surgeriesPaper">
+          <Paper className="welcomePaper">
             <RecentSurgeries />
           </Paper>
 
-          <Button variant="contained" onClick={handleBackToLogin} className="centerButton">
+          <Button variant="contained" onClick={handleBackToLogin} style={{ margin: "auto" }}>
             Back to Login
           </Button>
         </Grid>
-      </Container>
+      </Container >
     </>
   );
 }
