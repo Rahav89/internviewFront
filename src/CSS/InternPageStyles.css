@@ -1,0 +1,20 @@
+/* InternPageStyles.css */
+.welcomePaper {
+  padding: 16px;
+  margin: 16px;
+  background-color: #9dc8ff54;
+  display: inline-block;
+  width: 100%;
+}
+
+.timelinePaper, .syllabusPaper, .surgeriesPaper {
+  padding: 16px;
+  margin: 16px;
+  background-color: #ffefef;
+  display: inline-block;
+  width: 100%;
+}
+
+.centerButton {
+  margin: auto;
+}

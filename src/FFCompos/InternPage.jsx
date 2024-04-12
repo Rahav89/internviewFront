@@ -5,7 +5,8 @@ import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
 import InternshipYearTimeLine from './InternshipYearTimeLine';
-
+import '/src/CSS/InternPageStyles.css'
+//-----------------------------------------
 export default function InternPage() {
   const navigate = useNavigate();
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -24,44 +25,29 @@ export default function InternPage() {
       <MenuLogo />
       <Container sx={{ maxWidth: '100%', mb: 3, mt: 8 }} >
         <Grid container spacing={2} alignItems="center">
-          <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA',
-            display: 'inline-block',
-            width: '100%', // Set the width to 100% to occupy the full line
-          }}>
-            <Typography variant="h5" sx={{ mb: 2, textAlign: 'right' }}>
+          <Paper className="welcomePaper">
+            <Typography variant="h6" style={{ marginBottom: 16, textAlign: 'right', fontWeight: 'bold' }}>
               👋 ברוך הבא, {currentUser.first_name}
             </Typography>
           </Paper>
 
-          <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA', display: 'inline-block',
-            width: '100%',
-          }}>
+          <Paper className="timelinePaper">
             <InternshipYearTimeLine />
           </Paper>
 
-          <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA',
-            display: 'inline-block',
-            width: '100%', // Set the width to 100% to occupy the full line
-          }}>
+          <Paper className="syllabusPaper">
             <FullSyllabus />
-
           </Paper>
-          <Button variant="contained" onClick={handleViewFullSyllabus} style={{ margin: "auto" }} >
+
+          <Button variant="contained" onClick={handleViewFullSyllabus} className="centerButton">
             צפייה בסילבוס המלא
           </Button>
 
-          <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA',
-            display: 'inline-block',
-            width: '100%', // Set the width to 100% to occupy the full line
-          }}>
+          <Paper className="surgeriesPaper">
             <RecentSurgeries />
           </Paper>
 
-          <Button variant="contained" onClick={handleBackToLogin} style={{ margin: "auto" }} >
+          <Button variant="contained" onClick={handleBackToLogin} className="centerButton">
             Back to Login
           </Button>
         </Grid>
