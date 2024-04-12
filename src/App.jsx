@@ -11,7 +11,7 @@ import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 const theme = createTheme({
     palette: {
         background: {
-            default: 'white'
+            default: '#edf8ff'
         },
     },
 });

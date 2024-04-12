@@ -1,9 +1,13 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import TripOriginIcon from '@mui/icons-material/TripOrigin';
+import Avatar from '@mui/material/Avatar';
+import PersonIcon from '@mui/icons-material/Person'; // Assuming PersonIcon as a doctor icon
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+//-------------------------------------------------------------
+
+// const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
 export default function InternshipYearTimeLine() {
     const theme = useTheme();
@@ -14,52 +18,57 @@ export default function InternshipYearTimeLine() {
             sx={{
                 display: 'flex',
                 alignItems: 'center',
-                flexDirection: 'row-reverse', // This reverses the row order to match RTL layout
-                p: 2, // Add padding around the component for better spacing
+                flexDirection: 'row-reverse',
+                p: 2,
             }}
         >
-            {/* This box wraps the entire content including the title and the timeline */}
             <Box sx={{ width: '100%' }}>
                 <Typography
                     variant="h6"
                     component="h3"
                     sx={{
-                        textAlign: 'center', // Text is always centered
-                        fontWeight: 'bold', // Make font bold
-                        mb: 2, // Increase bottom margin for spacing
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        mb: 2,
                     }}
                 >
                     צפה בהתקדמות שלך
                 </Typography>
 
-                {/* This box represents the timeline itself */}
                 <Box
                     sx={{
                         display: 'flex',
-                        justifyContent: 'center', // Center the timeline
-                        flexWrap: isSmallScreen ? 'wrap' : 'nowrap', // Allow wrapping on small screens
+                        justifyContent: 'center',
+                        flexWrap: isSmallScreen ? 'wrap' : 'nowrap',
                     }}
                 >
                     <Box
                         sx={{
                             display: 'flex',
-                            flexDirection: 'row-reverse', // Align for RTL layout
+                            flexDirection: 'row-reverse',
                         }}
                     >
                         {Array.from({ length: 6 }).map((_, index) => (
                             <React.Fragment key={index}>
-                                <TripOriginIcon />
-                                {/* We add the line after the icon except after the last one */}
-                                {index < 5 && ( // Avoid adding a line after the last icon
+                                <Avatar
+                                    sx={{
+                                        bgcolor: theme.palette.action.main,
+                                        mx: 1,
+                                        border: '2px solid', // Outline effect
+                                        borderColor: 'secondary' // Customizable color
+                                    }}
+                                >
+                                    <PersonIcon />
+                                </Avatar>
+                                {index < 5 && (
                                     <Box
                                         sx={{
-                                            height: '3px',
+                                            height: '5px', // Increased height for visibility
                                             bgcolor: 'text.primary',
                                             margin: 'auto',
-                                            width: 10, // Fixed width for the lines
-                                            mx: 1, // Margin on both sides for spacing
-                                            display: 'inline-block', // Make the Box inline for centering
-                                            verticalAlign: 'middle', // Align the line vertically with the icon
+                                            width: 20, // Increased width to balance the design
+                                            display: 'inline-block',
+                                            verticalAlign: 'middle',
                                         }}
                                     />
                                 )}
