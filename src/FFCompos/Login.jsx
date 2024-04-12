@@ -93,10 +93,6 @@ export default function Login(props) {
                         showConfirmButton: false,
                         timer: 2000, // Adjust the time as needed
                         timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer);
-                            toast.addEventListener('mouseleave', Swal.resumeTimer);
-                        }
                     });
                     Toast.fire({
                         icon: 'success',

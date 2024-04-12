@@ -12,7 +12,7 @@ export default function InternPage() {
 
 
   const handleViewFullSyllabus = () => {
-    navigate('/viewFullSyllabus');
+    navigate('/TableFullSyllabus');
   };
 
   const handleBackToLogin = () => {
