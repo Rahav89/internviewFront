@@ -17,3 +17,4 @@ export const getSyllabus = (internId) => {
         throw error;
     });
 };
+

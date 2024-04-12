@@ -1,48 +1,51 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import MenuLogo from '../FFCompos/MenuLogo';
 import { Grid, Typography, Button, Paper, Container, Box} from '@mui/material';
+import { getSyllabus } from './Server.jsx';
 
-const columns = [
-  { field: 'id', headerName: 'ID',flex: 0.5, minWidth: 70 },
-  { field: 'firstName', headerName: 'First name',flex: 1, minWidth: 130 },
-  { field: 'lastName', headerName: 'Last name',flex: 1,  minWidth: 130 },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    flex: 0.5, 
-    minWidth: 90,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    minWidth: 160,
-     flex: 1.5,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-  },
-];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
 
 export default function TableFullSyllabus() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const getSyllabusDetails = async () => {
+      try {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const syllabusData = await getSyllabus(currentUser.id);
+        setData(syllabusData);
+        console.info(syllabusData)
+      } catch (error) {
+        console.error("Error in getSyllabusDetails: ", error);
+      }
+    };
+    getSyllabusDetails();
+  }, []);
+
+  if (!data) {
+    // Render loading state until data is fetched
+    return <p>Loading...</p>;
+  }
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'procedureName', headerName: 'שם הפרוצדורה',flex: 0.5, minWidth: 70 },
+    { field: 'syllabus', headerName: 'דרישת הסילבוס',flex: 1, minWidth: 130 },
+    { field: 'haveDone', headerName: 'כמה ביצעת',flex: 1,  minWidth: 130 },
+    { field: 'need', headerName: 'כמה חסר',flex: 1,  minWidth: 130 }
+  ];
+
+  const rows = [
+    { id: 1,procedureName: 1, syllabus: 'Snow', haveDone: 'Jon', need: 35 },
+
+
+  ];
   return (
     <>
       <MenuLogo />
-      <Container sx={{ maxWidth: '100%', mb: 3, mt: 8 }} >
-        <Grid container spacing={2} alignItems="center">
+      <Container sx={{ maxWidth: '100%', mb: 3, mt: 8 }} dir="rtl">
+        <Grid container spacing={2} alignItems="right">
 
             <Paper sx={{
             p: 2, m: 2, backgroundColor: '#FFFAFA', display: 'inline-block',
