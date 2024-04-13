@@ -5,7 +5,7 @@ import InternPage from './FFCompos/InternPage';
 import Login from './FFCompos/Login';
 import ProfileIntern from './FFCompos/ProfileIntern';
 import { useEffect } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+// import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 
 // const theme = createTheme({

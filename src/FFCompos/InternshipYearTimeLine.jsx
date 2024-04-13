@@ -23,7 +23,7 @@ export default function InternshipYearTimeLine() {
         ו: 6
     };
 
-    // Convert the Hebrew year from currentUser to a numeric value
+    //  המרה של שנת ההתמחות מהמשתמש הנוכחי למספר
     const currentYearNumeric = InternshipYears[currentUser.interns_year];
     console.log(currentYearNumeric)
 
@@ -68,8 +68,8 @@ export default function InternshipYearTimeLine() {
                                 {index + 1 <= currentYearNumeric ? (
                                     <Avatar
                                         sx={{
-                                            width: 40,
-                                            height: 40,
+                                            width: 25,
+                                            height: 25,
                                             mb: 1,
                                             border: '2px solid',
                                             borderColor: index + 1 === currentYearNumeric ? theme.palette.primary.main : 'green',
@@ -83,12 +83,12 @@ export default function InternshipYearTimeLine() {
                                 ) : (
                                     <Avatar
                                         sx={{
-                                            width: 40,
-                                            height: 40,
+                                            width:25,
+                                            height: 25,
                                             mb: 1,
                                             border: '2px solid',
                                             borderColor: 'black',
-                                            mx: 0.5,
+                                            mx:0.5,
                                             bgcolor: 'GhostWhite'
                                         }}
                                     />
@@ -98,11 +98,11 @@ export default function InternshipYearTimeLine() {
                                         sx={{
                                             height: '2px',
                                             bgcolor: 'text.primary',
-                                            width: 10,
+                                            width: 6,
                                             display: 'inline-block',
                                             verticalAlign: 'middle',
-                                            marginLeft: '-5px',
-                                            marginRight: '-5px',
+                                            marginLeft: '-4px',
+                                            marginRight: '-4px',
                                         }}
                                     />
                                 )}

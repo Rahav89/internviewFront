@@ -28,7 +28,7 @@ export default function InternPage() {
           <Paper sx={{
             p: 2, m: 2, backgroundColor: '#FFFAFA',
             display: 'inline-block',
-            width: '100%', // Set the width to 100% to occupy the full line
+            width: '100%', 
           }}>
             <Typography variant="h6" sx={{ mb: 2, textAlign: 'right', fontWeight: 'bold' }}>
               👋 ברוך הבא, {currentUser.first_name}
@@ -41,8 +41,6 @@ export default function InternPage() {
           }}>
             <InternshipYearTimeLine />
           </Paper>
-
-
 
           <Paper sx={{
             p: 2, m: 2, backgroundColor: '#FFFAFA',

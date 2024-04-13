@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-const settings = ['Profile', 'Account', 'Logout'];
+const settings = ['ניהול משתמש', 'Account', 'התנתק'];
 
 export default function MenuLogo() {
   const navigate = useNavigate(); // Hook for navigation
@@ -35,7 +35,11 @@ export default function MenuLogo() {
 
   // New function to navigate to the profile page
   const handleProfileClick = () => {
-    navigate('/profile'); // Change this to your profile page route
+    navigate('/profile'); //Navigate to profile page
+  };
+
+  const handleLogoClick = () => {
+    navigate('/intern'); ////Navigate to intern page
   };
 
   return (
@@ -50,11 +54,12 @@ export default function MenuLogo() {
                 alignItems: 'center',
               }}
             >
-              <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
+              <IconButton onClick={handleLogoClick} sx={{ p: 0 }}>
+                <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
+              </IconButton>
             </Box>
-
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-              <Tooltip title="Open settings">
+              <Tooltip title="פתח הגדרות">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar src="src/Image/doctor1.png" />
                 </IconButton>
@@ -77,7 +82,8 @@ export default function MenuLogo() {
                 {settings.map((setting) => (
                   <MenuItem
                     key={setting}
-                    onClick={setting === 'Logout' ? handleLogout : (setting === 'Profile' ? handleProfileClick : handleCloseUserMenu)}
+                    dir='rtl'
+                    onClick={setting === 'התנתק' ? handleLogout : (setting === 'ניהול משתמש' ? handleProfileClick : handleCloseUserMenu)}
                   >
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
