@@ -1,76 +1,83 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import { useMemo } from 'react';
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from 'material-react-table';
 import MenuLogo from '../FFCompos/MenuLogo';
-import { Grid, Typography, Button, Paper, Container, Box} from '@mui/material';
+import { Grid, Typography, Button, Paper, Container } from '@mui/material';
+import '../CSS/InternPageStyles.css';
+import { useState, useEffect } from 'react';
 import { getSyllabus } from './Server.jsx';
 
 
+const Example = () => {
 
-export default function TableFullSyllabus() {
-  const [data, setData] = useState(null);
+  
+const [dataS, setData] = useState([]);
 
-  useEffect(() => {
-    const getSyllabusDetails = async () => {
-      try {
-        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-        const syllabusData = await getSyllabus(currentUser.id);
-        setData(syllabusData);
-        console.info(syllabusData)
-      } catch (error) {
-        console.error("Error in getSyllabusDetails: ", error);
-      }
-    };
-    getSyllabusDetails();
-  }, []);
+useEffect(() => {
+  const getSyllabusDetails = async () => {
+    try {
+      const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+      const syllabusData = await getSyllabus(currentUser.id);//API קריאה לכתובת 
+      setData(syllabusData);
+      console.info(syllabusData)
+    } catch (error) {
+      console.error("Error in getSyllabusDetails: ", error);
+    }
+  };
+  getSyllabusDetails();
+}, []);
+  //should be memoized or stable
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'procedureName', //access nested data with dot notation
+        header: 'שם פרוצדורת הניתוח',
+        size: 300,
+      },
+      {
+        accessorKey: 'syllabus',
+        header: 'דרישות הסילבוס',
+        size: 90,
+      },
+      {
+        accessorKey: 'haveDone', //normal accessorKey
+        header: 'כמות ביצועים',
+        size: 90,
+      },
+      {
+        accessorKey: 'need',
+        header: 'כמה נדרש',
+        size: 90,
+      },
+    ],
+    [],
+  );
 
-  if (!data) {
-    // Render loading state until data is fetched
-    return <p>Loading...</p>;
-  }
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'procedureName', headerName: 'שם הפרוצדורה',flex: 0.5, minWidth: 70 },
-    { field: 'syllabus', headerName: 'דרישת הסילבוס',flex: 1, minWidth: 130 },
-    { field: 'haveDone', headerName: 'כמה ביצעת',flex: 1,  minWidth: 130 },
-    { field: 'need', headerName: 'כמה חסר',flex: 1,  minWidth: 130 }
-  ];
+  const table = useMaterialReactTable({
+    columns,
+    data: dataS, 
+    enableFullScreenToggle: false,
+    enableDensityToggle :false,
+    columnResizeDirection: 'rtl',
+    enableHiding:false,
+   
+  });
 
-  const rows = [
-    { id: 1,procedureName: 1, syllabus: 'Snow', haveDone: 'Jon', need: 35 },
-
-
-  ];
   return (
     <>
       <MenuLogo />
-      <Container sx={{ maxWidth: '100%', mb: 3, mt: 8 }} dir="rtl">
-        <Grid container spacing={2} alignItems="right">
-
-            <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA', display: 'inline-block',
-            width: '100%',
-          }}>
-            <Box sx={{ width: '100%', height: 400 }}>
-              <DataGrid
-              rows={rows}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection
-            />
-            </Box>
-         
-          </Paper>
-        
-        </Grid>
+     
+      <Container sx={{ mt: 8, mb: 3 }} dir='rlt'>  
+        <MaterialReactTable table={table}  />    
       </Container>
-
+           
+    
     </>
-
   );
-}
+ 
+ 
+};
+
+export default Example;
