@@ -1,5 +1,5 @@
 export const getSyllabus = (internId) => {
-    return fetch(`https://localhost:7220/api/Intenrs/GetSyllabusOfIntern?internId=${internId}`, {
+    return fetch(`https://localhost:7220/api/Interns/GetSyllabusOfIntern?internId=${internId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',

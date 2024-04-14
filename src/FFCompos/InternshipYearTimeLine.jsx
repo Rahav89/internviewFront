@@ -7,9 +7,9 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import doctorImageIcon from '/src/Image/DoctorIcon.png';
 //------------------------------------------------------
-const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
 export default function InternshipYearTimeLine() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 

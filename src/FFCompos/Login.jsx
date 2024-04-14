@@ -126,7 +126,7 @@ export default function Login(props) {
             Interns_year: "",
             Interns_rating: 0
         };
-        return fetch('https://localhost:7220/api/Intenrs/LogInIntern', {
+        return fetch('https://localhost:7220/api/Interns/LogInIntern', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',

@@ -10,11 +10,12 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 
 //----------------------------------------------------------
 
-// קבלת המשתמש הנוכחי מאחסון הפעילות (session storage)
-const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+
 
 // קומפוננטת הניתוחים האחרונים
-const RecentSurgeries = () => {
+export default function RecentSurgeries() {
+    // קבלת המשתמש הנוכחי מאחסון הפעילות (session storage)
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     // מערך שמאחסן את הנתונים שיוצגו בציר הזמן
     const [timelineData, setTimelineData] = React.useState([]);
 
@@ -23,7 +24,7 @@ const RecentSurgeries = () => {
         // קבלת מזהה המתמחה מהמשתמש הנוכחי
         const internId = currentUser.id;
         // בקשת גאט לשרת כדי לקבל את חמשת הניתוחים האחרונים
-        fetch(`https://localhost:7220/api/Intenrs/FiveRecentInternSurgeries?internId=${internId}`, {
+        fetch(`https://localhost:7220/api/Interns/FiveRecentInternSurgeries?internId=${internId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -91,4 +92,4 @@ const RecentSurgeries = () => {
     );
 };
 
-export default RecentSurgeries;
+

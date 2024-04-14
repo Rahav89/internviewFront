@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,32 +9,38 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MenuLogo from './MenuLogo';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { InputAdornment, IconButton } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+//------------------------------------------------------------------
 
 export default function ProfileIntern(props) {
-
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   // Function to handle button click
   const handleCancelClick = () => {
     navigate('/intern'); // Navigate to the intern page
   };
-
+  const handleToggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
   // קבלת המשתמש הנוכחי מאחסון הפעילות (session storage)
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-  console.log(currentUser);
 
   // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
   const [formData, setFormData] = useState({
-    ...currentUser,
-    password_i: '',          // Assuming this is your initial password field
-    passwordConfirmation: '' // Adding a new field for the password confirmation
+    ...currentUser
   });
 
   // ניהול שגיאות בטופס
   const [formErrors, setFormErrors] = useState({
     InternID: false,
     password_i: false,
-    passwordConfirmation: false,
+    // passwordConfirmation: false,
     first_name: false,
     last_name: false,
   });
@@ -48,9 +54,10 @@ export default function ProfileIntern(props) {
     }));
   };
 
+  //פונקציה הבודקת את הולידציה של תעודת זהות  
   function validateInternId(internId) {
     const regex = /^[0-9]+$/; // תבנית של מספרים בלבד
-    // אם המחרוזת עומדת בתנאי התווים של התבנית ואינה מחרוזת ריקה, מחזיר true
+    //true אם המחרוזת עומדת בתנאי התווים של התבנית ואינה מחרוזת ריקה, מחזיר 
     return regex.test(internId) && internId != '';
   }
 
@@ -69,53 +76,74 @@ export default function ProfileIntern(props) {
     return (/^[a-zA-Zא-ת ]*$/.test(value) && value !== '');
   };
 
-  
-  const submitFormData = async () => {
-    try {
-      // Simulating an API call
-      console.log('Submitting form data:', formData);
-      // You would typically use fetch or axios here:
-      // const response = await fetch('https://your-api-endpoint', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify(formData)
-      // });
-      // const data = await response.json();
-      // console.log('Submission successful:', data);
-
-      // For now, simulate a successful submission:
-      alert('פרטיך עודכנו בהצלחה!');
-    } catch (error) {
-      console.error('Submission failed:', error);
-      alert('העדכון נכשל. אנא נסה שוב.');
-    }
-  }
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const isInternIdValid = validateInternId(formData.internId);
+    const isInternIdValid = validateInternId(formData.id);
     const isPasswordValid = validatePassword(formData.password_i);
-    const isPasswordConfirmationValid = formData.password_i === formData.passwordConfirmation;
+    // const isPasswordConfirmationValid = formData.password_i === formData.passwordConfirmation;
     const isFirstNameValid = validateTextOnly(formData.firstName);
     const isLastNameValid = validateTextOnly(formData.lastName);
-
+    console.log(isInternIdValid, isPasswordValid, isFirstNameValid, isLastNameValid);
     setFormErrors({
       InternID: !isInternIdValid,
       password_i: !isPasswordValid,
-      passwordConfirmation: !isPasswordConfirmationValid,
+      // passwordConfirmation: !isPasswordConfirmationValid,
       firstName: !isFirstNameValid,
       lastName: !isLastNameValid,
     });
 
-    if (isInternIdValid && isPasswordValid && isPasswordConfirmationValid && isFirstNameValid && isLastNameValid) {
+    if (isInternIdValid && isPasswordValid && isFirstNameValid && isLastNameValid) {
       // Proceed with form submission or further actions
       submitFormData(); // Call the function that handles the submission
     }
 
   };
+
+  const submitFormData = async () => {
+    console.log(formData);
+    try {
+      // Simulating an API call
+      console.log('Submitting form data:', formData);
+
+      const response = await fetch(`https://localhost:7220/api/Interns/updateIntern-${formData.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      // Check if the HTTP response is ok
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Submission successful:', data);
+
+      // Use SweetAlert for success notification
+      Swal.fire({
+        title: 'Success!',
+        text: 'פרטיך עודכנו בהצלחה',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+
+    } catch (error) {
+      console.error('Submission failed:', error);
+
+      // Use SweetAlert for error notification
+      Swal.fire({
+        title: 'Error!',
+        text: 'העדכון נכשל. אנא נסה שוב.',
+        icon: 'error',
+        confirmButtonText: 'Close'
+      });
+    }
+  }
+
+
 
   return (
     <>
@@ -157,23 +185,37 @@ export default function ProfileIntern(props) {
                   />
                 </Grid>
 
+
                 <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
-                    name="password"
+                    name="password_i"
                     id="password"
                     label="סיסמה"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     value={formData.password_i}
                     onChange={handleChange}
                     error={formErrors.password_i}
                     helperText={formErrors.password_i ? "הסיסמה חייבת להכיל לפחות אות גדולה וספרות" : ''}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleToggleShowPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
@@ -187,7 +229,9 @@ export default function ProfileIntern(props) {
                     error={formErrors.passwordConfirmation}
                     helperText={formErrors.passwordConfirmation ? "הסיסמאות אינן תואמות" : ''}
                   />
-                </Grid>
+                </Grid> */}
+
+
                 <Grid item xs={12} sm={4}>
                   <TextField
                     required
@@ -216,7 +260,6 @@ export default function ProfileIntern(props) {
                     onChange={handleChange}
                     error={formErrors.last_name}
                     helperText={formErrors.last_name ? 'יכול להכיל רק אותיות.' : ""}
-
                   />
                 </Grid>
 
@@ -236,6 +279,22 @@ export default function ProfileIntern(props) {
                     disabled
                   />
                 </Grid>
+
+
+
+                {/* צאקבוס אימות הצג סיסמא
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={showPassword}
+                        onChange={handleToggleShowPassword}
+                        name="showPassword"
+                      />
+                    }
+                    label="הצגת סיסמה"
+                  />
+                </Grid> */}
 
                 <Grid item xs={12} sm={6}>
                   <Button

@@ -1,9 +1,10 @@
+import { Box, TextField, InputAdornment, MenuItem, FormControl, InputLabel, Select, Typography } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { getSyllabus } from './Server.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 
 Chart.register(CategoryScale, LinearScale, BarElement);
@@ -44,7 +45,7 @@ function FullSyllabus() {
     } else if (sortBy === 'haveDone') {
       return b.haveDone - a.haveDone;
     } else {
-      return a.need - b.need;
+      return b.need - a.need;
     }
   });
 
@@ -122,33 +123,48 @@ function FullSyllabus() {
   };
 
   return (
-    <div>
-      <h3>מעקב אחר הניתוחים </h3>
-      <div>
-        <label>Sort By: </label>
-        <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
-          <option value="procedureName">Procedure name</option>
-          <option value="haveDone">Surgeries have done</option>
-          <option value="left">Surgeries Left</option>
-        </select>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', mb: '5px', }}>
-        <input
+    <Box sx={{ maxWidth: 600, mx: 'auto', my: 4 }}>
+      <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+        מעקב אחר הניתוחים
+      </Typography>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
+        <FormControl fullWidth>
+          <InputLabel>מיון</InputLabel>
+          <Select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            label="sortedby"
+          >
+            <MenuItem value="procedureName">סדר א-ב</MenuItem>
+            <MenuItem value="haveDone"> ניתוחים שבוצעו סדר יורד</MenuItem>
+            <MenuItem value="left">כמה חסר</MenuItem>
+          </Select>
+        </FormControl>
+
+        <TextField
+          fullWidth
           type="text"
-          placeholder="Search by procedure name..."
+          dir='rtl'
+          placeholder="חיפוש"
           value={searchQuery}
           onChange={handleSearchInputChange}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <FontAwesomeIcon icon={faSearch} style={{ color: 'gray' }} />
+              </InputAdornment>
+            )
+          }}
         />
-        <FontAwesomeIcon icon={faSearch} style={{ color: 'gray' }} />
-      </div>
+      </Box>
 
-      <div style={{ height: '450px', overflowY: 'auto', overflowX: 'hidden' }}>
-        <div>
-          <Bar data={chartData} options={chartOptions} />
-        </div>
-      </div>
-    </div>
+      <Box sx={{ height: 450, overflowY: 'auto' }}>
+        <Bar data={chartData} options={chartOptions} />
+      </Box>
+    </Box>
   );
+
 }
 
 export default FullSyllabus;
