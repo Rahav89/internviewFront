@@ -24,7 +24,7 @@ export default function InternPage() {
           <Grid item xs={12}  >
             <Paper sx={{ p: 2, backgroundColor: '#FFFAFA' }}>
               <Typography variant="h6" sx={{ textAlign: 'right', fontWeight: 'bold' }}>
-                 ברוך הבא, {currentUser.first_name}👋
+                 ברוך הבא, {currentUser.first_name +" "+currentUser.last_name}👋
               </Typography>
             </Paper>
           </Grid>

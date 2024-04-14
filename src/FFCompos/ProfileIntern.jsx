@@ -130,6 +130,9 @@ export default function ProfileIntern(props) {
         confirmButtonText: 'OK'
       });
 
+      // Storing some part of response in sessionStorage
+      sessionStorage.setItem('currentUser', JSON.stringify(formData));
+
     } catch (error) {
       console.error('Submission failed:', error);
 
@@ -142,7 +145,6 @@ export default function ProfileIntern(props) {
       });
     }
   }
-
 
 
   return (
