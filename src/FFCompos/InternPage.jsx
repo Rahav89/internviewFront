@@ -18,19 +18,19 @@ export default function InternPage() {
     <>
       <MenuLogo />
       <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
-        <Grid container spacing={3} alignItems="center">
+        <Grid container spacing={3} alignItems="center" dir={'rtl'}> 
 
           {/* Welcome message */}
-          <Grid item xs={12} md={6} dir="rlt">
+          <Grid item xs={12}  >
             <Paper sx={{ p: 2, backgroundColor: '#FFFAFA' }}>
               <Typography variant="h6" sx={{ textAlign: 'right', fontWeight: 'bold' }}>
-                👋 ברוך הבא, {currentUser.first_name}
+                 ברוך הבא, {currentUser.first_name}👋
               </Typography>
             </Paper>
           </Grid>
 
           {/* Internship Timeline */}
-          <Grid item xs={12} md={6} dir="rlt">
+          <Grid item xs={12} >
             <Paper sx={{ p: 2, backgroundColor: '#FFFAFA' }}>
               <InternshipYearTimeLine />
             </Paper>

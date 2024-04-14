@@ -34,6 +34,7 @@ export default function InternshipYearTimeLine() {
                 alignItems: 'center',
                 flexDirection: 'column',
                 p: 2,
+                direction:'ltr'
             }}
         >
             <Box sx={{ width: '100%' }}>

@@ -54,11 +54,11 @@ export default function RecentSurgeries() {
     return (
         <>
             <h3>ניתוחים אחרונים</h3>
-            <Box display="flex" justifyContent="flex-end">
-                <Timeline position="right">
+            <Box display="flex" justifyContent="flex-end" textAlign="right">
+                <Timeline position="left">
                     {timelineData.map((item, index) => (
                         <TimelineItem key={index}>
-                            <TimelineContent sx={{ py: '1px', px: 4, textAlign: 'end' }}>
+                            <TimelineContent sx={{ py: '1px', px: 4 }}>
                                 <Typography
                                     variant="h6"
                                     component="h3"
