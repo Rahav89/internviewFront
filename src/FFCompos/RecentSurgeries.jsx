@@ -58,7 +58,7 @@ export default function RecentSurgeries() {
                 <Timeline position="right">
                     {timelineData.map((item, index) => (
                         <TimelineItem key={index}>
-                            <TimelineContent sx={{ py: '5px', px: 2, textAlign: 'end' }}>
+                            <TimelineContent sx={{ py: '1px', px: 4, textAlign: 'end' }}>
                                 <Typography
                                     variant="h6"
                                     component="h3"
@@ -73,14 +73,13 @@ export default function RecentSurgeries() {
                                     component="h3"
                                     sx={{
                                         fontSize: '1rem',
-
                                     }}
                                 >{item.surgeryDate}</Typography>
                             </TimelineContent>
                             <TimelineSeparator>
                                 <TimelineConnector />
                                 <TimelineDot color="primary" variant="outlined">
-                                    <EventAvailableIcon />
+                                   <img width={30} src='src/Image/surgerydate.png'/>
                                 </TimelineDot>
                                 {index < timelineData.length - 1 && <TimelineConnector />}
                             </TimelineSeparator>

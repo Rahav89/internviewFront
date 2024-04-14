@@ -71,9 +71,9 @@ export default function InternshipYearTimeLine() {
                                             width: 25,
                                             height: 25,
                                             mb: 1,
-                                            border: '2px solid',
+                                            border: '4px solid',
                                             borderColor: index + 1 === currentYearNumeric ? theme.palette.primary.main : 'green',
-                                            mx: 0.5,
+                                            mx: 1,
                                             bgcolor: 'white',
                                         }}
                                         src={index + 1 === currentYearNumeric ? doctorImageIcon : undefined}
@@ -86,9 +86,9 @@ export default function InternshipYearTimeLine() {
                                             width:25,
                                             height: 25,
                                             mb: 1,
-                                            border: '2px solid',
+                                            border: '4px solid',
                                             borderColor: 'black',
-                                            mx:0.5,
+                                            mx:1,
                                             bgcolor: 'GhostWhite'
                                         }}
                                     />
@@ -98,11 +98,11 @@ export default function InternshipYearTimeLine() {
                                         sx={{
                                             height: '2px',
                                             bgcolor: 'text.primary',
-                                            width: 6,
+                                            width: 20,
                                             display: 'inline-block',
                                             verticalAlign: 'middle',
-                                            marginLeft: '-4px',
-                                            marginRight: '-4px',
+                                            marginLeft: '-10px',
+                                            marginRight: '-10px',
                                         }}
                                     />
                                 )}

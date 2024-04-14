@@ -171,7 +171,6 @@ export default function ProfileIntern(props) {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
-                    required
                     fullWidth
                     name="InternID"
                     id="InternID"
@@ -265,7 +264,6 @@ export default function ProfileIntern(props) {
 
                 <Grid item xs={12} sm={4}>
                   <TextField
-                    required
                     fullWidth
                     name="interns_year"
                     id="interns_year"

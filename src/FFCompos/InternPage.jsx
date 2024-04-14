@@ -1,72 +1,64 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Typography, Button, Paper, Container, } from '@mui/material';
+import { Grid, Typography, Button, Paper, Container } from '@mui/material';
 import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
 import InternshipYearTimeLine from './InternshipYearTimeLine';
 
-//-----------------------------------------
 export default function InternPage() {
   const navigate = useNavigate();
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-
 
   const handleViewFullSyllabus = () => {
     navigate('/TableFullSyllabus');
   };
 
-  // const handleBackToLogin = () => {
-  //   navigate('/');
-  // };
-
   return (
     <>
       <MenuLogo />
-      <Container sx={{ maxWidth: '100%', mb: 3, mt: 8 }} >
-        <Grid container spacing={2} alignItems="center">
-          <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA',
-            display: 'inline-block',
-            width: '100%', 
-          }}>
-            <Typography variant="h6" sx={{ mb: 2, textAlign: 'right', fontWeight: 'bold' }}>
-              👋 ברוך הבא, {currentUser.first_name}
-            </Typography>
-          </Paper>
+      <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
+        <Grid container spacing={3} alignItems="center">
 
-          <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA', display: 'inline-block',
-            width: '100%',
-          }}>
-            <InternshipYearTimeLine />
-          </Paper>
+          {/* Welcome message */}
+          <Grid item xs={12} md={6} dir="rlt">
+            <Paper sx={{ p: 2, backgroundColor: '#FFFAFA' }}>
+              <Typography variant="h6" sx={{ textAlign: 'right', fontWeight: 'bold' }}>
+                👋 ברוך הבא, {currentUser.first_name}
+              </Typography>
+            </Paper>
+          </Grid>
 
-          <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA',
-            display: 'inline-block',
-            width: '100%', // Set the width to 100% to occupy the full line
-          }}>
-            <FullSyllabus />
-          </Paper>
+          {/* Internship Timeline */}
+          <Grid item xs={12} md={6} dir="rlt">
+            <Paper sx={{ p: 2, backgroundColor: '#FFFAFA' }}>
+              <InternshipYearTimeLine />
+            </Paper>
+          </Grid>
 
-          <Button variant="contained" onClick={handleViewFullSyllabus} style={{ margin: "auto" }} >
-            צפייה בסילבוס המלא
-          </Button>
+          {/* Full Syllabus View */}
+          <Grid item xs={12}>
+            <Paper sx={{ p: 2, backgroundColor: '#FFFAFA' }}>
+              <FullSyllabus />
+            </Paper>
+          </Grid>
 
-          <Paper sx={{
-            p: 2, m: 2, backgroundColor: '#FFFAFA',
-            display: 'inline-block',
-            width: '100%', // Set the width to 100% to occupy the full line
-          }}>
-            <RecentSurgeries />
-          </Paper>
+          {/* Full Syllabus Button */}
+          <Grid item xs={12}  display="flex" justifyContent="center">
+            <Button variant="contained" onClick={handleViewFullSyllabus} sx={{ width: '100%', maxWidth: 300 }}>
+              צפייה בסילבוס המלא
+            </Button>
+          </Grid>
 
-          {/* <Button variant="contained" onClick={handleBackToLogin} style={{ margin: "auto" }}>
-            Back to Login
-          </Button> */}
+          {/* Recent Surgeries */}
+          <Grid item xs={12}>
+            <Paper sx={{ p: 2, backgroundColor: '#FFFAFA' }}>
+              <RecentSurgeries />
+            </Paper>
+          </Grid>
+
         </Grid>
-      </Container >
+      </Container>
     </>
   );
 }

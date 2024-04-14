@@ -128,22 +128,24 @@ function FullSyllabus() {
         מעקב אחר הניתוחים
       </Typography>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
-        <FormControl fullWidth>
-          <InputLabel>מיון</InputLabel>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
+        <FormControl sx={{ width: '50%' }}>
+          <Box dir="rtl">
+            <InputLabel sx={{ textAlign: 'right' }}>סידור לפי</InputLabel>
+          </Box>
           <Select
             value={sortBy}
             onChange={e => setSortBy(e.target.value)}
             label="sortedby"
           >
-            <MenuItem value="procedureName">סדר א-ב</MenuItem>
-            <MenuItem value="haveDone"> ניתוחים שבוצעו סדר יורד</MenuItem>
-            <MenuItem value="left">כמה חסר</MenuItem>
+            <MenuItem value="procedureName"> א-ב</MenuItem>
+            <MenuItem value="haveDone">ביצוע</MenuItem>
+            <MenuItem value="left">חוסר</MenuItem>
           </Select>
         </FormControl>
 
         <TextField
-          fullWidth
+          sx={{ width: '50%' }}
           type="text"
           dir='rtl'
           placeholder="חיפוש"

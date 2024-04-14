@@ -18,7 +18,7 @@ import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 
 function App() {
     useEffect(() => {
-        document.body.dir = "ltr"; // Set the direction to right-to-left
+        document.body.dir = "ltr"; 
     //     document.body.style.backgroundColor = theme.palette.background.default;
     }, []);
     return (
