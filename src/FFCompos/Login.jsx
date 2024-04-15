@@ -11,7 +11,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import doctorHomePic from '/src/Image/doctorHomePic.png'
-import logoHomePic from '/src/Image/InternView.png'
+import logoHomePic from '/src/Image/InternView.png';
+import Swal from 'sweetalert2';
+//--------------------------------------------------
 
 export default function Login(props) {
     const navigate = useNavigate();
@@ -114,8 +116,10 @@ export default function Login(props) {
             .catch((error) => {
                 console.error("Error logging in:", error);
             });
-
     }
+
+
+
     //פונקציה המקבלת שם משתמש וסיסמה ובודקת אם קיים משתמש שפרטיו זהים
     const loginUser = (internId, password) => {
         const userObject = {

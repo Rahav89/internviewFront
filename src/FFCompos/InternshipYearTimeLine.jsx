@@ -72,7 +72,7 @@ export default function InternshipYearTimeLine() {
                                             width: 25,
                                             height: 25,
                                             mb: 1,
-                                            border: '4px solid',
+                                            border: '2px solid',
                                             borderColor: index + 1 === currentYearNumeric ? theme.palette.primary.main : 'green',
                                             mx: 1,
                                             bgcolor: 'white',
@@ -87,7 +87,7 @@ export default function InternshipYearTimeLine() {
                                             width:25,
                                             height: 25,
                                             mb: 1,
-                                            border: '4px solid',
+                                            border: '2px solid',
                                             borderColor: 'black',
                                             mx:1,
                                             bgcolor: 'GhostWhite'

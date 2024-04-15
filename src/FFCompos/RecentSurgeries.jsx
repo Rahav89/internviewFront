@@ -6,11 +6,9 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+
 
 //----------------------------------------------------------
-
-
 
 // קומפוננטת הניתוחים האחרונים
 export default function RecentSurgeries() {
@@ -49,6 +47,10 @@ export default function RecentSurgeries() {
                 console.error("Error in List 5 Recent Surgeries: ", error);
             });
     }, []);
+    const getColor = (index) => {
+        const colors = ['Plum', 'blue', 'green', 'SkyBlue', 'orange', 'yellow'];
+        return colors[index % colors.length];  // Cycle through colors
+    };
 
     // רינדור של הקומפוננטה עם ציר הזמן והנתונים
     return (
@@ -58,7 +60,7 @@ export default function RecentSurgeries() {
                 <Timeline position="left">
                     {timelineData.map((item, index) => (
                         <TimelineItem key={index}>
-                            <TimelineContent sx={{ py: '1px', px: 4 }}>
+                            <TimelineContent sx={{ py: '1px', px: 1 }}>
                                 <Typography
                                     variant="h6"
                                     component="h3"
@@ -76,19 +78,17 @@ export default function RecentSurgeries() {
                                     }}
                                 >{item.surgeryDate}</Typography>
                             </TimelineContent>
-                            <TimelineSeparator>
-                                <TimelineConnector />
-                                <TimelineDot color="primary" variant="outlined">
-                                   <img width={30} src='src/Image/surgerydate.png'/>
-                                </TimelineDot>
-                                {index < timelineData.length - 1 && <TimelineConnector />}
-                            </TimelineSeparator>
+                            <TimelineItem key={index}>
+                                <TimelineSeparator>
+                                    <TimelineConnector />
+                                    <TimelineDot style={{ backgroundColor: getColor(index) }} />
+                                    {index < timelineData.length - 1 && <TimelineConnector />}
+                                </TimelineSeparator>
+                            </TimelineItem>
                         </TimelineItem>
                     ))}
                 </Timeline>
-            </Box>
+            </Box >
         </>
     );
 };
-
-

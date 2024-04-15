@@ -4,30 +4,30 @@ import {
   useMaterialReactTable,
 } from 'material-react-table';
 import MenuLogo from '../FFCompos/MenuLogo';
-import { Grid, Typography, Button, Paper, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import '../CSS/InternPageStyles.css';
 import { useState, useEffect } from 'react';
 import { getSyllabus } from './Server.jsx';
 
 
-const Example = () => {
+export default function TableFullSyllabus() {
 
-  
-const [dataS, setData] = useState([]);
 
-useEffect(() => {
-  const getSyllabusDetails = async () => {
-    try {
-      const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-      const syllabusData = await getSyllabus(currentUser.id);//API קריאה לכתובת 
-      setData(syllabusData);
-      console.info(syllabusData)
-    } catch (error) {
-      console.error("Error in getSyllabusDetails: ", error);
-    }
-  };
-  getSyllabusDetails();
-}, []);
+  const [dataS, setData] = useState([]);
+
+  useEffect(() => {
+    const getSyllabusDetails = async () => {
+      try {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const syllabusData = await getSyllabus(currentUser.id);//API קריאה לכתובת 
+        setData(syllabusData);
+        console.info(syllabusData)
+      } catch (error) {
+        console.error("Error in getSyllabusDetails: ", error);
+      }
+    };
+    getSyllabusDetails();
+  }, []);
   //should be memoized or stable
   const columns = useMemo(
     () => [
@@ -57,27 +57,27 @@ useEffect(() => {
 
   const table = useMaterialReactTable({
     columns,
-    data: dataS, 
+    data: dataS,
     enableFullScreenToggle: false,
-    enableDensityToggle :false,
+    enableDensityToggle: false,
     columnResizeDirection: 'rtl',
-    enableHiding:false,
-   
+    enableHiding: false,
+
   });
 
   return (
     <>
       <MenuLogo />
-     
-      <Container sx={{ mt: 8, mb: 3 }} dir='rlt'>  
-        <MaterialReactTable table={table}  />    
+
+      <Container sx={{ mt: 8, mb: 3 }} dir='ltr'>
+        <MaterialReactTable table={table} />
       </Container>
-           
-    
+
+
     </>
   );
- 
- 
+
+
 };
 
-export default Example;
+
