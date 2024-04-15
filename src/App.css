@@ -30,3 +30,18 @@
   display: flex;
   justify-content: flex-end;
 }
+
+
+/* table */
+.rtl-table {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl-table .MuiTableSortLabel-root {
+  direction: ltr;
+}
+
+.rtl-table .MuiTablePagination-root {
+  direction: ltr;
+}

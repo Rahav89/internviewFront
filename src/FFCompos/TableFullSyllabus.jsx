@@ -4,9 +4,11 @@ import {
   useMaterialReactTable,
 } from 'material-react-table';
 import MenuLogo from '../FFCompos/MenuLogo';
-import { Container } from '@mui/material';
+import { Container, ThemeProvider, createTheme } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getSyllabus } from './Server.jsx';
+import '../App.css';
+//------------------------------------------
 
 export default function TableFullSyllabus() {
 
@@ -19,13 +21,14 @@ export default function TableFullSyllabus() {
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         const syllabusData = await getSyllabus(currentUser.id);//API קריאה לכתובת 
         setData(syllabusData);
-       // console.info(syllabusData)
+        // console.info(syllabusData)
       } catch (error) {
         console.error("Error in getSyllabusDetails: ", error);
       }
     };
     getSyllabusDetails();
   }, []);
+
   //should be memoized or stable
   const columns = useMemo(
     () => [
@@ -53,6 +56,13 @@ export default function TableFullSyllabus() {
     [],
   );
 
+
+
+  const theme = createTheme({
+    direction: 'rtl', // Right to left theme
+  });
+
+
   const table = useMaterialReactTable({
     columns,
     data: dataS,
@@ -66,10 +76,11 @@ export default function TableFullSyllabus() {
   return (
     <>
       <MenuLogo />
-
-      <Container sx={{ mt: 8, mb: 3 }} dir='ltr'>
-        <MaterialReactTable table={table} />
-      </Container>
+      <ThemeProvider theme={theme}>
+        <Container sx={{ mt: 8, mb: 3 }} dir='ltr' className="rtl-table">
+          <MaterialReactTable table={table} />
+        </Container>
+      </ThemeProvider>
 
 
     </>
