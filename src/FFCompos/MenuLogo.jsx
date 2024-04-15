@@ -1,17 +1,9 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useNavigate } from 'react-router-dom';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, Badge } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import MailIcon from '@mui/icons-material/Mail'; // Import for message icon
 
 const settings = ['ניהול משתמש', 'Account', 'התנתק'];
 
@@ -42,57 +34,58 @@ export default function MenuLogo() {
     navigate('/intern'); ////Navigate to intern page
   };
 
+
+
+  const unreadMessages = 5;
+
+
   return (
-    (
-      <AppBar>
-        <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-              }}
-            >
-              <IconButton onClick={handleLogoClick} sx={{ p: 0 }}>
-                <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
+    <AppBar>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+            <IconButton onClick={handleLogoClick} sx={{ p: 0 }}>
+              <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
+            </IconButton>
+          </Box>
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            <Tooltip title="הודעות">
+              {/* מייל */}
+              <IconButton onClick={() => {handleMailMess}}>
+                <Badge badgeContent={unreadMessages} color="error">
+                  <MailIcon  />
+                </Badge>
               </IconButton>
-            </Box>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-              <Tooltip title="פתח הגדרות">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar src="src/Image/doctor1.png" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }} // Adjust margin-top uniformly
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: isSmallScreen ? 'right' : 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: isSmallScreen ? 'right' : 'center',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem
-                    key={setting}
-                    dir='rtl'
-                    onClick={setting === 'התנתק' ? handleLogout : (setting === 'ניהול משתמש' ? handleProfileClick : handleCloseUserMenu)}
-                  >
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-          </Toolbar>
-        </Container>
-      </AppBar>
-    )
+            </Tooltip>
+            <Tooltip title="פתח הגדרות">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar src="src/Image/doctor1.png" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: isSmallScreen ? 'right' : 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: isSmallScreen ? 'right' : 'center',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} dir='rtl' onClick={setting === 'התנתק' ? handleLogout : (setting === 'ניהול משתמש' ? handleProfileClick : handleCloseUserMenu)}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }

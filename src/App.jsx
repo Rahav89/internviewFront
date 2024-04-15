@@ -1,12 +1,12 @@
 import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
 import InternPage from './FFCompos/InternPage';
 import Login from './FFCompos/Login';
 import ProfileIntern from './FFCompos/ProfileIntern';
 import { useEffect } from 'react';
 // import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TableFullSyllabus from './FFCompos/TableFullSyllabus';
+import '@fontsource/roboto/300.css';
 
 // const theme = createTheme({
 //     palette: {

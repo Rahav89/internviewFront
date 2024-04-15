@@ -104,16 +104,15 @@ export default function Login(props) {
                     setTimeout(() => {
                         navigate('/intern');
                     }, 2000); // Match this time with the timer above
-                } else {
-                    // The user failed to log in - incorrect username or password
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login failed',
-                        text: 'intern Id or Password is incorrect.',
-                    });
                 }
             })
             .catch((error) => {
+                 // The user failed to log in - incorrect username or password
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login failed',
+                    text: 'intern Id or Password is incorrect.',
+                });
                 console.error("Error logging in:", error);
             });
     }

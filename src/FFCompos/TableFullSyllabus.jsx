@@ -5,10 +5,8 @@ import {
 } from 'material-react-table';
 import MenuLogo from '../FFCompos/MenuLogo';
 import { Container } from '@mui/material';
-import '../CSS/InternPageStyles.css';
 import { useState, useEffect } from 'react';
 import { getSyllabus } from './Server.jsx';
-
 
 export default function TableFullSyllabus() {
 
@@ -21,7 +19,7 @@ export default function TableFullSyllabus() {
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         const syllabusData = await getSyllabus(currentUser.id);//API קריאה לכתובת 
         setData(syllabusData);
-        console.info(syllabusData)
+       // console.info(syllabusData)
       } catch (error) {
         console.error("Error in getSyllabusDetails: ", error);
       }

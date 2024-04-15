@@ -5,6 +5,7 @@ import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
 import InternshipYearTimeLine from './InternshipYearTimeLine';
+//--------------------------------------------------------
 
 export default function InternPage() {
   const navigate = useNavigate();

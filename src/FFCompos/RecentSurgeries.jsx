@@ -7,21 +7,13 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 
-
-//----------------------------------------------------------
-
 // קומפוננטת הניתוחים האחרונים
 export default function RecentSurgeries() {
-    // קבלת המשתמש הנוכחי מאחסון הפעילות (session storage)
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-    // מערך שמאחסן את הנתונים שיוצגו בציר הזמן
     const [timelineData, setTimelineData] = React.useState([]);
 
-    // טעינת הנתונים מהשרת כאשר הקומפוננטה מוטענת לראשונה
     React.useEffect(() => {
-        // קבלת מזהה המתמחה מהמשתמש הנוכחי
         const internId = currentUser.id;
-        // בקשת גאט לשרת כדי לקבל את חמשת הניתוחים האחרונים
         fetch(`https://localhost:7220/api/Interns/FiveRecentInternSurgeries?internId=${internId}`, {
             method: 'GET',
             headers: {
@@ -29,29 +21,28 @@ export default function RecentSurgeries() {
                 'Accept': 'application/json; charset=UTF-8',
             },
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // עיבוד הנתונים שהתקבלו כדי להפריד בין התאריך לשעה
-                setTimelineData(data.map(item => {
-                    const [date, time] = item.surgery_date.split('T');
-                    const [year, month, day] = date.split('-');
-                    return { ...item, surgeryDate: `${day}-${month}-${year}` }; // Reformat the date
-                }));
-            })
-            .catch(error => {
-                console.error("Error in List 5 Recent Surgeries: ", error);
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            setTimelineData(data.map(item => {
+                const [date, time] = item.surgery_date.split('T');
+                const [year, month, day] = date.split('-');
+                return { ...item, surgeryDate: `${day}-${month}-${year}` };
+            }));
+        })
+        .catch(error => {
+            console.error("Error in List 5 Recent Surgeries: ", error);
+        });
     }, []);
+    //פונקציה לצביעת הנקודות
     const getColor = (index) => {
         const colors = ['Plum', 'blue', 'green', 'SkyBlue', 'orange', 'yellow'];
-        return colors[index % colors.length];  // Cycle through colors
+        return colors[index % colors.length];
     };
-
     // רינדור של הקומפוננטה עם ציר הזמן והנתונים
     return (
         <>
@@ -60,35 +51,22 @@ export default function RecentSurgeries() {
                 <Timeline position="left">
                     {timelineData.map((item, index) => (
                         <TimelineItem key={index}>
-                            <TimelineContent sx={{ py: '1px', px: 1 }}>
-                                <Typography
-                                    variant="h6"
-                                    component="h3"
-                                    sx={{
-                                        fontSize: '1rem',
-                                    }}
-                                >
+                            <TimelineContent sx={{ py: '1px', px: 1, width: '100%' }}>
+                                <Typography variant="h6" sx={{ fontSize: '1rem', width: '100%' }}>
                                     {item.procedureName}
                                 </Typography>
-                                <Typography
-                                    variant="h6"
-                                    component="h3"
-                                    sx={{
-                                        fontSize: '1rem',
-                                    }}
-                                >{item.surgeryDate}</Typography>
+                                <Typography variant="h6" sx={{ fontSize: '1rem', width: '100%' }}>
+                                    {item.surgeryDate}
+                                </Typography>
                             </TimelineContent>
-                            <TimelineItem key={index}>
-                                <TimelineSeparator>
-                                    <TimelineConnector />
-                                    <TimelineDot style={{ backgroundColor: getColor(index) }} />
-                                    {index < timelineData.length - 1 && <TimelineConnector />}
-                                </TimelineSeparator>
-                            </TimelineItem>
+                            <TimelineSeparator>
+                                <TimelineDot style={{ backgroundColor: getColor(index) }} />
+                                {index < timelineData.length - 1 && <TimelineConnector />}
+                            </TimelineSeparator>
                         </TimelineItem>
                     ))}
                 </Timeline>
-            </Box >
+            </Box>
         </>
     );
 };

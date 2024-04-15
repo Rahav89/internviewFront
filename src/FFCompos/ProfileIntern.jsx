@@ -13,21 +13,29 @@ import Swal from 'sweetalert2';
 import { InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
+
 //------------------------------------------------------------------
 
 export default function ProfileIntern(props) {
-  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   // Function to handle button click
   const handleCancelClick = () => {
     navigate('/intern'); // Navigate to the intern page
   };
+
+
   const handleToggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  const handleToggleNewShowPassword = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
   // קבלת המשתמש הנוכחי מאחסון הפעילות (session storage)
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
@@ -38,9 +46,8 @@ export default function ProfileIntern(props) {
 
   // ניהול שגיאות בטופס
   const [formErrors, setFormErrors] = useState({
-    InternID: false,
     password_i: false,
-    // passwordConfirmation: false,
+    passwordConfirmation: false,
     first_name: false,
     last_name: false,
   });
@@ -54,21 +61,24 @@ export default function ProfileIntern(props) {
     }));
   };
 
-  //פונקציה הבודקת את הולידציה של תעודת זהות  
-  function validateInternId(internId) {
-    const regex = /^[0-9]+$/; // תבנית של מספרים בלבד
-    //true אם המחרוזת עומדת בתנאי התווים של התבנית ואינה מחרוזת ריקה, מחזיר 
-    return regex.test(internId) && internId != '';
-  }
-
-  //פונקציה הבודקת את הולידציה של הסיסמא
-  function validatePassword(password) {
+  //פונקציה הבודקת את הולידציה של הסיסמא החדשה
+  function validateNewPassword(password) {
     //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
     const uppercaseLetter = /[A-Z]/;
     const digit = /[0-9]/;
     return (
       uppercaseLetter.test(password) && digit.test(password)
     );
+  }
+
+  //פונקציה הבודקת את הולידציה של הסיסמא
+  function validatePassword(password) {
+    //בודק שהסיסמה שהכניס היא הסיסמה הנוכחית שלו
+    if (formData.currentPassword) {
+      return (
+        currentUser.password_i == formData.currentPassword
+      );
+    }
   }
 
   // ולידציה לטקסט בלבד
@@ -78,23 +88,19 @@ export default function ProfileIntern(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const isInternIdValid = validateInternId(formData.id);
-    const isPasswordValid = validatePassword(formData.password_i);
-    // const isPasswordConfirmationValid = formData.password_i === formData.passwordConfirmation;
+    const isPasswordValid = validatePassword(formData.password_i_form);
+    const isPasswordConfirmationValid = validateNewPassword(formData.password_i);
     const isFirstNameValid = validateTextOnly(formData.firstName);
     const isLastNameValid = validateTextOnly(formData.lastName);
-    console.log(isInternIdValid, isPasswordValid, isFirstNameValid, isLastNameValid);
+    console.log(isPasswordValid, isFirstNameValid, isLastNameValid);
     setFormErrors({
-      InternID: !isInternIdValid,
       password_i: !isPasswordValid,
-      // passwordConfirmation: !isPasswordConfirmationValid,
+      passwordConfirmation: !isPasswordConfirmationValid,
       firstName: !isFirstNameValid,
       lastName: !isLastNameValid,
     });
 
-    if (isInternIdValid && isPasswordValid && isFirstNameValid && isLastNameValid) {
-      // Proceed with form submission or further actions
+    if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid) {
       submitFormData(); // Call the function that handles the submission
     }
 
@@ -178,8 +184,7 @@ export default function ProfileIntern(props) {
                     id="InternID"
                     label="תעודת זהות"
                     autoComplete="תעודת זהות"
-                    value={formData.id}
-                    onChange={handleChange}
+                    value={currentUser.id}
                     error={formErrors.id}
                     helperText={formErrors.id ? "תעודת זהות חיייבת להכיל רק ספרות" : ''}
                     disabled
@@ -191,15 +196,14 @@ export default function ProfileIntern(props) {
                   <TextField
                     required
                     fullWidth
-                    name="password_i"
-                    id="password"
-                    label="סיסמה"
+                    name="currentPassword"
+                    label="סיסמה נוכחית"
                     type={showPassword ? 'text' : 'password'}
-                    autoComplete="new-password"
-                    value={formData.password_i}
+                    id="password"
+                    autoComplete="current-password"
                     onChange={handleChange}
                     error={formErrors.password_i}
-                    helperText={formErrors.password_i ? "הסיסמה חייבת להכיל לפחות אות גדולה וספרות" : ''}
+                    helperText={formErrors.password_i ? "הסיסמה לא תואמת לסיסמה הנוכחית" : ''}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -215,22 +219,33 @@ export default function ProfileIntern(props) {
                     }}
                   />
                 </Grid>
-
-                {/* <Grid item xs={12}>
+                <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
-                    name="passwordConfirmation"
-                    id="passwordConfirmation"
-                    label="אימות סיסמה"
-                    type="password"
-                    autoComplete="new-password-confirmation"
-                    value={formData.passwordConfirmation}
+                    name="password_i"
+                    label="סיסמה חדשה "
+                    type={showNewPassword ? 'text' : 'password'}
+                    id="newPassword"
+                    autoComplete="new-password"
                     onChange={handleChange}
                     error={formErrors.passwordConfirmation}
-                    helperText={formErrors.passwordConfirmation ? "הסיסמאות אינן תואמות" : ''}
+                    helperText={formErrors.passwordConfirmation ? "הסיסמה חייבת להכיל לפחות אות גדולה וספרות" : ''}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleToggleNewShowPassword}
+                            edge="end"
+                          >
+                            {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
                   />
-                </Grid> */}
+                </Grid>
 
 
                 <Grid item xs={12} sm={4}>
@@ -241,7 +256,7 @@ export default function ProfileIntern(props) {
                     id="first_name"
                     label="שם פרטי"
                     autoComplete="given-name"
-                    value={formData.first_name}
+                    value={currentUser.first_name}
                     onChange={handleChange}
                     error={formErrors.first_name}
                     helperText={formErrors.first_name ? 'יכול להכיל רק אותיות' : ""}
@@ -257,7 +272,7 @@ export default function ProfileIntern(props) {
                     id="last_name"
                     label="שם משפחה"
                     autoComplete="family-name"
-                    value={formData.last_name}
+                    value={currentUser.last_name}
                     onChange={handleChange}
                     error={formErrors.last_name}
                     helperText={formErrors.last_name ? 'יכול להכיל רק אותיות.' : ""}
@@ -271,11 +286,7 @@ export default function ProfileIntern(props) {
                     id="interns_year"
                     label="שנת התמחות"
                     autoComplete="given-name"
-                    value={formData.interns_year}
-                    onChange={handleChange}
-                    error={formErrors.interns_year}
-                    helperText={formErrors.interns_year ? 'יכול להכיל רק אותיות' : ""}
-                    InputLabelProps={{ style: { textAlign: 'right', direction: 'rtl' } }}
+                    value={currentUser.interns_year}
                     disabled
                   />
                 </Grid>
@@ -303,7 +314,7 @@ export default function ProfileIntern(props) {
                     variant="contained"
                     sx={{ mt: 2, mb: 1 }}
                   >
-                    עדכון פרטים
+                    אישור
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={6}>
