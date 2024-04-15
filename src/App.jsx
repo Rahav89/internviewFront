@@ -6,6 +6,7 @@ import ProfileIntern from './FFCompos/ProfileIntern';
 import { useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TableFullSyllabus from './FFCompos/TableFullSyllabus';
+import ViewInterns  from './FFCompos/ViewInterns';
 import '@fontsource/roboto/300.css';
 
 const theme = createTheme({
@@ -27,6 +28,7 @@ function App() {
                     <Route path="/intern" element={<InternPage />} />
                     <Route path="/profile" element={<ProfileIntern />} />
                     <Route path="/TableFullSyllabus" element={<TableFullSyllabus />} />
+                    <Route path="/ViewInterns" element={<ViewInterns />} />
                 </Routes>
             </Router>
         </ThemeProvider>

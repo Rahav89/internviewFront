@@ -6,6 +6,7 @@ import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
 import InternshipYearTimeLine from './InternshipYearTimeLine';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 //--------------------------------------------------------
 
 export default function InternPage() {
@@ -16,6 +17,10 @@ export default function InternPage() {
     navigate('/TableFullSyllabus');
   };
 
+  const handleViewIntern = () => {
+    navigate('/ViewInterns');
+  };
+  
   return (
     <>
       <MenuLogo />
@@ -41,11 +46,30 @@ export default function InternPage() {
 
           {/* Full Syllabus Button */}
           <Grid item xs={12} display="flex" justifyContent="center">
-            <Button variant="contained" onClick={handleViewFullSyllabus} sx={{ width: '100%', maxWidth: 300 }}>
+            <Button variant="contained" onClick={handleViewFullSyllabus} sx={{ width: '100%', maxWidth: 300,backgroundColor: 'SkyBlue','&:hover': {
+                  backgroundColor: 'SteelBlue' // Optionally change color on hover
+                } }}>
               צפייה בסילבוס המלא
               <TableChartIcon sx={{ mr: 1 }} />
             </Button>
           </Grid>
+
+          {/* Check if variable equals 1 before rendering the button */}
+          {currentUser.isManager === 1 && (
+            <Grid item xs={12} display="flex" justifyContent="center">
+              <Button variant="contained" onClick={handleViewIntern} sx={{
+                width: '100%',
+                maxWidth: 300,
+                backgroundColor: 'MediumPurple', // Set the background color to purple
+                '&:hover': {
+                  backgroundColor: 'RebeccaPurple' // Optionally change color on hover
+                }
+              }}>
+                צפייה בהתקדמות המתמחים
+                <VisibilityIcon sx={{ mr: 0.5 }} />
+              </Button>
+            </Grid>
+          )}
 
           {/* Recent Surgeries */}
           <Grid item xs={12}>
