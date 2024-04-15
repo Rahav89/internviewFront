@@ -5,6 +5,7 @@ import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
 import InternshipYearTimeLine from './InternshipYearTimeLine';
+import StepperOfIntern from './StepperOfIntern';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 //--------------------------------------------------------
@@ -23,6 +24,7 @@ export default function InternPage() {
   
   return (
     <>
+   
       <MenuLogo />
       <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
         <Grid container spacing={3} alignItems="center" dir={'rtl'}>
@@ -34,11 +36,16 @@ export default function InternPage() {
             </Typography>
           </Grid>
 
-          {/* Internship Timeline */}
+          {/* Internship Timeline
           <Grid item xs={12} >
             <InternshipYearTimeLine />
+           
+          </Grid> */}
           </Grid>
-
+      </Container>
+      <StepperOfIntern />
+      <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
+        <Grid container spacing={3} alignItems="center" dir={'rtl'}>
           {/* Full Syllabus View */}
           <Grid item xs={12}>
             <FullSyllabus />
@@ -78,6 +85,7 @@ export default function InternPage() {
 
         </Grid>
       </Container>
+     
     </>
   );
 }
