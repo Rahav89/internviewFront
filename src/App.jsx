@@ -4,25 +4,23 @@ import InternPage from './FFCompos/InternPage';
 import Login from './FFCompos/Login';
 import ProfileIntern from './FFCompos/ProfileIntern';
 import { useEffect } from 'react';
-// import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 import '@fontsource/roboto/300.css';
 
-// const theme = createTheme({
-//     palette: {
-//         background: {
-//             default: 'white'
-//         },
-//     },
-// });
+const theme = createTheme({
+    typography: {
+        fontFamily: 'Calibri',
+    },
+});
 
 function App() {
     useEffect(() => {
-        document.body.dir = "ltr"; 
-    //     document.body.style.backgroundColor = theme.palette.background.default;
+        document.body.dir = "ltr";
+        document.body.style.backgroundColor = theme.palette.background.default;
     }, []);
     return (
-        // <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
             <Router>
                 <Routes>
                     <Route path="/" element={<Login />} />
@@ -31,7 +29,7 @@ function App() {
                     <Route path="/TableFullSyllabus" element={<TableFullSyllabus />} />
                 </Routes>
             </Router>
-        // </ThemeProvider>
+        </ThemeProvider>
     );
 }
 

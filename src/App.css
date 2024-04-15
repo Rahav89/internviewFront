@@ -3,7 +3,6 @@
   margin: auto;
   margin-top: 1rem;
   text-align: center;
-  font-family: 'Noto Sans Hebrew',Verdana, sans-serif;
 }
 
 @keyframes logo-spin {
@@ -38,10 +37,10 @@
   text-align: right;
 }
 
-.rtl-table .MuiTableSortLabel-root {
+/* .rtl-table .MuiTableSortLabel-root {
   direction: ltr;
 }
 
 .rtl-table .MuiTablePagination-root {
   direction: ltr;
-}
+} */

@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import '../App.css';
 
 //------------------------------------------------------------------
 
@@ -157,7 +158,7 @@ export default function ProfileIntern(props) {
     <>
       <MenuLogo />
       <ThemeProvider theme={createTheme()}>
-        <Container component="main" maxWidth="xs" dir='rtl'>
+        <Container component="main" maxWidth="xs" dir='rtl' >
           <CssBaseline />
           <Box
             sx={{
@@ -165,7 +166,6 @@ export default function ProfileIntern(props) {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-
             }}>
 
             <Box sx={{ width: '20%' }}>
@@ -173,7 +173,7 @@ export default function ProfileIntern(props) {
             </Box>
 
             <Typography component="h1" variant="h5" fontWeight={'bold'}>
-              עדכון פרטים
+              עדכון פרטים 
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
               <Grid container spacing={2}>
@@ -219,6 +219,7 @@ export default function ProfileIntern(props) {
                     }}
                   />
                 </Grid>
+
                 <Grid item xs={12}>
                   <TextField
                     required

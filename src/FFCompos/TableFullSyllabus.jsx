@@ -57,7 +57,6 @@ export default function TableFullSyllabus() {
   );
 
 
-
   const theme = createTheme({
     direction: 'rtl', // Right to left theme
   });
@@ -68,21 +67,17 @@ export default function TableFullSyllabus() {
     data: dataS,
     enableFullScreenToggle: false,
     enableDensityToggle: false,
-    columnResizeDirection: 'rtl',
     enableHiding: false,
-
   });
 
   return (
     <>
       <MenuLogo />
       <ThemeProvider theme={theme}>
-        <Container sx={{ mt: 8, mb: 3 }} dir='ltr' className="rtl-table">
+        <Container sx={{ mt: 8, mb: 3 }}  className="rtl-table">
           <MaterialReactTable table={table} />
         </Container>
       </ThemeProvider>
-
-
     </>
   );
 

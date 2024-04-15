@@ -46,7 +46,7 @@ export default function RecentSurgeries() {
     // רינדור של הקומפוננטה עם ציר הזמן והנתונים
     return (
         <>
-            <h3>ניתוחים אחרונים</h3>
+           <h3 style={{ fontFamily: 'Calibri' }}>ניתוחים אחרונים</h3>
             <Box display="flex" justifyContent="flex-end" textAlign="right">
                 <Timeline position="left">
                     {timelineData.map((item, index) => (
