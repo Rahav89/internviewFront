@@ -82,7 +82,7 @@ export default function ViewInterns() {
     // Options for the chart
     const chartOptions = {
         responsive: true,
-        maintainAspectRatio: false, // Try toggling this to see effects
+        maintainAspectRatio: false,
         plugins: {
             tooltip: {
                 mode: 'index',
@@ -106,17 +106,15 @@ export default function ViewInterns() {
 
 
 
-
     const handleSearchInputChange = event => {
         setSearchQuery(event.target.value);
     };
-
 
     return (
         <>
             <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
                 <MenuLogo />
-                <h3>התקדמות המתמחים </h3>
+                <h3>התקדמות המתמחים</h3>
                 <div>
                     <label>Sort By: </label>
                     <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
@@ -124,8 +122,6 @@ export default function ViewInterns() {
                         <option value="done">Surgeries Done</option>
                         <option value="left">Surgeries Left</option>
                     </select>
-                </div>
-                <div>
                     <input
                         type="text"
                         placeholder="Search by name..."
@@ -133,12 +129,9 @@ export default function ViewInterns() {
                         onChange={handleSearchInputChange}
                     />
                 </div>
-                <div style={{ width: '100%', maxWidth: '700px' }}>
+                <div style={{ width: '100%'}}>
                     <Bar data={chartData} options={chartOptions} />
                 </div>
-
-
-
             </Container>
         </>
     );
