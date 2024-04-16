@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Typography, Button, Paper, Container } from '@mui/material';
+import { Grid, Typography, Button, Container } from '@mui/material';
 import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
@@ -47,7 +47,7 @@ export default function InternPage() {
           {/* Full Syllabus Button */}
           <Grid item xs={12} display="flex" justifyContent="center">
             <Button variant="contained" onClick={handleViewFullSyllabus} sx={{ width: '100%', maxWidth: 300,backgroundColor: 'SkyBlue','&:hover': {
-                  backgroundColor: 'SteelBlue' // Optionally change color on hover
+                  backgroundColor: 'SteelBlue' 
                 } }}>
               צפייה בסילבוס המלא
               <TableChartIcon sx={{ mr: 1 }} />
@@ -60,9 +60,9 @@ export default function InternPage() {
               <Button variant="contained" onClick={handleViewIntern} sx={{
                 width: '100%',
                 maxWidth: 300,
-                backgroundColor: 'MediumPurple', // Set the background color to purple
+                backgroundColor: 'MediumPurple', 
                 '&:hover': {
-                  backgroundColor: 'RebeccaPurple' // Optionally change color on hover
+                  backgroundColor: 'RebeccaPurple' 
                 }
               }}>
                 צפייה בהתקדמות המתמחים
