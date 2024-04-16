@@ -21,10 +21,10 @@ export default function InternPage() {
   const handleViewIntern = () => {
     navigate('/ViewInterns');
   };
-  
+
   return (
     <>
-   
+
       <MenuLogo />
       <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
         <Grid container spacing={3} alignItems="center" dir={'rtl'}>
@@ -41,7 +41,7 @@ export default function InternPage() {
             <InternshipYearTimeLine />
            
           </Grid> */}
-          </Grid>
+        </Grid>
       </Container>
       <StepperOfIntern />
       <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
@@ -53,9 +53,11 @@ export default function InternPage() {
 
           {/* Full Syllabus Button */}
           <Grid item xs={12} display="flex" justifyContent="center">
-            <Button variant="contained" onClick={handleViewFullSyllabus} sx={{ width: '100%', maxWidth: 300,backgroundColor: 'SkyBlue','&:hover': {
-                  backgroundColor: 'SteelBlue' 
-                } }}>
+            <Button variant="contained" onClick={handleViewFullSyllabus} sx={{
+              width: '100%', maxWidth: 300, backgroundColor: 'SkyBlue', '&:hover': {
+                backgroundColor: 'SteelBlue'
+              }
+            }}>
               צפייה בסילבוס המלא
               <TableChartIcon sx={{ mr: 1 }} />
             </Button>
@@ -67,9 +69,9 @@ export default function InternPage() {
               <Button variant="contained" onClick={handleViewIntern} sx={{
                 width: '100%',
                 maxWidth: 300,
-                backgroundColor: 'MediumPurple', 
+                backgroundColor: 'MediumPurple',
                 '&:hover': {
-                  backgroundColor: 'RebeccaPurple' 
+                  backgroundColor: 'RebeccaPurple'
                 }
               }}>
                 צפייה בהתקדמות המתמחים
@@ -85,7 +87,7 @@ export default function InternPage() {
 
         </Grid>
       </Container>
-     
+
     </>
   );
 }
