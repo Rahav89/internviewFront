@@ -19,52 +19,43 @@ function getSteps() {
 
 function StepIconComponent({ active, completed, icon }) {
     const iconStyle = {
-        width: '30px', // Uniform size for circle
-        height: '30px',
+        width: '20px', // גודל העיגול
+        height: '20px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: '50%', // Circular shape
+        borderRadius: '50%', // עיגול
         color: 'white',
-        background: completed ? 'green' : 'gray', // Green for completed, gray for others
-        fontSize: '16px', // Font size for the number
+        background: completed ? 'green' : 'gray' // רקע ירוק לשלבים שהושלמו, אפור לאחרים
     };
 
     if (completed) {
-        return (
-            <div style={iconStyle}>
-                <CheckCircleIcon style={{ color: 'white' }} fontSize="small" />
-            </div>
-        );
+        return <CheckCircleIcon style={{ color: 'green' ,}} />;
     }
 
     if (active) {
         return (
             <div style={{ position: 'relative' }}>
-                {active && (
-                    <img src={'src/Image/doctorIconS.png'}
-                        style={{
-                            position: 'absolute',
-                            top: '-60px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            width: '50px',
-                            height: '52px',
-                        }}
-                    />
-                )}
-                <div style={{ ...iconStyle, background: 'blue' }}> {/* Blue background for the active step */}
-                    <Typography variant="body1" component="div" style={{ color: 'white' }}>
+                {active && <img src={'src/Image/doctorForStepper.png'}
+                    style={{
+                        position: 'absolute',
+                        top: '-60px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '57px',
+                        height: '52px'
+                    }} />}
+                <div style={{ ...iconStyle }}> {/* רקע כחול לשלב הנוכחי */}
+                    <Typography variant="body1" component="div">
                         {icon}
                     </Typography>
                 </div>
             </div>
         );
     }
-
     return (
         <div style={iconStyle}>
-            <Typography variant="body1" component="div" style={{ color: 'white' }}>
+            <Typography variant="body1" component="div">
                 {icon}
             </Typography>
         </div>
