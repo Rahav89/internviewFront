@@ -1,138 +1,124 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
-import { Container } from '@mui/material';
-//-------------------------------------------------
 
-Chart.register(CategoryScale, LinearScale, BarElement);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function ViewInterns() {
-
-    const dummyData = [
-        { id: 1, name: 'Amit', doneCount: 8, leftCount: 2 },
-        { id: 2, name: 'John', doneCount: 6, leftCount: 9 },
-        { id: 3, name: 'Emma', doneCount: 9, leftCount: 3 },
-        { id: 4, name: 'Sophia', doneCount: 7, leftCount: 5 },
-        { id: 5, name: 'Michael', doneCount: 5, leftCount: 15 },
-        { id: 6, name: 'William', doneCount: 4, leftCount: 14 },
-        { id: 7, name: 'Olivia', doneCount: 3, leftCount: 12 },
-        { id: 8, name: 'James', doneCount: 2, leftCount: 13 },
-        { id: 9, name: 'Alexander', doneCount: 1, leftCount: 10 },
-        { id: 10, name: 'Sophia', doneCount: 7, leftCount: 11 },
-        { id: 11, name: 'Ethan', doneCount: 6, leftCount: 8 },
-        { id: 12, name: 'Isabella', doneCount: 8, leftCount: 4 },
-        { id: 13, name: 'Mia', doneCount: 5, leftCount: 7 },
-        { id: 14, name: 'Daniel', doneCount: 4, leftCount: 6 },
-        { id: 15, name: 'Matthew', doneCount: 3, leftCount: 17 },
-        { id: 16, name: 'David', doneCount: 2, leftCount: 18 },
-        { id: 17, name: 'Olivia', doneCount: 1, leftCount: 19 },
-        { id: 18, name: 'Emma', doneCount: 9, leftCount: 3 },
-        { id: 19, name: 'Elijah', doneCount: 6, leftCount: 9 },
-        { id: 20, name: 'Sophia', doneCount: 7, leftCount: 5 },
-        // Add more dummy data as needed
+    const initialData = [
+        { name: 'Amit', values: [3, 4] },
+        { name: 'John', values: [4, 3] },
+        { name: 'Emma', values: [1, 1] },
+        { name: 'Sophia', values: [6, 5] },
+        { name: 'Michael', values: [5, 8] },
     ];
 
-    const [sortBy, setSortBy] = useState('name'); // Default sort by name
+    const [searchTerm, setSearchTerm] = useState('');
+    const [valueFilter, setValueFilter] = useState('lowest');
+    const [filteredData, setFilteredData] = useState(initialData);
 
-    const [searchQuery, setSearchQuery] = useState(''); // Query to search
+    useEffect(() => {
+        const filtered = initialData.filter(entry =>
+            entry.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredData(filtered);
+    }, [searchTerm, initialData]);
 
-    // Filtered data based on search query
-    const filteredData = dummyData.filter(item =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    useEffect(() => {
+        const sortedData = filteredData.sort((a, b) => {
+            const minA = Math.min(...a.values);
+            const minB = Math.min(...b.values);
+            const maxA = Math.max(...a.values);
+            const maxB = Math.max(...b.values);
+            if (valueFilter === 'lowest') {
+                return minA - minB;
+            } else {
+                return maxB - maxA;
+            }
+        });
+        setFilteredData([...sortedData]); // spread into a new array to trigger re-render
+    }, [valueFilter, filteredData]);
 
-    // Sort the data based on the selected criteria
-    const sortedData = filteredData.sort((a, b) => {
-        if (sortBy === 'name') {
-            return a.name.localeCompare(b.name);
-        } else if (sortBy === 'done') {
-            return b.doneCount - a.doneCount;
-        } else {
-            return a.leftCount - b.leftCount;
-        }
-    });
-
-    // Extracting names, done counts, and left counts from the sorted data
-    const names = sortedData.map(item => item.name);
-    const doneCounts = sortedData.map(item => item.doneCount);
-    const leftCounts = sortedData.map(item => item.leftCount);
-
-    // Creating data for the chart
-    const chartData = {
-        labels: names,
+    const data = {
+        labels: filteredData.map(data => data.name),
         datasets: [
             {
-                label: 'Surgeries Done',
+                label: 'Series A1',
+                data: filteredData.map(data => data.values[0]),
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                data: doneCounts,
             },
             {
-                label: 'Surgeries Left',
+                label: 'Series A2',
+                data: filteredData.map(data => data.values[1]),
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1,
-                data: leftCounts,
-            },
-        ],
+            }
+        ]
     };
 
-    // Options for the chart
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            tooltip: {
-                mode: 'index',
-                intersect: false,
-            },
-        },
+    const options = {
         scales: {
             x: {
                 stacked: true,
-                ticks: {
-                    autoSkip: false,
-                    maxRotation: 90,
-                    minRotation: 90,
-                },
             },
             y: {
                 stacked: true,
-            },
+                beginAtZero: true
+            }
         },
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'רשימת המתמחים'
+            }
+        }
     };
-
-
-
-    const handleSearchInputChange = event => {
-        setSearchQuery(event.target.value);
-    };
-
     return (
         <>
-            <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
-                <MenuLogo />
-                <h3>התקדמות המתמחים</h3>
-                <div>
-                    <label>Sort By: </label>
-                    <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
-                        <option value="name">Name</option>
-                        <option value="done">Surgeries Done</option>
-                        <option value="left">Surgeries Left</option>
-                    </select>
-                    <input
-                        type="text"
-                        placeholder="Search by name..."
-                        value={searchQuery}
-                        onChange={handleSearchInputChange}
+            <MenuLogo />
+            <Box sx={{ pt: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <h3>רשימת המתמחים</h3>
+                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center', gap: 2, mb: 2 }}>
+                    <TextField
+                        label="Search Name or Value"
+                        variant="outlined"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton>
+                                        <SearchIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{ width: 200 }} // Adjust width as needed
                     />
-                </div>
-                <div style={{ width: '100%'}}>
-                    <Bar data={chartData} options={chartOptions} />
-                </div>
-            </Container>
+                    <FormControl sx={{ width: 200 }}> 
+                        <InputLabel>Filter by Value</InputLabel>
+                        <Select
+                            value={valueFilter}
+                            label="Filter by Value"
+                            onChange={(e) => setValueFilter(e.target.value)}
+                        >
+                            <MenuItem value="lowest">Lowest Value</MenuItem>
+                            <MenuItem value="highest">Highest Value</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
+                <Box sx={{ width: '300px', height: '400px' }}>
+                    <Bar data={data} options={options} />
+                </Box>
+            </Box>
         </>
     );
 }
