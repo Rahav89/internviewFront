@@ -12,6 +12,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 export default function InternPage() {
   const navigate = useNavigate();
+  
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
   const handleViewFullSyllabus = () => {
@@ -64,7 +65,7 @@ export default function InternPage() {
           </Grid>
 
           {/* Check if variable equals 1 before rendering the button */}
-          {currentUser.isManager === 1 && (
+          {currentUser.isManager == true && (
             <Grid item xs={12} display="flex" justifyContent="center">
               <Button variant="contained" onClick={handleViewIntern} sx={{
                 width: '100%',

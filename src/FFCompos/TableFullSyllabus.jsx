@@ -8,6 +8,7 @@ import { Container, ThemeProvider, createTheme } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getSyllabus } from './Server.jsx';
 import '../App.css';
+
 //------------------------------------------
 
 export default function TableFullSyllabus() {
@@ -16,17 +17,12 @@ export default function TableFullSyllabus() {
   const [dataS, setData] = useState([]);
 
   useEffect(() => {
-    const getSyllabusDetails = async () => {
-      try {
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-        const syllabusData = await getSyllabus(currentUser.id);//API קריאה לכתובת 
-        setData(syllabusData);
-        // console.info(syllabusData)
-      } catch (error) {
-        console.error("Error in getSyllabusDetails: ", error);
-      }
-    };
-    getSyllabusDetails();
+        getSyllabus(currentUser.id)
+        .then((data)=> { setData(data);})
+        .catch((error) => {
+          console.error("Error in getSyllabusDetails: ", error);
+     });
   }, []);
 
   //should be memoized or stable

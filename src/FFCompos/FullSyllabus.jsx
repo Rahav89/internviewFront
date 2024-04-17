@@ -10,22 +10,20 @@ import { getSyllabus } from './Server.jsx';
 Chart.register(CategoryScale, LinearScale, BarElement);
 
 function FullSyllabus() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [sortBy, setSortBy] = useState('procedureName'); // Default sort by procedureName
   const [searchQuery, setSearchQuery] = useState(''); // Query to search
 
   useEffect(() => {
-    const getSyllabusDetails = async () => {
-      try {
-        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-        const syllabusData = await getSyllabus(currentUser.id);//API קריאה לכתובת 
-        setData(syllabusData);
-        console.info(syllabusData)
-      } catch (error) {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    getSyllabus(currentUser.id)
+      .then((data) => {
+        setData(data);
+        console.info(data);
+      })
+      .catch((error) => {
         console.error("Error in getSyllabusDetails: ", error);
-      }
-    };
-    getSyllabusDetails();
+      });
   }, []);
 
   if (!data) {
@@ -64,7 +62,7 @@ function FullSyllabus() {
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
         data: haveDones,
-  
+
       },
       {
         label: 'Surgeries Left',

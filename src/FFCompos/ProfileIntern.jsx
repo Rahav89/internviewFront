@@ -13,7 +13,7 @@ import { InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/Visibility';
 import { Container, Box } from '@mui/material';
-
+import { updateIntern } from './Server.jsx';
 //------------------------------------------------------------------
 
 export default function ProfileIntern(props) {
@@ -40,7 +40,9 @@ export default function ProfileIntern(props) {
 
   // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
   const [formData, setFormData] = useState({
-    ...currentUser
+    password_i: '',
+    first_name: '',
+    last_name: '',
   });
 
   // ניהול שגיאות בטופס
@@ -60,33 +62,28 @@ export default function ProfileIntern(props) {
     }));
   };
 
-  //פונקציה הבודקת את הולידציה של הסיסמא החדשה
-  function validateNewPassword(password) {
-    //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
-    const uppercaseLetter = /[A-Z]/;
-    const digit = /[0-9]/;
-    return (
-      uppercaseLetter.test(password) && digit.test(password)
-    );
-  }
+
   //פונקציה הבודקת את הולידציה של הסיסמא
-  function validatePassword(password) {
+  function validatCurrentePassword(password) {
     //בודק שהסיסמה שהכניס היא הסיסמה הנוכחית שלו
-    if (formData.currentPassword) {
-      return (
-        currentUser.password_i == formData.currentPassword
-      );
-    }
+    return (currentUser.password_i == password);
   }
 
   // ולידציה לטקסט בלבד
   const validateTextOnly = (value) => {
     return (/^[a-zA-Zא-ת ]*$/.test(value) && value !== '');
   };
-
+  
+  //פונקציה הבודקת את הולידציה של הסיסמא החדשה
+  function validateNewPassword(password) {
+    //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
+    const uppercaseLetter = /[A-Z]/;
+    const digit = /[0-9]/;
+    return (password != '' && uppercaseLetter.test(password) && digit.test(password));
+  }
   const handleSubmit = (event) => {
     event.preventDefault();
-    const isPasswordValid = validatePassword(formData.password_i_form);
+    const isPasswordValid = validatCurrentePassword(formData.currentPassword);
     const isPasswordConfirmationValid = validateNewPassword(formData.password_i);
     const isFirstNameValid = validateTextOnly(formData.firstName);
     const isLastNameValid = validateTextOnly(formData.lastName);
@@ -99,56 +96,37 @@ export default function ProfileIntern(props) {
     });
 
     if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid) {
-      submitFormData(); // Call the function that handles the submission
+      updateIntern(formData)
+        .then((data) => {
+          console.log('Submitting form data:', data);
+          if (data) {
+
+            Swal.fire({
+              title: 'Success!',
+              text: 'פרטיך עודכנו בהצלחה',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
+
+            // Storing some part of response in sessionStorage
+            sessionStorage.setItem('currentUser', JSON.stringify(formData));
+          }
+          else {
+            Swal.fire({
+              title: 'Error!',
+              text: 'העדכון נכשל. אנא נסה שוב.',
+              icon: 'error',
+              confirmButtonText: 'Close'
+            });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
 
   };
 
-  const submitFormData = async () => {
-    console.log(formData);
-    try {
-      // Simulating an API call
-      console.log('Submitting form data:', formData);
-
-      const response = await fetch(`https://localhost:7220/api/Interns/updateIntern-${formData.id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      // Check if the HTTP response is ok
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Submission successful:', data);
-
-      // Use SweetAlert for success notification
-      Swal.fire({
-        title: 'Success!',
-        text: 'פרטיך עודכנו בהצלחה',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      });
-
-      // Storing some part of response in sessionStorage
-      sessionStorage.setItem('currentUser', JSON.stringify(formData));
-
-    } catch (error) {
-      console.error('Submission failed:', error);
-
-      // Use SweetAlert for error notification
-      Swal.fire({
-        title: 'Error!',
-        text: 'העדכון נכשל. אנא נסה שוב.',
-        icon: 'error',
-        confirmButtonText: 'Close'
-      });
-    }
-  }
 
 
 
@@ -158,7 +136,7 @@ export default function ProfileIntern(props) {
       <Container component="main" dir='rtl'>
         <CssBaseline />
         <Grid container justifyContent="center">
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} sm={6} md={4} lg={4}>
             <Card sx={{ mt: 7, mb: 1, width: '100%' }}>
               <CardContent>
 

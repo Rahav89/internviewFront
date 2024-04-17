@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stepper, Step, StepLabel, Typography, Box } from '@mui/material';
+import { Stepper, Step, StepLabel, Typography, Box, StepIcon } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // For completed steps
 import '../App.css';
 
@@ -17,85 +17,82 @@ function getSteps() {
     return ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6'];
 }
 
+// Custom step icon component
 function StepIconComponent({ active, completed, icon }) {
-    const iconStyle = {
-        width: '20px', // גודל העיגול
-        height: '20px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: '50%', // עיגול
-        color: 'white',
-        background: completed ? 'green' : 'gray' // רקע ירוק לשלבים שהושלמו, אפור לאחרים
-    };
-
     if (completed) {
-        return <CheckCircleIcon style={{ color: 'green' ,}} />;
+        return <CheckCircleIcon style={{ color: 'green' }} />;
     }
-
     if (active) {
         return (
             <div style={{ position: 'relative' }}>
-                {active && <img src={'src/Image/doctorForStepper.png'}
-                    style={{
-                        position: 'absolute',
-                        top: '-60px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        width: '57px',
-                        height: '52px'
-                    }} />}
-                <div style={{ ...iconStyle }}> {/* רקע כחול לשלב הנוכחי */}
-                    <Typography variant="body1" component="div">
-                        {icon}
-                    </Typography>
-                </div>
+                {/* Only render the image if this step is the current step */}
+                {active && <img src={'src/Image/doctorForStepper.png'} 
+                                style={{ 
+                                    position: 'absolute',
+                                    top: '-60px',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    width: '57px',
+                                     height: '52px' }} />}
+                <StepIcon icon={icon} />
             </div>
         );
     }
-    return (
-        <div style={iconStyle}>
-            <Typography variant="body1" component="div">
-                {icon}
-            </Typography>
-        </div>
-    );
+    return <StepIcon icon={icon} />;
 }
 
 export default function CustomStepper() {
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     const steps = getSteps();
-
-    // Determine active step from currentUser's year
     const activeStep = yearToStepIndex[currentUser.interns_year];
+   
+   
+// Add a unique animation name for each step
+const stepAnimations = steps.map((_, index) => `step-enter-animation-${index}`);
 
+// Inline styles for animations
+const stepAnimationStyles = steps.map((_, index) => ({
+    animation: `${stepAnimations[index]} 1s ease forwards`,
+    animationDelay: `${index * 0.5}s`, // each step will start animating after the previous one
+}));
+
+// Function to create keyframes for animation
+const createStepKeyframes = () => {
+    return steps.map((_, index) => (
+        <style key={index}>
+            {`@keyframes ${stepAnimations[index]} {
+                from { opacity: 0; transform: translateX(-100%); }
+                to { opacity: 1; transform: translateX(0); }
+            }`}
+        </style>
+    ));
+};
     return (
         <>
-            <Typography
-                variant="h6"
-                component="h3"
-                sx={{
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    mb: 8,
-                }}
-            >
-                צפה בהתקדמות שלך
-            </Typography>
-
-            <Box sx={{ width: '100%' }}>
-                <Stepper activeStep={activeStep} alternativeLabel>
+        <Typography
+                    variant="h6"
+                    component="h3"
+                    sx={{
+                        textAlign: 'center',                       
+                        mb: 7,
+                    }}
+                >
+                    צפה בהתקדמות שלך
+                </Typography>
+        <Box sx={{ width: '100%' }}>
+        <Stepper activeStep={activeStep} alternativeLabel>
                     {steps.map((label, index) => (
-                        <Step
-                            key={label}
-                            completed={index < activeStep}
-                            className="slide-in"
+                        <Step 
+                            key={label} 
+                            completed={index < activeStep - 1} 
+                            className="slide-in" 
+                            style={{ animationDelay: `${index * 0.2}s` }} // Delay animation based on index
                         >
                             <StepLabel StepIconComponent={(props) => (
-                                <StepIconComponent
-                                    active={index === activeStep}
-                                    completed={index < activeStep}
-                                    icon={index + 1}  // Displaying step number
+                                <StepIconComponent 
+                                    active={index === activeStep} 
+                                    completed={index < activeStep} 
+                                    icon={props.icon}
                                 />
                             )}>
                                 {label}
@@ -103,7 +100,9 @@ export default function CustomStepper() {
                         </Step>
                     ))}
                 </Stepper>
-            </Box>
+
+        </Box>
         </>
+        
     );
 }

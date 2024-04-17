@@ -13,6 +13,7 @@ import Container from '@mui/material/Container';
 import doctorHomePic from '/src/Image/doctorHomePic.png'
 import logoHomePic from '/src/Image/InternView.png';
 import Swal from 'sweetalert2';
+import { LogInIntern } from './Server.jsx';
 //--------------------------------------------------
 
 export default function Login(props) {
@@ -44,7 +45,6 @@ export default function Login(props) {
         return regex.test(internId) && internId != '';
     }
 
-
     //פונקציה הבודקת את הולידציה של הסיסמא
     function validatePassword(password) {
         //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
@@ -71,6 +71,7 @@ export default function Login(props) {
         event.preventDefault();
         const isInternIdValid = validateInternId(formData.internId);
         const isPasswordValid = validatePassword(formData.password);
+        
 
         setFormErrors((prevErrors) => ({
             ...prevErrors,
@@ -78,9 +79,11 @@ export default function Login(props) {
             password: !isPasswordValid,
         }));
 
+        if(!isInternIdValid || !isPasswordValid ) {return};
+        
         //בדיקה האם המשתמש קיים
         let currentUser;
-        loginUser(formData.internId, formData.password)
+        LogInIntern(formData.internId, formData.password)
             .then((data) => {
                 currentUser = data;
                 console.log("Current user:", currentUser);
@@ -93,7 +96,7 @@ export default function Login(props) {
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
-                        timer: 2000, // Adjust the time as needed
+                        timer: 1000, // Adjust the time as needed
                         timerProgressBar: true,
                     });
                     Toast.fire({
@@ -103,7 +106,7 @@ export default function Login(props) {
                     // Automatically navigate to '/intern' after the toast message
                     setTimeout(() => {
                         navigate('/intern');
-                    }, 2000); // Match this time with the timer above
+                    }, 1000); // Match this time with the timer above
                 }
             })
             .catch((error) => {
@@ -116,38 +119,6 @@ export default function Login(props) {
                 console.error("Error logging in:", error);
             });
     }
-
-
-
-    //פונקציה המקבלת שם משתמש וסיסמה ובודקת אם קיים משתמש שפרטיו זהים
-    const loginUser = (internId, password) => {
-        const userObject = {
-            Id: internId,
-            Password_i: password,
-            First_name: "",
-            Last_name: "",
-            Interns_year: "",
-            Interns_rating: 0
-        };
-        return fetch('https://localhost:7220/api/Interns/LogInIntern', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                'Accept': 'application/json; charset=UTF-8',
-            },
-            body: JSON.stringify(userObject)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .catch(error => {
-                console.error("Error in loginUser: ", error);
-                throw error;
-            });
-    };
 
 
     return (
@@ -172,7 +143,6 @@ export default function Login(props) {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
-                                style={{ backgroundColor: "white" }}
                                 required
                                 fullWidth
                                 autoFocus
@@ -180,14 +150,13 @@ export default function Login(props) {
                                 id="internId"
                                 label="intern Id"
                                 autoComplete="internId"
-                                error={formErrors.internId}
+                                error={formErrors.internId} 
                                 helperText={formErrors.internId ? 'The ID must contain nine digits.' : ""}
                                 onChange={handleChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                style={{ backgroundColor: "white" }}
+                            <TextField                              
                                 required
                                 fullWidth
                                 name="password"
@@ -213,7 +182,7 @@ export default function Login(props) {
                         variant="contained"
                         sx={{ mt: 2, mb: 2 }}
                     >
-                        Sign In
+                        LogIn
                     </Button>
                 </Box>
             </Box>
