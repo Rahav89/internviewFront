@@ -9,12 +9,11 @@ import TimelineDot from '@mui/lab/TimelineDot';
 
 // קומפוננטת הניתוחים האחרונים
 export default function RecentSurgeries() {
-    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const currentUserID = JSON.parse(sessionStorage.getItem('currentUserID'));
     const [timelineData, setTimelineData] = React.useState([]);
 
     React.useEffect(() => {
-        const internId = currentUser.id;
-        fetch(`https://localhost:7220/api/Interns/FiveRecentInternSurgeries?internId=${internId}`, {
+        fetch(`https://localhost:7220/api/Interns/FiveRecentInternSurgeries?internId=${currentUserID}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -38,6 +37,7 @@ export default function RecentSurgeries() {
             console.error("Error in List 5 Recent Surgeries: ", error);
         });
     }, []);
+    
     //פונקציה לצביעת הנקודות
     const getColor = (index) => {
         const colors = ['Plum', 'blue', 'green', 'SkyBlue', 'orange', 'yellow'];

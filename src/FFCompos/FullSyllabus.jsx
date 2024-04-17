@@ -10,13 +10,12 @@ import { getSyllabus } from './Server.jsx';
 Chart.register(CategoryScale, LinearScale, BarElement);
 
 function FullSyllabus() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [sortBy, setSortBy] = useState('procedureName'); // Default sort by procedureName
   const [searchQuery, setSearchQuery] = useState(''); // Query to search
 
   useEffect(() => {
-    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-    getSyllabus(currentUser.id)
+    getSyllabus(JSON.parse(sessionStorage.getItem('currentUserID')))
       .then((data) => {
         setData(data);
         console.info(data);

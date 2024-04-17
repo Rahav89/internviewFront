@@ -13,12 +13,10 @@ import '../App.css';
 
 export default function TableFullSyllabus() {
 
-
-  const [dataS, setData] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-        getSyllabus(currentUser.id)
+        getSyllabus(JSON.parse(sessionStorage.getItem('currentUserID')))
         .then((data)=> { setData(data);})
         .catch((error) => {
           console.error("Error in getSyllabusDetails: ", error);
@@ -52,15 +50,13 @@ export default function TableFullSyllabus() {
     [],
   );
 
-
   const theme = createTheme({
     direction: 'rtl', // Right to left theme
   });
 
-
   const table = useMaterialReactTable({
     columns,
-    data: dataS,
+    data: data,
     enableFullScreenToggle: false,
     enableDensityToggle: false,
     enableHiding: false,

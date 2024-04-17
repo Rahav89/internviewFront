@@ -42,9 +42,9 @@ function StepIconComponent({ active, completed, icon }) {
 }
 
 export default function CustomStepper() {
-    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const currentUserYear = JSON.parse(sessionStorage.getItem('currentUserYear'));
+    const activeStep = yearToStepIndex[currentUserYear];
     const steps = getSteps();
-    const activeStep = yearToStepIndex[currentUser.interns_year];
    
    
 // Add a unique animation name for each step

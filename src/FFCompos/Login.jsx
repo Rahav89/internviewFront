@@ -86,11 +86,12 @@ export default function Login(props) {
         LogInIntern(formData.internId, formData.password)
             .then((data) => {
                 currentUser = data;
-                console.log("Current user:", currentUser);
+                //console.log("Current user:", currentUser);
 
                 if (currentUser) {
                     // Save the user in sessionStorage if found
-                    sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    sessionStorage.setItem('currentUserID', JSON.stringify(currentUser.id));
+                    sessionStorage.setItem('currentUserYear', JSON.stringify(currentUser.interns_year));
                     // Show a toast message that the user has logged in successfully
                     const Toast = Swal.mixin({
                         toast: true,

@@ -1,19 +1,34 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Button, Container } from '@mui/material';
 import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
-import InternshipYearTimeLine from './InternshipYearTimeLine';
 import StepperOfIntern from './StepperOfIntern';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { GetInternByID } from './Server.jsx';
 //--------------------------------------------------------
 
 export default function InternPage() {
+
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
+
+    GetInternByID(internID)  // Call GetInternByID to fetch intern data
+      .then((data) => {
+        //console.log(data);
+        setCurrentUser(data); // Set fetched data to currentUser state
+      })
+      .catch((error) => {
+        console.error("Error in GetInternByID: ", error);
+      });
+  }, []); // Empty dependency array ensures this runs only once after the initial render
+
   const navigate = useNavigate();
-  
-  const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
   const handleViewFullSyllabus = () => {
     navigate('/TableFullSyllabus');
@@ -32,19 +47,18 @@ export default function InternPage() {
 
           {/* Welcome message */}
           <Grid item xs={12}  >
-            <Typography variant="h6" sx={{ textAlign: 'right', fontWeight: 'bold' }}>
-              ברוך הבא, {currentUser.first_name + " " + currentUser.last_name}👋
-            </Typography>
+            {currentUser && 
+              (<Typography variant="h6" sx={{ textAlign: 'right', fontWeight: 'bold' }}>
+                ברוך הבא, {currentUser.first_name + " " + currentUser.last_name}👋
+              </Typography>)
+            }
           </Grid>
-
-          {/* Internship Timeline
-          <Grid item xs={12} >
-            <InternshipYearTimeLine />
-           
-          </Grid> */}
         </Grid>
       </Container>
+
+      {/* ציר התקדמות */}
       <StepperOfIntern />
+
       <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
         <Grid container spacing={3} alignItems="center" dir={'rtl'}>
           {/* Full Syllabus View */}
@@ -64,8 +78,7 @@ export default function InternPage() {
             </Button>
           </Grid>
 
-          {/* Check if variable equals 1 before rendering the button */}
-          {currentUser.isManager == true && (
+          {currentUser && currentUser.isManager == true && (
             <Grid item xs={12} display="flex" justifyContent="center">
               <Button variant="contained" onClick={handleViewIntern} sx={{
                 width: '100%',

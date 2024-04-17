@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -13,10 +13,34 @@ import { InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/Visibility';
 import { Container, Box } from '@mui/material';
-import { updateIntern } from './Server.jsx';
+import { updateIntern, GetInternByID } from './Server.jsx';
 //------------------------------------------------------------------
 
 export default function ProfileIntern(props) {
+
+  const [currentUser, setCurrentUser] = useState(null);
+  // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
+  const [formData, setFormData] = useState({
+    password_i: '',
+    first_name: '',
+    last_name: '',
+  });
+
+  useEffect(() => {
+    const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
+    GetInternByID(internID)  // Call GetInternByID to fetch intern data
+      .then((data) => {
+        setCurrentUser(data); 
+        setFormData({
+          password_i: data.password_i, // Keep existing password if any
+          first_name: data.first_name, // Assuming the data has a 'firstName' property
+          last_name: data.last_name, // Assuming the data has a 'lastName' property
+        });
+      })
+      .catch((error) => {
+        console.error("Error in GetInternByID: ", error);
+      });
+  }, []); // Empty dependency array ensures this runs only once after the initial render
 
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -35,16 +59,6 @@ export default function ProfileIntern(props) {
     setShowNewPassword(!showNewPassword);
   };
 
-  // קבלת המשתמש הנוכחי מאחסון הפעילות (session storage)
-  const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-
-  // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
-  const [formData, setFormData] = useState({
-    password_i: '',
-    first_name: '',
-    last_name: '',
-  });
-
   // ניהול שגיאות בטופס
   const [formErrors, setFormErrors] = useState({
     password_i: false,
@@ -62,7 +76,6 @@ export default function ProfileIntern(props) {
     }));
   };
 
-
   //פונקציה הבודקת את הולידציה של הסיסמא
   function validatCurrentePassword(password) {
     //בודק שהסיסמה שהכניס היא הסיסמה הנוכחית שלו
@@ -73,7 +86,7 @@ export default function ProfileIntern(props) {
   const validateTextOnly = (value) => {
     return (/^[a-zA-Zא-ת ]*$/.test(value) && value !== '');
   };
-  
+
   //פונקציה הבודקת את הולידציה של הסיסמא החדשה
   function validateNewPassword(password) {
     //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
@@ -96,9 +109,9 @@ export default function ProfileIntern(props) {
     });
 
     if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid) {
-      updateIntern(formData)
+      updateIntern(currentUser.id, formData)
         .then((data) => {
-          console.log('Submitting form data:', data);
+          //console.log('Submitting form data:', data);
           if (data) {
 
             Swal.fire({
@@ -108,8 +121,6 @@ export default function ProfileIntern(props) {
               confirmButtonText: 'OK'
             });
 
-            // Storing some part of response in sessionStorage
-            sessionStorage.setItem('currentUser', JSON.stringify(formData));
           }
           else {
             Swal.fire({
@@ -124,11 +135,7 @@ export default function ProfileIntern(props) {
           console.error(error);
         });
     }
-
   };
-
-
-
 
   return (
     <ThemeProvider theme={createTheme()}>
@@ -166,7 +173,7 @@ export default function ProfileIntern(props) {
                         id="InternID"
                         label="תעודת זהות"
                         autoComplete="תעודת זהות"
-                        value={currentUser.id}
+                        value={currentUser ? currentUser.id : ''}
                         error={formErrors.id}
                         helperText={formErrors.id ? "תעודת זהות חיייבת להכיל רק ספרות" : ''}
                         disabled
@@ -238,7 +245,7 @@ export default function ProfileIntern(props) {
                         id="first_name"
                         label="שם פרטי"
                         autoComplete="given-name"
-                        value={currentUser.first_name}
+                        value={formData.first_name}
                         onChange={handleChange}
                         error={formErrors.first_name}
                         helperText={formErrors.first_name ? 'יכול להכיל רק אותיות' : ""}
@@ -254,7 +261,7 @@ export default function ProfileIntern(props) {
                         id="last_name"
                         label="שם משפחה"
                         autoComplete="family-name"
-                        value={currentUser.last_name}
+                        value={formData.last_name}
                         onChange={handleChange}
                         error={formErrors.last_name}
                         helperText={formErrors.last_name ? 'יכול להכיל רק אותיות.' : ""}
@@ -268,7 +275,7 @@ export default function ProfileIntern(props) {
                         id="interns_year"
                         label="שנת התמחות"
                         autoComplete="given-name"
-                        value={currentUser.interns_year}
+                        value={currentUser ? currentUser.interns_year : ''}
                         disabled
                       />
                     </Grid>
