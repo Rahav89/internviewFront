@@ -4,6 +4,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
+//========================================
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -28,21 +29,17 @@ export default function ViewInterns() {
     }, [searchTerm, initialData]);
 
     useEffect(() => {
-        const sortedData = filteredData.sort((a, b) => {
+        const sortedData = [...filteredData].sort((a, b) => {
             const minA = Math.min(...a.values);
             const minB = Math.min(...b.values);
             const maxA = Math.max(...a.values);
             const maxB = Math.max(...b.values);
-            if (valueFilter === 'lowest') {
-                return minA - minB;
-            } else {
-                return maxB - maxA;
-            }
+            return valueFilter === 'lowest' ? minA - minB : maxB - maxA;
         });
-        setFilteredData([...sortedData]); // spread into a new array to trigger re-render
+        setFilteredData(sortedData);
     }, [valueFilter, filteredData]);
 
-    const data = {
+    const data = React.useMemo(() => ({
         labels: filteredData.map(data => data.name),
         datasets: [
             {
@@ -58,12 +55,12 @@ export default function ViewInterns() {
                 borderColor: 'rgba(255, 99, 132, 1)',
             }
         ]
-    };
+    }), [filteredData]);
 
     const options = {
         scales: {
             x: {
-                stacked: true,
+                stacked: true
             },
             y: {
                 stacked: true,
@@ -71,16 +68,20 @@ export default function ViewInterns() {
             }
         },
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
-                position: 'top',
+                position: 'top'
             },
-            title: {
-                display: true,
-                text: 'רשימת המתמחים'
-            }
-        }
+            // title: {
+            //     display: true,
+            //     text: 'רשימת המתמחים'
+            // }
+        },
+        animation: false // Disable all animations
     };
+
+
     return (
         <>
             <MenuLogo />
@@ -101,9 +102,9 @@ export default function ViewInterns() {
                                 </InputAdornment>
                             ),
                         }}
-                        sx={{ width: 200 }} // Adjust width as needed
+                        sx={{ width: 150 }}
                     />
-                    <FormControl sx={{ width: 200 }}> 
+                    <FormControl sx={{ width: 150 }}>
                         <InputLabel>Filter by Value</InputLabel>
                         <Select
                             value={valueFilter}
@@ -115,10 +116,14 @@ export default function ViewInterns() {
                         </Select>
                     </FormControl>
                 </Box>
-                <Box sx={{ width: '300px', height: '400px' }}>
+                <Box sx={{
+                    width: '100%', // Makes the chart width responsive to the parent container
+                    height: '40vh', // Example height, adapts based on the height of the viewport
+                    overflowY: 'auto'
+                }}>
                     <Bar data={data} options={options} />
                 </Box>
-            </Box>
+            </Box >
         </>
     );
 }

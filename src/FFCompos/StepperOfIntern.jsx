@@ -26,14 +26,15 @@ function StepIconComponent({ active, completed, icon }) {
         return (
             <div style={{ position: 'relative' }}>
                 {/* Only render the image if this step is the current step */}
-                {active && <img src={'src/Image/doctorForStepper.png'} 
-                                style={{ 
-                                    position: 'absolute',
-                                    top: '-60px',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    width: '57px',
-                                     height: '52px' }} />}
+                {active && <img src={'src/Image/doctorForStepper.png'}
+                    style={{
+                        position: 'absolute',
+                        top: '-60px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '57px',
+                        height: '52px'
+                    }} />}
                 <StepIcon icon={icon} />
             </div>
         );
@@ -45,53 +46,53 @@ export default function CustomStepper() {
     const currentUserYear = JSON.parse(sessionStorage.getItem('currentUserYear'));
     const activeStep = yearToStepIndex[currentUserYear];
     const steps = getSteps();
-   
-   
-// Add a unique animation name for each step
-const stepAnimations = steps.map((_, index) => `step-enter-animation-${index}`);
 
-// Inline styles for animations
-const stepAnimationStyles = steps.map((_, index) => ({
-    animation: `${stepAnimations[index]} 1s ease forwards`,
-    animationDelay: `${index * 0.5}s`, // each step will start animating after the previous one
-}));
 
-// Function to create keyframes for animation
-const createStepKeyframes = () => {
-    return steps.map((_, index) => (
-        <style key={index}>
-            {`@keyframes ${stepAnimations[index]} {
+    // Add a unique animation name for each step
+    const stepAnimations = steps.map((_, index) => `step-enter-animation-${index}`);
+
+    // Inline styles for animations
+    const stepAnimationStyles = steps.map((_, index) => ({
+        animation: `${stepAnimations[index]} 1s ease forwards`,
+        animationDelay: `${index * 0.5}s`, // each step will start animating after the previous one
+    }));
+
+    // Function to create keyframes for animation
+    const createStepKeyframes = () => {
+        return steps.map((_, index) => (
+            <style key={index}>
+                {`@keyframes ${stepAnimations[index]} {
                 from { opacity: 0; transform: translateX(-100%); }
                 to { opacity: 1; transform: translateX(0); }
             }`}
-        </style>
-    ));
-};
+            </style>
+        ));
+    };
     return (
         <>
-        <Typography
-                    variant="h6"
-                    component="h3"
-                    sx={{
-                        textAlign: 'center',                       
-                        mb: 7,
-                    }}
-                >
-                    צפה בהתקדמות שלך
-                </Typography>
-        <Box sx={{ width: '100%' }}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+            <Typography
+                variant="h6"
+                component="h3"
+                sx={{
+                    textAlign: 'center',
+                    mb: 7,
+                }}
+            >
+                צפה בהתקדמות שלך
+            </Typography>
+            <Box sx={{ width: '100%' }}>
+                <Stepper activeStep={activeStep} alternativeLabel>
                     {steps.map((label, index) => (
-                        <Step 
-                            key={label} 
-                            completed={index < activeStep - 1} 
-                            className="slide-in" 
+                        <Step
+                            key={label}
+                            completed={index < activeStep - 1}
+                            className="slide-in"
                             style={{ animationDelay: `${index * 0.2}s` }} // Delay animation based on index
                         >
                             <StepLabel StepIconComponent={(props) => (
-                                <StepIconComponent 
-                                    active={index === activeStep} 
-                                    completed={index < activeStep} 
+                                <StepIconComponent
+                                    active={index === activeStep}
+                                    completed={index < activeStep}
                                     icon={props.icon}
                                 />
                             )}>
@@ -100,9 +101,8 @@ const createStepKeyframes = () => {
                         </Step>
                     ))}
                 </Stepper>
-
-        </Box>
+            </Box>
         </>
-        
+
     );
 }

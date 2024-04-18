@@ -11,12 +11,13 @@ export default function MenuLogo() {
   const navigate = useNavigate(); // Hook for navigation
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);//פתיחה וסגירת התפריט של ההגדרות
 
+  //פתיחת התפריט של הההגדרות 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-
+  //פונקציה שמופעלת כדי לסגור את התפריט
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
@@ -34,7 +35,7 @@ export default function MenuLogo() {
     navigate('/intern'); ////Navigate to intern page
   };
 
-
+  //התראות של ההודעות
   const unreadMessages = 5;
 
 
@@ -50,9 +51,9 @@ export default function MenuLogo() {
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
             <Tooltip title="הודעות">
               {/* מייל */}
-              <IconButton onClick={() => {handleMailMess}}>
+              <IconButton onClick={() => { handleMailMess }} sx={{ mr: 2 }}>
                 <Badge badgeContent={unreadMessages} color="error">
-                  <MailIcon  />
+                <MailIcon style={{ color: 'white' }} fontSize="medium" />
                 </Badge>
               </IconButton>
             </Tooltip>

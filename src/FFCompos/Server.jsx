@@ -1,24 +1,27 @@
 
+// קבלת פרטי המתמחה לפי האידי שלו מהשרת
+
 export const GetInternByID = (iternID) => {
     return fetch(`https://localhost:7220/api/Interns/GetInternByID/${iternID}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
-    }) 
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
     })
-    .catch(error => {
-        console.error("Error in GetInternByID: ", error);
-        throw error;
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Error in GetInternByID: ", error);
+            throw error;
+        });
 
-  }
+}
 
+// קבלת הסילבוס של המתמחה לפי האידי שלו מהשרת
 export const getSyllabus = (internId) => {
     return fetch(`https://localhost:7220/api/Interns/GetSyllabusOfIntern?internId=${internId}`, {
         method: 'GET',
@@ -39,7 +42,7 @@ export const getSyllabus = (internId) => {
         });
 };
 
-
+// התחברות לאפליקציה 
 export const LogInIntern = (internId, password) => {
     const internObjectLogIn = {
         Id: internId,
@@ -48,7 +51,7 @@ export const LogInIntern = (internId, password) => {
         Last_name: "",
         Interns_year: "",
         Interns_rating: 0,
-        isManager:false,
+        isManager: false,
     };
     return fetch('https://localhost:7220/api/Interns/LogInIntern', {
         method: 'POST',
@@ -67,7 +70,8 @@ export const LogInIntern = (internId, password) => {
         .catch(error => { throw error; });
 };
 
-export const updateIntern = (internID , formData) => {
+//עדכון פרטים
+export const updateIntern = (internID, formData) => {
     const internObjectUpdate = {
         Id: 0,
         Password_i: formData.password_i,
@@ -75,7 +79,7 @@ export const updateIntern = (internID , formData) => {
         Last_name: formData.last_name,
         Interns_year: "",
         Interns_rating: 0,
-        isManager:false,
+        isManager: false,
     };
     console.log(internObjectUpdate);
     return fetch(`https://localhost:7220/api/Interns/updateIntern/${internID}`, {
@@ -84,16 +88,16 @@ export const updateIntern = (internID , formData) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(internObjectUpdate)
-    }) 
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
     })
-    .catch(error => {
-        console.error("Error in updateIntern: ", error);
-        throw error;
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Error in updateIntern: ", error);
+            throw error;
+        });
 
-  }
+}

@@ -17,7 +17,9 @@ import { LogInIntern } from './Server.jsx';
 //--------------------------------------------------
 
 export default function Login(props) {
+    //מעבר בין דפים דרך הראוטר
     const navigate = useNavigate();
+
     //צאק בוקס של צפייה בסיסמא - useState
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -71,7 +73,6 @@ export default function Login(props) {
         event.preventDefault();
         const isInternIdValid = validateInternId(formData.internId);
         const isPasswordValid = validatePassword(formData.password);
-        
 
         setFormErrors((prevErrors) => ({
             ...prevErrors,
@@ -79,8 +80,8 @@ export default function Login(props) {
             password: !isPasswordValid,
         }));
 
-        if(!isInternIdValid || !isPasswordValid ) {return};
-        
+        if (!isInternIdValid || !isPasswordValid) { return };
+
         //בדיקה האם המשתמש קיים
         let currentUser;
         LogInIntern(formData.internId, formData.password)
@@ -111,7 +112,7 @@ export default function Login(props) {
                 }
             })
             .catch((error) => {
-                 // The user failed to log in - incorrect username or password
+                // The user failed to log in - incorrect username or password
                 Swal.fire({
                     icon: 'error',
                     title: 'Login failed',
@@ -151,13 +152,13 @@ export default function Login(props) {
                                 id="internId"
                                 label="intern Id"
                                 autoComplete="internId"
-                                error={formErrors.internId} 
+                                error={formErrors.internId}
                                 helperText={formErrors.internId ? 'The ID must contain nine digits.' : ""}
                                 onChange={handleChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField                              
+                            <TextField
                                 required
                                 fullWidth
                                 name="password"

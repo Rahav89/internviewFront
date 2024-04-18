@@ -30,10 +30,11 @@ export default function InternPage() {
 
   const navigate = useNavigate();
 
+  //מנווט לדף של הסילבוס המלא
   const handleViewFullSyllabus = () => {
     navigate('/TableFullSyllabus');
   };
-
+  //מנווט לדף של כל המתמחים
   const handleViewIntern = () => {
     navigate('/ViewInterns');
   };
@@ -47,7 +48,7 @@ export default function InternPage() {
 
           {/* Welcome message */}
           <Grid item xs={12}  >
-            {currentUser && 
+            {currentUser &&
               (<Typography variant="h6" sx={{ textAlign: 'right', fontWeight: 'bold' }}>
                 ברוך הבא, {currentUser.first_name + " " + currentUser.last_name}👋
               </Typography>)
@@ -78,6 +79,7 @@ export default function InternPage() {
             </Button>
           </Grid>
 
+          {/* רק כאשר המנהל מחובר מופיע הכפתור ומעביר לדף המתאים- צפייה במתמחים */}
           {currentUser && currentUser.isManager == true && (
             <Grid item xs={12} display="flex" justifyContent="center">
               <Button variant="contained" onClick={handleViewIntern} sx={{

@@ -30,7 +30,7 @@ export default function ProfileIntern(props) {
     const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
     GetInternByID(internID)  // Call GetInternByID to fetch intern data
       .then((data) => {
-        setCurrentUser(data); 
+        setCurrentUser(data);
         setFormData({
           password_i: data.password_i, // Keep existing password if any
           first_name: data.first_name, // Assuming the data has a 'firstName' property
@@ -51,6 +51,7 @@ export default function ProfileIntern(props) {
     navigate('/intern'); // Navigate to the intern page
   };
 
+  //הפונקציות הללו משמשות לשינוי מצב ההצגה של סיסמאות, ממצב מוסתר למצב מוצג ולהפך
   const handleToggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -94,6 +95,7 @@ export default function ProfileIntern(props) {
     const digit = /[0-9]/;
     return (password != '' && uppercaseLetter.test(password) && digit.test(password));
   }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const isPasswordValid = validatCurrentePassword(formData.currentPassword);
@@ -109,11 +111,11 @@ export default function ProfileIntern(props) {
     });
 
     if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid) {
+      // פונקציה לעדכון פרטי המתמחה בשרת
       updateIntern(currentUser.id, formData)
         .then((data) => {
           //console.log('Submitting form data:', data);
           if (data) {
-
             Swal.fire({
               title: 'Success!',
               text: 'פרטיך עודכנו בהצלחה',
@@ -143,8 +145,8 @@ export default function ProfileIntern(props) {
       <Container component="main" dir='rtl'>
         <CssBaseline />
         <Grid container justifyContent="center">
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <Card sx={{ mt: 7, mb: 1, width: '100%' }}>
+          <Grid item xs={12} sm={8} md={8} lg={6}>
+            <Card sx={{ mt: 7, width: '100%' ,mb:2}}>
               <CardContent>
 
                 <Box
@@ -282,15 +284,19 @@ export default function ProfileIntern(props) {
 
                   </Grid>
                   <CardActions>
-                    <Button type="submit" fullWidth variant="contained" sx={{ mb: 2, ml: 2 }}>
+                    <Button type="submit" fullWidth variant="contained"
+                      sx={{
+                        mt: 2, ml: 2
+                      }}>
                       אישור
                     </Button>
-                    <Button fullWidth onClick={handleCancelClick} variant="contained" sx={{
-                      mb: 2,
-                      backgroundColor: 'CornflowerBlue',
-                      color: 'white',
-                      '&:hover': { backgroundColor: 'DeepSkyBlue' }
-                    }}>
+                    <Button fullWidth onClick={handleCancelClick} variant="contained"
+                      sx={{
+                        mt: 2,
+                        backgroundColor: 'CornflowerBlue',
+                        color: 'white',
+                        '&:hover': { backgroundColor: 'DeepSkyBlue' }
+                      }}>
                       חזרה לדף הראשי
                     </Button>
                   </CardActions>
