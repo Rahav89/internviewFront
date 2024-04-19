@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import {Card, Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
 import { GetCountProceduresByIntern } from './Server.jsx';
+import CardsDetailsInterns from './CardsDetailsInterns.jsx';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -21,9 +22,7 @@ export default function ViewInterns() {
             console.error("Error fetching data:", error);
         });
     }, []);
-    // useEffect(() => {
-
-    // }, [sortBy])
+    
 
     // Filter and sort data
     const filteredData = data.filter(item =>
@@ -122,6 +121,8 @@ export default function ViewInterns() {
             <Box sx={{ width: '100%', height: '400px', overflowY: 'auto', justifyContent: 'center', mb: 4 }}>
                 <Bar data={chartData} options={options} />
             </Box>
+
+            <CardsDetailsInterns/>
         </>
     );
 }
