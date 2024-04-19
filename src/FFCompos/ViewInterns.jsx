@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import {Card, Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
 import { GetCountProceduresByIntern } from './Server.jsx';
-import CardsDetailsInterns from './CardsDetailsInterns.jsx';
+// import CardsDetailsInterns from './CardsDetailsInterns.jsx';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -122,7 +122,7 @@ export default function ViewInterns() {
                 <Bar data={chartData} options={options} />
             </Box>
 
-            <CardsDetailsInterns/>
+            {/* <CardsDetailsInterns/> */}
         </>
     );
 }
