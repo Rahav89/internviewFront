@@ -101,3 +101,26 @@ export const updateIntern = (internID, formData) => {
         });
 
 }
+
+
+
+//קבלת כמות הפרוצדורות של המתמחים
+export const GetCountProceduresByIntern = () => {
+    return fetch(`https://localhost:7220/api/Interns/GetInternProcedureCounter`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Error in GetInternByID: ", error);
+            throw error;
+        });
+
+}

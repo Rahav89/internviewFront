@@ -44,16 +44,17 @@ export default function MenuLogo() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-            <IconButton onClick={handleLogoClick} sx={{ p: 0 }}>
+            <IconButton onClick={handleLogoClick} sx={{ p: 0, '&:focus': { outline: 'none' } }} disableRipple>
               <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
             </IconButton>
+
           </Box>
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
             <Tooltip title="הודעות">
               {/* מייל */}
               <IconButton onClick={() => { handleMailMess }} sx={{ mr: 2 }}>
                 <Badge badgeContent={unreadMessages} color="error">
-                <MailIcon style={{ color: 'white' }} fontSize="medium" />
+                  <MailIcon style={{ color: 'white' }} fontSize="medium" />
                 </Badge>
               </IconButton>
             </Tooltip>
