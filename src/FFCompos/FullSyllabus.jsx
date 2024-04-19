@@ -6,7 +6,7 @@ import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { getSyllabus } from './Server.jsx';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from React Router
-
+//------------------------------------------------------------
 
 Chart.register(CategoryScale, LinearScale, BarElement);
 
