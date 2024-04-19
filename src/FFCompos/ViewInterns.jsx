@@ -85,45 +85,47 @@ export default function ViewInterns() {
     return (
         <>
             <MenuLogo />
-            <Box sx={{ pt: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <h3>רשימת המתמחים</h3>
-                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center', gap: 2, mb: 2 }}>
-                    <TextField
-                        label="Search Name or Value"
-                        variant="outlined"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        sx={{ width: 150 }}
-                    />
-                    <FormControl sx={{ width: 150 }}>
-                        <InputLabel>Filter by Value</InputLabel>
-                        <Select
-                            value={valueFilter}
-                            label="Filter by Value"
-                            onChange={(e) => setValueFilter(e.target.value)}
-                        >
-                            <MenuItem value="lowest">Lowest Value</MenuItem>
-                            <MenuItem value="highest">Highest Value</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
-                <Box sx={{
-                    width: '100%', // Makes the chart width responsive to the parent container
-                    height: '40vh', // Example height, adapts based on the height of the viewport
-                    overflowY: 'auto'
-                }}>
-                    <Bar data={data} options={options} />
-                </Box>
-            </Box >
+
+            <h3 style={{ marginTop: '20%' }}>רשימת המתמחים</h3>
+            <Box sx={{ m:2, display: 'flex' ,justifyContent: 'center'}}>
+
+                <TextField
+                    label="Search Name or Value"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton>
+                                    <SearchIcon />
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                    sx={{ width: 150,m:2 }}
+                />
+                <FormControl sx={{ width: 150 ,m:2}}>
+                    <InputLabel>Filter by Value</InputLabel>
+                    <Select
+                        value={valueFilter}
+                        label="Filter by Value"
+                        onChange={(e) => setValueFilter(e.target.value)}
+                    >
+                        <MenuItem value="lowest">Lowest Value</MenuItem>
+                        <MenuItem value="highest">Highest Value</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
+
+            <Box sx={{
+                width: '450px', // Makes the chart width responsive to the parent container
+                height: '400px', // Example height, adapts based on the height of the viewport
+                overflowY: 'auto', 
+                justifyContent:'center'
+            }}>
+                <Bar data={data} options={options} />
+            </Box>
         </>
     );
 }
