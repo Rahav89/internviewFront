@@ -4,58 +4,59 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
-//========================================
+import { GetCountProceduresByIntern } from './Server.jsx';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function ViewInterns() {
-    const initialData = [
-        { name: 'Amit', values: [3, 4] },
-        { name: 'John', values: [4, 3] },
-        { name: 'Emma', values: [1, 1] },
-        { name: 'Sophia', values: [6, 5] },
-        { name: 'Michael', values: [5, 8] },
-    ];
-
+    const [data, setData] = useState([]);
+    // const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [valueFilter, setValueFilter] = useState('lowest');
-    const [filteredData, setFilteredData] = useState(initialData);
+    const [sortBy, setSortBy] = useState('ProcedureCount'); // Start with 'ProcedureCount' by default
 
     useEffect(() => {
-        const filtered = initialData.filter(entry =>
-            entry.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredData(filtered);
-    }, [searchTerm, initialData]);
-
-    useEffect(() => {
-        const sortedData = [...filteredData].sort((a, b) => {
-            const minA = Math.min(...a.values);
-            const minB = Math.min(...b.values);
-            const maxA = Math.max(...a.values);
-            const maxB = Math.max(...b.values);
-            return valueFilter === 'lowest' ? minA - minB : maxB - maxA;
+        GetCountProceduresByIntern().then(fetchedData => {
+            setData(fetchedData);
+        }).catch(error => {
+            console.error("Error fetching data:", error);
         });
-        setFilteredData(sortedData);
-    }, [valueFilter, filteredData]);
+    }, []);
+    // useEffect(() => {
 
-    const data = React.useMemo(() => ({
-        labels: filteredData.map(data => data.name),
+    // }, [sortBy])
+
+    // Filter and sort data
+    const filteredData = data.filter(item =>
+        item.firstName.toLowerCase().includes(searchTerm.toLowerCase())
+    ).sort((a, b) => {
+        if (sortBy === 'ProcedureCount') {
+            return b.procedureCount - a.procedureCount; // Sort by ProcedureCount
+        } else if (sortBy === 'RemainingNeed') {
+            return (b.overallNeed - b.procedureCount) - (a.overallNeed - a.procedureCount) // Sort by Remaining Need
+        }
+    });
+    console.log(filteredData);
+
+    // Chart data setup
+    const chartData = {
+        labels: filteredData.map(item => item.firstName),
         datasets: [
             {
-                label: 'Series A1',
-                data: filteredData.map(data => data.values[0]),
+                label: 'Procedure Count',
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
+                data: filteredData.map(item => item.procedureCount),
+                barThickness: 50,
             },
             {
-                label: 'Series A2',
-                data: filteredData.map(data => data.values[1]),
+                label: 'Remaining Need',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 borderColor: 'rgba(255, 99, 132, 1)',
+                barThickness: 50,
+                data: filteredData.map(item => item.overallNeed - item.procedureCount),
             }
         ]
-    }), [filteredData]);
+    };
 
     const options = {
         scales: {
@@ -64,31 +65,32 @@ export default function ViewInterns() {
             },
             y: {
                 stacked: true,
-                beginAtZero: true
+                beginAtZero: true,
+                min: 0,
+                max: 900,
+                ticks: {
+                    stepSize: 100
+                }
             }
         },
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                position: 'top'
+                position: 'top',
             },
-            // title: {
-            //     display: true,
-            //     text: 'רשימת המתמחים'
-            // }
         },
-        animation: false // Disable all animations
+        animation: {
+            duration: 2000, // Duration in milliseconds (1000 ms = 1 second)
+            easing: 'easeOutCubic', 
+        }
     };
-
 
     return (
         <>
             <MenuLogo />
-
             <h3 style={{ marginTop: '20%' }}>רשימת המתמחים</h3>
-            <Box sx={{ m:2, display: 'flex' ,justifyContent: 'center'}}>
-
+            <Box sx={{ m: 2, display: 'flex', justifyContent: 'center' }}>
                 <TextField
                     label="Search Name or Value"
                     variant="outlined"
@@ -103,28 +105,22 @@ export default function ViewInterns() {
                             </InputAdornment>
                         ),
                     }}
-                    sx={{ width: 150,m:2 }}
+                    sx={{ width: 300, m: 2 }}
                 />
-                <FormControl sx={{ width: 150 ,m:2}}>
-                    <InputLabel>Filter by Value</InputLabel>
+                <FormControl sx={{ width: 200, m: 2 }}>
+                    <InputLabel>Sort By</InputLabel>
                     <Select
-                        value={valueFilter}
-                        label="Filter by Value"
-                        onChange={(e) => setValueFilter(e.target.value)}
+                        value={sortBy}
+                        label="Sort By"
+                        onChange={(e) => setSortBy(e.target.value)}
                     >
-                        <MenuItem value="lowest">Lowest Value</MenuItem>
-                        <MenuItem value="highest">Highest Value</MenuItem>
+                        <MenuItem value="ProcedureCount">Procedure Count</MenuItem>
+                        <MenuItem value="RemainingNeed">Remaining Need</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
-
-            <Box sx={{
-                width: '450px', // Makes the chart width responsive to the parent container
-                height: '400px', // Example height, adapts based on the height of the viewport
-                overflowY: 'auto', 
-                justifyContent:'center'
-            }}>
-                <Bar data={data} options={options} />
+            <Box sx={{ width: '100%', height: '400px', overflowY: 'auto', justifyContent: 'center', mb: 4 }}>
+                <Bar data={chartData} options={options} />
             </Box>
         </>
     );
