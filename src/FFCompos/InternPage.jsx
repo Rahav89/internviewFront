@@ -9,6 +9,7 @@ import StepperOfIntern from './StepperOfIntern';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { GetInternByID } from './Server.jsx';
+
 //--------------------------------------------------------
 
 export default function InternPage() {
