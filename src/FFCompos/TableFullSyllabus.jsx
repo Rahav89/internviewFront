@@ -15,7 +15,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { getDetailedSyllabusOfIntern } from './Server.jsx';
 import MenuLogo from '../FFCompos/MenuLogo';
-
+import Grid from '@mui/material/Grid';
+import '../App.css';
+import { TextField, Button } from '@mui/material';
+function displayStyle(requiredAsPosition) {
+    return requiredAsPosition === 0 ? 'grey' : 'black';
+}
 
 export default function DetailedSyllabusTable() {
 
@@ -47,8 +52,8 @@ export default function DetailedSyllabusTable() {
             else if (currentP.category_Id === nextP.category_Id) {
                 let combinedProcedure = {
                     procedureName: currentP.categoryName,
-                    requiredAsMain: "",
-                    doneAsMain: "",
+                    requiredAsMain: currentP.requiredAsMain + nextP.requiredAsMain,
+                    doneAsMain: currentP.doneAsMain + nextP.doneAsMain,
                     requiredAsFirst: currentP.categoryRequiredFirst,
                     doneAsFirst: currentP.doneAsFirst + nextP.doneAsFirst,
                     requiredAsSecond: currentP.categoryRequiredSecond,
@@ -99,15 +104,28 @@ export default function DetailedSyllabusTable() {
                     ) : (
                         <TableCell />
                     )}
-                    <TableCell align="right" component="th" scope="row">
+                    <TableCell align="right" component="th" scope="row" >
                         {row.procedureName}
                     </TableCell>
-                    <TableCell align="right">{row.requiredAsMain}</TableCell>
-                    <TableCell align="right">{row.doneAsMain}</TableCell>
-                    <TableCell align="right">{row.requiredAsFirst}</TableCell>
-                    <TableCell align="right">{row.doneAsFirst}</TableCell>
-                    <TableCell align="right">{row.requiredAsSecond}</TableCell>
-                    <TableCell align="right">{row.doneAsSecond}</TableCell>
+                    <TableCell align="center" style={{ color: displayStyle(row.requiredAsMain) }}>
+                        {row.requiredAsMain || "▬▬▬"}
+                    </TableCell>
+                    <TableCell align="center" className='borderLeft' style={{ color: displayStyle(row.requiredAsMain) }}>
+                        {row.requiredAsMain === 0 ? '▬▬▬' : row.doneAsMain}
+                    </TableCell>
+                    <TableCell align="center" style={{ color: displayStyle(row.requiredAsFirst) }}>
+                        {row.requiredAsFirst || "▬▬▬"}
+                    </TableCell>
+                    <TableCell align="center" className='borderLeft' style={{ color: displayStyle(row.requiredAsFirst) }}>
+                        {row.requiredAsFirst === 0 ? "▬▬▬" : row.doneAsFirst}
+                    </TableCell>
+                    <TableCell align="center" style={{ color: displayStyle(row.requiredAsSecond) }}>
+                        {row.requiredAsSecond || "▬▬▬"}
+                    </TableCell>
+                    <TableCell align="center" style={{ color: displayStyle(row.requiredAsSecond) }}>
+                        {row.requiredAsSecond === 0 ? "▬▬▬" : row.doneAsSecond}
+                    </TableCell>
+
                 </TableRow>
 
                 {row.expandable && (
@@ -116,28 +134,28 @@ export default function DetailedSyllabusTable() {
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <Box sx={{ margin: 1 }}>
                                     <Typography variant="h6" gutterBottom component="div" align="right">
-                                        History
+                                        קטגוריה
                                     </Typography>
                                     <Table size="small" aria-label="purchases">
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell align="right">Name</TableCell>
-                                                <TableCell align="right">Required As Main</TableCell>
-                                                <TableCell align="right">Done As Main</TableCell>
-                                                <TableCell align="right">doneAsFirst</TableCell>
-                                                <TableCell align="right">Done As Second</TableCell>
+                                                <TableCell align="right">שם ניתוח</TableCell>
+                                                <TableCell align="right">דרישה כראשי</TableCell>
+                                                <TableCell align="right">נעשה כראשי</TableCell>
+                                                <TableCell align="right">נעשה כעוזר ראשון</TableCell>
+                                                <TableCell align="right">נעשה כעוזר שני</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {row.category.map((historyRow) => (
-                                                <TableRow key={historyRow.name}>
+                                            {row.category.map((categoryRow) => (
+                                                <TableRow key={categoryRow.name}>
                                                     <TableCell component="th" scope="row" align="right">
-                                                        {historyRow.name}
+                                                        {categoryRow.name}
                                                     </TableCell>
-                                                    <TableCell align="right">{historyRow.requiredAsMain}</TableCell>
-                                                    <TableCell align="right">{historyRow.doneAsMain}</TableCell>
-                                                    <TableCell align="right">{historyRow.doneAsFirst}</TableCell>
-                                                    <TableCell align="right">{historyRow.doneAsSecond}</TableCell>
+                                                    <TableCell align="right">{categoryRow.requiredAsMain}</TableCell>
+                                                    <TableCell align="right">{categoryRow.doneAsMain}</TableCell>
+                                                    <TableCell align="right">{categoryRow.doneAsFirst}</TableCell>
+                                                    <TableCell align="right">{categoryRow.doneAsSecond}</TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -150,34 +168,70 @@ export default function DetailedSyllabusTable() {
             </React.Fragment>
         );
     }
+    const [searchTerm, setSearchTerm] = useState('');
 
+
+    // Handler to update the search term
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value.toLowerCase());
+    };
+
+    // Filter rows based on the search term
+    const filteredRows = rows.filter(row => {
+        return row.procedureName.toLowerCase().includes(searchTerm);
+    });
 
     return (
         <>
             <MenuLogo />
-            <TableContainer component={Paper} sx={{ mt: "100px", direction: "rtl" }}>
-                <Table aria-label="collapsible table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="right" />
-                            <TableCell align="right">procedureName </TableCell>
-                            <TableCell align="right">requiredAsMain</TableCell>
-                            <TableCell align="right">doneAsMain</TableCell>
-                            <TableCell align="right">requiredAsFirst</TableCell>
-                            <TableCell align="right">doneAsFirst</TableCell>
-                            <TableCell align="right">requiredAsSecond</TableCell>
-                            <TableCell align="right">doneAsSecond</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row, index) => (
-                            <Row key={row.procedureId || index} row={row} align="right" />
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </>
 
+            <Grid container spacing={2}>
+                <Box display="flex" justifyContent="center">
+                    <Grid item xs={10} alignItems="center" >
+
+                        <TableContainer component={Paper} sx={{ maxHeight: 620, mt: "100px", mb: "100px", direction: "rtl", overflow: "auto" }}>
+                            <Table stickyHeader aria-label="collapsible table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="right" />
+                                        <TableCell align="right">שם הניתוח
+                                            
+                                                <TextField
+                                                    label="חיפוש ניתוח"
+                                                    variant="outlined"
+                                                    value={searchTerm}
+                                                    onChange={handleSearchChange}
+                                                    sx={{ mr: "10px" }} 
+                                                    InputProps={{
+                                                        style: {
+                                                          height: '40px',
+                                                          padding: '0px', // Adjust padding as needed
+                                                        },
+                                                      }}
+                                                />
+                                            
+                                        </TableCell>
+                                        <TableCell align="center" >דרישה כראשי</TableCell>
+                                        <TableCell align="center" sx={{ borderLeft: '1px solid rgba(224, 224, 224, 1)' }}>נעשה כראשי</TableCell>
+                                        <TableCell align="center" >דרישה כעוזר ראשון</TableCell>
+                                        <TableCell align="center" sx={{ borderLeft: '1px solid rgba(224, 224, 224, 1)' }}>נעשה כעוזר ראשון</TableCell>
+                                        <TableCell align="center">דרישה כעוזר שני</TableCell>
+                                        <TableCell align="center">נעשה כעוזר שני</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {filteredRows.map((row, index) => (
+                                        <Row key={row.procedureId || index} row={row} />
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+
+                    </Grid>
+                </Box>
+
+            </Grid>
+        </>
 
     );
 }

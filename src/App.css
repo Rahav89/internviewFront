@@ -37,13 +37,7 @@
   text-align: right;
 }
 
-/* .rtl-table .MuiTableSortLabel-root {
-  direction: ltr;
-}
-
-.rtl-table .MuiTablePagination-root {
-  direction: ltr;
-} */
+/* for the animation of the stepper */
 @keyframes slideInFromLeft {
   from {
     opacity: 0;
@@ -60,6 +54,8 @@
   animation: slideInFromLeft 0.5s forwards;
 }
 
-
-
+/* for the table of the full detailed syllabus */
+.borderLeft {
+  border-left: 1px solid rgba(224, 224, 224, 1);
+}
 
