@@ -43,7 +43,8 @@ export default function CardsDetailsInterns() {
 
     return (
         <>
-        <MenuLogo/>
+            <MenuLogo />
+            <h3 style={{margin:'10%'}}>הצגת הניתוחים</h3>
             <Grid container spacing={2}>
                 {data.map((card, index) => (
                     <Grid item xs={6} sm={6} md={4} key={card.id || index}>
