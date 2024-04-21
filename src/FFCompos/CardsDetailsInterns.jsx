@@ -1,77 +1,115 @@
 import React, { useEffect, useState } from 'react';
-import { styled } from '@mui/material/styles';
-import { Card, CardHeader, CardMedia, CardContent, Avatar, IconButton, Typography, Grid } from '@mui/material';
-import { red } from '@mui/material/colors';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { GetCountProceduresByIntern } from './Server.jsx';
+import {  useTheme } from '@mui/material/styles';
+import { Box, Card, CardHeader, CardContent, Avatar, Typography, Grid, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material';
+import { GetInternSurgeriesByProcedure } from './Server.jsx';
 import MenuLogo from './MenuLogo.jsx';
-//------------------------------------------------
-
-const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-    }),
-}));
+import { useLocation } from 'react-router-dom';
+import surgeryDateImage from '/src/Image/surgerydate.png'; // Adjust the path as necessary
 
 export default function CardsDetailsInterns() {
     const [data, setData] = useState([]);
     const [error, setError] = useState('');
+    const [searchDate, setSearchDate] = useState('');
+    const [selectedRole, setSelectedRole] = useState('all');  // Default to 'all'
+    const internId = JSON.parse(sessionStorage.getItem('currentUserID')) || 0;
+    const theme = useTheme();
+    const location = useLocation();
+    const procedure_Id = location.state?.procedureId;
 
     useEffect(() => {
-        GetCountProceduresByIntern()
-            .then(fetchedData => {
-                setData(fetchedData);
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-                setError('Failed to fetch data.');
-            });
-    }, []);
+        if (internId && procedure_Id) {
+            GetInternSurgeriesByProcedure(internId, procedure_Id)
+                .then(fetchedData => {
+                    console.info("Fetched Data:", fetchedData);
+                    setData(fetchedData);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    setError('Failed to fetch data.');
+                });
+        } else {
+            setError('Invalid intern or procedure ID.');
+        }
+    }, [internId, procedure_Id]);
 
-    const getInitials = (firstName, lastName) => {
-        return `${firstName[0]}${lastName[0]}`;
+    const handleSearchChange = (event) => {
+        setSearchDate(event.target.value);
     };
 
-    if (error) {
-        return <Typography color="error">{error}</Typography>;
-    }
+    const handleRoleChange = (event) => {
+        setSelectedRole(event.target.value);
+    };
+
+    const hospitalColors = {
+        "רמב\"ם": "AliceBlue",
+        "לניאדו": "Lavender",
+        "הלל יפה": "LightCyan",
+        "אכילוב": "LemonChiffon"
+    };
+
+    const filteredData = data.filter(item => {
+        return item.Surgery_date.includes(searchDate) && (selectedRole === 'all' || item.Intern_role === selectedRole);
+    });
 
     return (
         <>
             <MenuLogo />
-            <h3 style={{margin:'10%'}}>הצגת הניתוחים</h3>
+            <Typography variant="h6" sx={{ margin: 5, textAlign: 'center' ,fontWeight:'bold'}}>הצגת הניתוחים</Typography>
+            <TextField
+                type="date"
+                value={searchDate}
+                onChange={handleSearchChange}
+                label="חפש תאריך ניתוח"
+                sx={{ marginBottom: 2, width: '80%', marginX: 'auto' }}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>  
+                <FormControl component="fieldset">
+                    <FormLabel component="legend">תפקיד בניתוח</FormLabel>
+                    <RadioGroup
+                        row
+                        aria-label="intern role"
+                        name="intern-role"
+                        value={selectedRole}
+                        onChange={handleRoleChange}
+                    >
+                        <FormControlLabel value="עוזר שני" control={<Radio />} label="עוזר שני" />
+                        <FormControlLabel value="עוזר ראשון" control={<Radio />} label="עוזר ראשון" />
+                        <FormControlLabel value="מנתח ראשי" control={<Radio />} label="מנתח ראשי" />
+                        <FormControlLabel value="all" control={<Radio />} label="הכל" />
+                    </RadioGroup>
+                </FormControl>
+            </Box>
             <Grid container spacing={2}>
-                {data.map((card, index) => (
-                    <Grid item xs={6} sm={6} md={4} key={card.id || index}>
-                        <Card sx={{ maxWidth: 345 }}>
+                {filteredData.map((card, index) => (
+                    <Grid item xs={12} sm={12} md={12} key={card.id || index}>
+                        <Card sx={{
+                            maxWidth: 345,
+                            display:'inline-block',
+                            backgroundColor: theme.palette.grey[200], // Default background
+                            ...((card.Hospital_name in hospitalColors) && { backgroundColor: hospitalColors[card.Hospital_name] })
+                        }}>
                             <CardHeader
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row-reverse',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    mt:2,
+                                    ml:2
+                                }}
                                 avatar={
-                                    <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                                        {getInitials(card.firstName, card.lastName)}
+                                    <Avatar sx={{ bgcolor: 'MintCream', width: 50, height: 50, ml: 2 }}>
+                                        <img src={surgeryDateImage} style={{ width: '70%', height: '70%' }} alt="Surgery Date" />
                                     </Avatar>
                                 }
-                                action={
-                                    <IconButton aria-label="settings">
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                }
-                                title={`${card.firstName} ${card.lastName}`}
-                                subheader={card.date}
-                            />
-                            <CardMedia
-                                component="img"
-                                height="194"
-                                image={card.image}
-                                alt={card.title}
+                                title={card.Procedure_name}
                             />
                             <CardContent>
                                 <Typography variant="body2" color="text.secondary">
-                                    Rating: {card.internsRating}, Year: {card.internsYear}
+                                    רמת קושי של הניתוח: {card.Difficulty_level} <br />
+                                    שם בית החולים: {card.Hospital_name} <br />
+                                    תאריך ניתוח: {new Date(card.Surgery_date).toLocaleDateString()} <br />
+                                    תפקיד: {card.Intern_role}
                                 </Typography>
                             </CardContent>
                         </Card>

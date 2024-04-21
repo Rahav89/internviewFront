@@ -4,7 +4,7 @@ import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, 
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import MailIcon from '@mui/icons-material/Mail'; // Import for message icon
-
+import logoImage from '/src/Image/doctor1.png';
 const settings = ['ניהול משתמש', 'Account', 'התנתק'];
 
 export default function MenuLogo() {
@@ -60,7 +60,7 @@ export default function MenuLogo() {
             </Tooltip>
             <Tooltip title="פתח הגדרות">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src="src/Image/doctor1.png" />
+                <Avatar src={logoImage} />
               </IconButton>
             </Tooltip>
             <Menu
