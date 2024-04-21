@@ -148,6 +148,7 @@ export default function CardsDetailsInterns() {
                     ))}
                 </Grid>
             )}
+            {/* הקומפונטה משמשת להצגת הודעות שגיאה אם יש בעיה באחזור הנתונים או בכל בעיה אחרת בתפקוד. */}
             <Snackbar
                 open={!!error}
                 autoHideDuration={6000}
