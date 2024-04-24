@@ -60,3 +60,7 @@
   border-left: 1px solid rgba(224, 224, 224, 1);
 }
 
+.custom-cell {
+  padding: 0 !important;
+  padding-right: 5px !important;
+}
