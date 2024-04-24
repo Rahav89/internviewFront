@@ -75,7 +75,8 @@ export default function CustomStepper() {
                 component="h3"
                 sx={{
                     textAlign: 'center',
-                    mb: 7,
+                    fontWeight:'bold',
+                    mb: 10,
                 }}
             >
                 צפה בהתקדמות שלך
