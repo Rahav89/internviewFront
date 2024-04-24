@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
@@ -6,16 +6,19 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
 import { GetCountProceduresByIntern } from './Server.jsx';
 // import { useNavigate } from 'react-router-dom';
-
+import DetailedSyllabusTable from './TableFullSyllabus.jsx';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function ViewInterns() {
+    
     // const navigate = useNavigate()
     const [data, setData] = useState([]);
     // const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('ProcedureCount'); // Start with 'ProcedureCount' by default
+   
+    const [idOfIntern, setidOfIntern] = useState(0);
 
     useEffect(() => {
         GetCountProceduresByIntern().then(fetchedData => {
@@ -85,21 +88,19 @@ export default function ViewInterns() {
             duration: 2000, // Duration in milliseconds (1000 ms = 1 second)
             easing: 'easeOutCubic',
         },
-        // onClick: (event, elements) => {
-        //     if (elements.length > 0) {
-        //         const index = elements[0].index;
-        //         const internId = filteredData[index].internId;
-        //         // הנווט לדף המתאים  של מתמחה
-        //         // navigate(`/TableFullSyllabus/${internId}`, { state: { internId } }); // Navigate to the details page using the item ID
-        //         window.location.href = `/DetailsIntern/${internId}`; // יש להתאים את הכתובת למבנה הנתיבים של האפליקציה
-        //     }
-        // }
+        onClick: (event, elements) => {
+            if (elements.length > 0) {
+                const elementIndex = elements[0].index;  // Get the index of the clicked bar
+                const internId = filteredData[elementIndex].internId;  
+                setidOfIntern(internId);  
+            }
+        }
     };
 
     return (
         <>
             <MenuLogo />
-            <h3 style={{ marginTop: '10%' }}>רשימת המתמחים</h3>
+            <h3 style={{ marginTop: '7%' }}>רשימת המתמחים</h3>
             <Box sx={{ m: 2, display: 'flex', justifyContent: 'center' }}>
                 <FormControl sx={{ width: 300, m: 1 }}>
                     <InputLabel>מיון</InputLabel>
@@ -148,6 +149,8 @@ export default function ViewInterns() {
                 <Bar data={chartData} options={options} />
             </Box>
 
+            {idOfIntern==0? <></> :  <DetailedSyllabusTable internIdFromView={idOfIntern} />}
+           
 
         </>
     );

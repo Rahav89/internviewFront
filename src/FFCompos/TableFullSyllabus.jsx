@@ -80,23 +80,25 @@ function transformArray(procedures) {
     return result;
 }
 
-export default function DetailedSyllabusTable() {
+export default function DetailedSyllabusTable(props) {
 
     const [data, setData] = useState([]);
-
+    console.log("props.internIdFromView  " , props.internIdFromView);
+    
+    let internIdFromBar = props.internIdFromView;
+    let internID =  internIdFromBar ==undefined? JSON.parse(sessionStorage.getItem('currentUserID')) : internIdFromBar;
+    
     useEffect(() => {
-        getDetailedSyllabusOfIntern(JSON.parse(sessionStorage.getItem('currentUserID')))
+        getDetailedSyllabusOfIntern(internID)
             .then((data) => { setData(data); })
             .catch((error) => {
                 console.error("Error in getDetailedSyllabusOfIntern: ", error);
             });
-    }, []);
+    },  [internID]);
     const rows = transformArray(data);
 
-
-
     function Row(props) {
-        const { row } = props; console.log(row);
+        const { row } = props; 
         const [open, setOpen] = React.useState(false);
         let pName = row.procedureName;
         let reqAsAdmin = row.requiredAsMain;
