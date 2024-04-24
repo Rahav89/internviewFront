@@ -1,34 +1,32 @@
-import { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import { Card, CardContent, CardActions } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import MenuLogo from './MenuLogo';
-import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { InputAdornment, IconButton } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/Visibility';
-import { Container, Box } from '@mui/material';
-import { updateIntern, GetInternByID } from './Server.jsx';
+import { useState, useEffect } from "react";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import { Card, CardContent, CardActions } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import MenuLogo from "./MenuLogo";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { InputAdornment, IconButton } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/Visibility";
+import { Container, Box } from "@mui/material";
+import { updateIntern, GetInternByID } from "./Server.jsx";
 //------------------------------------------------------------------
 
 export default function ProfileIntern() {
-
   const [currentUser, setCurrentUser] = useState(null);
   // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
   const [formData, setFormData] = useState({
-    password_i: '',
-    first_name: '',
-    last_name: '',
+    password_i: "",
+    first_name: "",
+    last_name: "",
   });
 
   useEffect(() => {
-    const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
-    GetInternByID(internID)  // Call GetInternByID to fetch intern data
+    const internID = JSON.parse(sessionStorage.getItem("currentUserID"));
+    GetInternByID(internID) // Call GetInternByID to fetch intern data
       .then((data) => {
         setCurrentUser(data);
         setFormData({
@@ -48,7 +46,7 @@ export default function ProfileIntern() {
 
   // Function to handle button click
   const handleCancelClick = () => {
-    navigate('/intern'); // Navigate to the intern page
+    navigate("/intern"); // Navigate to the intern page
   };
 
   //הפונקציות הללו משמשות לשינוי מצב ההצגה של סיסמאות, ממצב מוסתר למצב מוצג ולהפך
@@ -80,12 +78,12 @@ export default function ProfileIntern() {
   //פונקציה הבודקת את הולידציה של הסיסמא
   function validatCurrentePassword(password) {
     //בודק שהסיסמה שהכניס היא הסיסמה הנוכחית שלו
-    return (currentUser.password_i == password);
+    return currentUser.password_i == password;
   }
 
   // ולידציה לטקסט בלבד
   const validateTextOnly = (value) => {
-    return (/^[a-zA-Zא-ת ]*$/.test(value) && value !== '');
+    return /^[a-zA-Zא-ת ]*$/.test(value) && value !== "";
   };
 
   //פונקציה הבודקת את הולידציה של הסיסמא החדשה
@@ -93,13 +91,17 @@ export default function ProfileIntern() {
     //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
     const uppercaseLetter = /[A-Z]/;
     const digit = /[0-9]/;
-    return (password != '' && uppercaseLetter.test(password) && digit.test(password));
+    return (
+      password != "" && uppercaseLetter.test(password) && digit.test(password)
+    );
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const isPasswordValid = validatCurrentePassword(formData.currentPassword);
-    const isPasswordConfirmationValid = validateNewPassword(formData.password_i);
+    const isPasswordConfirmationValid = validateNewPassword(
+      formData.password_i
+    );
     const isFirstNameValid = validateTextOnly(formData.firstName);
     const isLastNameValid = validateTextOnly(formData.lastName);
     console.log(isPasswordValid, isFirstNameValid, isLastNameValid);
@@ -110,26 +112,29 @@ export default function ProfileIntern() {
       lastName: !isLastNameValid,
     });
 
-    if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid) {
+    if (
+      isPasswordConfirmationValid &&
+      isPasswordValid &&
+      isFirstNameValid &&
+      isLastNameValid
+    ) {
       // פונקציה לעדכון פרטי המתמחה בשרת
       updateIntern(currentUser.id, formData)
         .then((data) => {
           //console.log('Submitting form data:', data);
           if (data) {
             Swal.fire({
-              title: 'Success!',
-              text: 'פרטיך עודכנו בהצלחה',
-              icon: 'success',
-              confirmButtonText: 'OK'
+              title: "Success!",
+              text: "פרטיך עודכנו בהצלחה",
+              icon: "success",
+              confirmButtonText: "OK",
             });
-
-          }
-          else {
+          } else {
             Swal.fire({
-              title: 'Error!',
-              text: 'העדכון נכשל. אנא נסה שוב.',
-              icon: 'error',
-              confirmButtonText: 'Close'
+              title: "Error!",
+              text: "העדכון נכשל. אנא נסה שוב.",
+              icon: "error",
+              confirmButtonText: "Close",
             });
           }
         })
@@ -140,34 +145,46 @@ export default function ProfileIntern() {
   };
 
   return (
-    <ThemeProvider theme={createTheme()}>
+    <>
       <MenuLogo />
-      <Container component="main" dir='rtl'>
+      <Container component="main" dir="rtl">
         <CssBaseline />
         <Grid container justifyContent="center">
           <Grid item xs={12} sm={8} md={8} lg={6}>
-            <Card sx={{ mt: 7, width: '100%' ,mb:2}}>
+            <Card sx={{ mt: 7, width: "100%", mb: 2 }}>
               <CardContent>
-
                 <Box
                   sx={{
                     marginTop: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}>
-
-                  <Box sx={{ width: '20%' }}>
-                    <img width="100%" src="src/Image/IconUpdate.png" alt="Update Icon" />
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box sx={{ width: "20%" }}>
+                    <img
+                      width="100%"
+                      src="src/Image/IconUpdate.png"
+                      alt="Update Icon"
+                    />
                   </Box>
                 </Box>
 
-                <Typography component="h1" variant="h5" fontWeight="bold" textAlign="center">
+                <Typography
+                  component="h1"
+                  variant="h6"
+                  fontWeight="bold"
+                  textAlign="center"
+                >
                   עדכון פרטים
                 </Typography>
-                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit}
+                  sx={{ mt: 3 }}
+                >
                   <Grid container spacing={2}>
-
                     <Grid item xs={12}>
                       <TextField
                         fullWidth
@@ -175,13 +192,16 @@ export default function ProfileIntern() {
                         id="InternID"
                         label="תעודת זהות"
                         autoComplete="תעודת זהות"
-                        value={currentUser ? currentUser.id : ''}
+                        value={currentUser ? currentUser.id : ""}
                         error={formErrors.id}
-                        helperText={formErrors.id ? "תעודת זהות חיייבת להכיל רק ספרות" : ''}
+                        helperText={
+                          formErrors.id
+                            ? "תעודת זהות חיייבת להכיל רק ספרות"
+                            : ""
+                        }
                         disabled
                       />
                     </Grid>
-
 
                     <Grid item xs={12}>
                       <TextField
@@ -189,12 +209,19 @@ export default function ProfileIntern() {
                         fullWidth
                         name="currentPassword"
                         label="סיסמה נוכחית"
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         id="password"
                         autoComplete="current-password"
                         onChange={handleChange}
                         error={formErrors.password_i}
-                        helperText={formErrors.password_i ? "הסיסמה לא תואמת לסיסמה הנוכחית" : ''}
+                        InputLabelProps={{
+                          shrink: true, // This will make the label always appear above the TextField
+                        }}
+                        helperText={
+                          formErrors.password_i
+                            ? "הסיסמה לא תואמת לסיסמה הנוכחית"
+                            : ""
+                        }
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -203,10 +230,14 @@ export default function ProfileIntern() {
                                 onClick={handleToggleShowPassword}
                                 edge="end"
                               >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
                               </IconButton>
                             </InputAdornment>
-                          )
+                          ),
                         }}
                       />
                     </Grid>
@@ -217,12 +248,19 @@ export default function ProfileIntern() {
                         fullWidth
                         name="password_i"
                         label="סיסמה חדשה "
-                        type={showNewPassword ? 'text' : 'password'}
+                        type={showNewPassword ? "text" : "password"}
                         id="newPassword"
                         autoComplete="new-password"
                         onChange={handleChange}
                         error={formErrors.passwordConfirmation}
-                        helperText={formErrors.passwordConfirmation ? "הסיסמה חייבת להכיל לפחות אות גדולה וספרות" : ''}
+                        InputLabelProps={{
+                          shrink: true, // This will make the label always appear above the TextField
+                        }}
+                        helperText={
+                          formErrors.passwordConfirmation
+                            ? "הסיסמה חייבת להכיל לפחות אות גדולה וספרות"
+                            : ""
+                        }
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -231,10 +269,14 @@ export default function ProfileIntern() {
                                 onClick={handleToggleNewShowPassword}
                                 edge="end"
                               >
-                                {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                                {showNewPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
                               </IconButton>
                             </InputAdornment>
-                          )
+                          ),
                         }}
                       />
                     </Grid>
@@ -250,8 +292,12 @@ export default function ProfileIntern() {
                         value={formData.first_name}
                         onChange={handleChange}
                         error={formErrors.first_name}
-                        helperText={formErrors.first_name ? 'יכול להכיל רק אותיות' : ""}
-                        InputLabelProps={{ style: { textAlign: 'right', direction: 'rtl' } }}
+                        helperText={
+                          formErrors.first_name ? "יכול להכיל רק אותיות" : ""
+                        }
+                        InputLabelProps={{
+                          style: { textAlign: "right", direction: "rtl" },
+                        }}
                       />
                     </Grid>
 
@@ -266,7 +312,9 @@ export default function ProfileIntern() {
                         value={formData.last_name}
                         onChange={handleChange}
                         error={formErrors.last_name}
-                        helperText={formErrors.last_name ? 'יכול להכיל רק אותיות.' : ""}
+                        helperText={
+                          formErrors.last_name ? "יכול להכיל רק אותיות." : ""
+                        }
                       />
                     </Grid>
 
@@ -277,26 +325,34 @@ export default function ProfileIntern() {
                         id="interns_year"
                         label="שנת התמחות"
                         autoComplete="given-name"
-                        value={currentUser ? currentUser.interns_year : ''}
+                        value={currentUser ? currentUser.interns_year : ""}
                         disabled
                       />
                     </Grid>
-
                   </Grid>
                   <CardActions>
-                    <Button type="submit" fullWidth variant="contained"
-                      sx={{
-                        mt: 2, ml: 2
-                      }}>
-                      אישור
-                    </Button>
-                    <Button fullWidth onClick={handleCancelClick} variant="contained"
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
                       sx={{
                         mt: 2,
-                        backgroundColor: 'CornflowerBlue',
-                        color: 'white',
-                        '&:hover': { backgroundColor: 'DeepSkyBlue' }
-                      }}>
+                        ml: 2,
+                      }}
+                    >
+                      אישור
+                    </Button>
+                    <Button
+                      fullWidth
+                      onClick={handleCancelClick}
+                      variant="contained"
+                      sx={{
+                        mt: 2,
+                        backgroundColor: "CornflowerBlue",
+                        color: "white",
+                        "&:hover": { backgroundColor: "DeepSkyBlue" },
+                      }}
+                    >
                       חזרה לדף הראשי
                     </Button>
                   </CardActions>
@@ -306,7 +362,6 @@ export default function ProfileIntern() {
           </Grid>
         </Grid>
       </Container>
-    </ThemeProvider>
+    </>
   );
 }
-

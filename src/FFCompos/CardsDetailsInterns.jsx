@@ -22,7 +22,6 @@ import { useLocation } from "react-router-dom";
 import surgeryDateImage from "/src/Image/surgerydate.png";
 
 export default function CardsDetailsInterns() {
-  // State variables
   const [data, setData] = useState([]); // Original data fetched from the server
   const [filteredData, setFilteredData] = useState([]); // Filtered data based on search criteria
   const [searchDate, setSearchDate] = useState(""); // State for search by surgery date
@@ -30,10 +29,10 @@ export default function CardsDetailsInterns() {
   const [searchHospital, setSearchHospital] = useState(""); // State for search by hospital name
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [error, setError] = useState(""); // State for error message display
+  const location = useLocation(); // Access location object
   const internId = JSON.parse(sessionStorage.getItem("currentUserID")) || 0; // Retrieve intern ID from session storage
   const procedure_Id = location.state?.procedureId; // Retrieve procedure ID from location state
   const theme = useTheme(); // Access theme object
-  const location = useLocation(); // Access location object
 
   // Effect to fetch data from the server
   useEffect(() => {

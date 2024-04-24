@@ -60,7 +60,7 @@ export default function RecentSurgeries() {
                                     {item.procedureName}
                                 </Typography>
                                 <Typography variant="h6" sx={{ fontSize: '1rem', width: '100%' }}>
-                                    {`${item.surgeryTime}\u00A0\u00A0\u00A0${item.surgeryDate}`}
+                                    {item.surgeryDate}
                                 </Typography>
                             </TimelineContent>
                             <TimelineSeparator>
