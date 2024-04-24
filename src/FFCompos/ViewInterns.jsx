@@ -5,11 +5,13 @@ import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Se
 import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
 import { GetCountProceduresByIntern } from './Server.jsx';
+import { useNavigate } from 'react-router-dom';
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function ViewInterns() {
+    const navigate = useNavigate()
     const [data, setData] = useState([]);
     // const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -86,9 +88,10 @@ export default function ViewInterns() {
         onClick: (event, elements) => {
             if (elements.length > 0) {
                 const index = elements[0].index;
-                const internId = filteredData[index].id;
+                const internId = filteredData[index].internId;
                 // הנווט לדף המתאים  של מתמחה
-                window.location.href = `/DetailsIntern/${internId}`; // יש להתאים את הכתובת למבנה הנתיבים של האפליקציה
+                navigate(`/TableFullSyllabus/${internId}`, { state: { internId } }); // Navigate to the details page using the item ID
+                // window.location.href = `/DetailsIntern/${internId}`; // יש להתאים את הכתובת למבנה הנתיבים של האפליקציה
             }
         }
     };
@@ -96,9 +99,9 @@ export default function ViewInterns() {
     return (
         <>
             <MenuLogo />
-            <h3 style={{ marginTop: '20%' }}>רשימת המתמחים</h3>
-            <Box sx={{ m: 2, display: 'flex', justifyContent: 'flex-end' }}>
-                <FormControl sx={{ width: 200, m: 2 }}>
+            <h3 style={{ marginTop: '10%' }}>רשימת המתמחים</h3>
+            <Box sx={{ m: 2, display: 'flex', justifyContent: 'center' }}>
+                <FormControl sx={{ width: 300, m: 1 }}>
                     <InputLabel>מיון</InputLabel>
                     <Select
                         value={sortBy}
@@ -114,10 +117,10 @@ export default function ViewInterns() {
                     variant="outlined"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    sx={{ width: 300, m: 2, direction: 'rtl' }} 
+                    sx={{ width: 200, m: 1, direction: 'rtl' }}
                     InputProps={{
                         endAdornment: (
-                            <InputAdornment position="start"> 
+                            <InputAdornment position="start">
                                 <IconButton>
                                     <SearchIcon />
                                 </IconButton>
@@ -130,9 +133,21 @@ export default function ViewInterns() {
                 />
             </Box>
 
-            <Box sx={{ width: '100%', height: '400px', overflowY: 'auto', justifyContent: 'center', mb: 4 }}>
+            <Box sx={{
+                width: {
+                    xs: '100%', // 100% width on extra-small screens (small devices)
+                    md: '80%'  // 80% width on medium screens (desktops)
+                },
+                height: '400px',
+                overflowY: 'auto',
+                display: 'flex',
+                justifyContent: 'center',
+                mb: 4,
+                mx: 'auto'  // Using 'mx' for horizontal margin auto
+            }}>
                 <Bar data={chartData} options={options} />
             </Box>
+
 
         </>
     );

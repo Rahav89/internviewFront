@@ -71,7 +71,7 @@ export default function CardsDetailsInterns() {
         <>
             <MenuLogo />
             <Typography variant="h6" sx={{ marginTop: 10, textAlign: 'center', fontWeight: 'bold' }}>הצגת הניתוחים</Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: 2, marginTop: 2 }}>
+            <Box sx={{ margin: '10px', display: 'flex', justifyContent: 'space-around', marginBottom: 2, marginTop: 2 }}>
                 <TextField
                     type="date"
                     value={searchDate}
@@ -87,6 +87,9 @@ export default function CardsDetailsInterns() {
                     onChange={handleHospitalSearchChange}
                     label="חפש לפי שם בית חולים"
                     sx={{ width: '33%', marginLeft: '3%' }}
+                    InputLabelProps={{
+                        shrink: true,  // This will make the label always appear above the TextField
+                    }}
                 />
                 <FormControl sx={{ width: '33%', marginLeft: '3%' }}>
                     <InputLabel id="role-select-label">תפקיד בניתוח</InputLabel>
@@ -110,12 +113,16 @@ export default function CardsDetailsInterns() {
                 <Grid container spacing={2}>
                     {filteredData.map((card, index) => (
                         // Responsive settings for the Grid item
-                        <Grid item xs={12} sm={6} md={6} lg={6} key={card.id || index}>
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={card.id || index}>
                             <Card sx={{
                                 maxWidth: '100%',
                                 width: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
+                                margin: {
+                                    sm: '10px', // Starting from small screens and up
+                                    xs: 0       // No margin on extra small screens
+                                },
                                 backgroundColor: theme.palette.grey[200],
                                 ...(card.Hospital_name in hospitalColors && { backgroundColor: hospitalColors[card.Hospital_name] })
                             }}>

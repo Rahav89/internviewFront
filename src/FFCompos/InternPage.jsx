@@ -33,7 +33,7 @@ export default function InternPage() {
 
   //מנווט לדף של הסילבוס המלא
   const handleViewFullSyllabus = () => {
-    navigate('/TableFullSyllabus');
+    navigate('/TableFullSyllabus/:id');
   };
   //מנווט לדף של כל המתמחים
   const handleViewIntern = () => {
