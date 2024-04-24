@@ -5,7 +5,7 @@ import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Se
 import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
 import { GetCountProceduresByIntern } from './Server.jsx';
-// import CardsDetailsInterns from './CardsDetailsInterns.jsx';
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -22,7 +22,7 @@ export default function ViewInterns() {
             console.error("Error fetching data:", error);
         });
     }, []);
-    
+
 
     // Filter and sort data
     const filteredData = data.filter(item =>
@@ -41,14 +41,14 @@ export default function ViewInterns() {
         labels: filteredData.map(item => item.firstName),
         datasets: [
             {
-                label: 'Procedure Count',
+                label: 'בוצע',
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 data: filteredData.map(item => item.procedureCount),
                 barThickness: 50,
             },
             {
-                label: 'Remaining Need',
+                label: 'חוסר',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 barThickness: 50,
@@ -81,7 +81,15 @@ export default function ViewInterns() {
         },
         animation: {
             duration: 2000, // Duration in milliseconds (1000 ms = 1 second)
-            easing: 'easeOutCubic', 
+            easing: 'easeOutCubic',
+        },
+        onClick: (event, elements) => {
+            if (elements.length > 0) {
+                const index = elements[0].index;
+                const internId = filteredData[index].id;
+                // הנווט לדף המתאים  של מתמחה
+                window.location.href = `/DetailsIntern/${internId}`; // יש להתאים את הכתובת למבנה הנתיבים של האפליקציה
+            }
         }
     };
 
@@ -89,40 +97,43 @@ export default function ViewInterns() {
         <>
             <MenuLogo />
             <h3 style={{ marginTop: '20%' }}>רשימת המתמחים</h3>
-            <Box sx={{ m: 2, display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ m: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                <FormControl sx={{ width: 200, m: 2 }}>
+                    <InputLabel>מיון</InputLabel>
+                    <Select
+                        value={sortBy}
+                        label="Sort By"
+                        onChange={(e) => setSortBy(e.target.value)}
+                    >
+                        <MenuItem value="ProcedureCount">מספר פרודצורות שבוצעו</MenuItem>
+                        <MenuItem value="RemainingNeed">מספר פרודצורות שחסר</MenuItem>
+                    </Select>
+                </FormControl>
                 <TextField
-                    label="Search Name or Value"
+                    label="חיפוש שם מתמחה"
                     variant="outlined"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    sx={{ width: 300, m: 2, direction: 'rtl' }} 
                     InputProps={{
                         endAdornment: (
-                            <InputAdornment position="end">
+                            <InputAdornment position="start"> 
                                 <IconButton>
                                     <SearchIcon />
                                 </IconButton>
                             </InputAdornment>
                         ),
                     }}
-                    sx={{ width: 300, m: 2 }}
+                    InputLabelProps={{
+                        shrink: true,  // This will make the label always appear above the TextField
+                    }}
                 />
-                <FormControl sx={{ width: 200, m: 2 }}>
-                    <InputLabel>Sort By</InputLabel>
-                    <Select
-                        value={sortBy}
-                        label="Sort By"
-                        onChange={(e) => setSortBy(e.target.value)}
-                    >
-                        <MenuItem value="ProcedureCount">Procedure Count</MenuItem>
-                        <MenuItem value="RemainingNeed">Remaining Need</MenuItem>
-                    </Select>
-                </FormControl>
             </Box>
+
             <Box sx={{ width: '100%', height: '400px', overflowY: 'auto', justifyContent: 'center', mb: 4 }}>
                 <Bar data={chartData} options={options} />
             </Box>
 
-            {/* <CardsDetailsInterns/> */}
         </>
     );
 }
