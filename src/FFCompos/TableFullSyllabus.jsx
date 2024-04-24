@@ -20,9 +20,10 @@ import { getDetailedSyllabusOfIntern } from './Server.jsx';
 import MenuLogo from '../FFCompos/MenuLogo';
 import Grid from '@mui/material/Grid';
 import '../App.css';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button,InputAdornment} from '@mui/material';
 import { useMemo } from 'react';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
+import SearchIcon from '@mui/icons-material/Search';
 
 function displayColor(requiredAsPosition) {
     return requiredAsPosition === 0 ? 'grey' : 'black';
@@ -95,7 +96,7 @@ export default function DetailedSyllabusTable() {
 
 
     function Row(props) {
-        const { row } = props;    console.log(row);
+        const { row } = props; console.log(row);
         const [open, setOpen] = React.useState(false);
         let pName = row.procedureName;
         let reqAsAdmin = row.requiredAsMain;
@@ -181,7 +182,7 @@ export default function DetailedSyllabusTable() {
 
     ///////// סינון ניתוחים /////////
     const [searchValue, setSearchValue] = useState('');
-  
+
     const onChangeSearch = (event) => {
         setSearchValue(event.target.value.toLowerCase());
     };
@@ -191,7 +192,7 @@ export default function DetailedSyllabusTable() {
         return row.procedureName.toLowerCase().includes(searchValue);
     });
 
-   ///////// מיון ניתוחים /////////
+    ///////// מיון ניתוחים /////////
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'none' });
 
     //כמו יוז אפקט רק שמחזיר ערך ועדיף לחישובים במהלך רדנורים
@@ -242,18 +243,38 @@ export default function DetailedSyllabusTable() {
 
             <Grid container spacing={2}>
                 <Box display="flex" justifyContent="center">
-                    <Grid item xs={11} alignItems="center" > 
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: '100Px', mb:'40px' }}>
-                        <Button variant="outlined" onClick={() => {setSearchValue('')}} sx={{ mr: 1 }}>נקה</Button>
-                        <TextField
-                            label="חיפוש ניתוח"
-                            variant="outlined"
-                            value={searchValue}
-                            onChange={onChangeSearch}
-                            sx={{ width: 250, direction: 'rtl' }} 
-                        />
-                    </Box>
-                        <TableContainer component={Paper} sx={{ maxHeight: 620, mb: "100px", direction: "rtl" , overflowX: "auto"}}>
+                    <Grid item xs={11} alignItems="center" >
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: '100Px', mb: '40px' }}>
+                            <Button variant="outlined" onClick={() => { setSearchValue('') }} sx={{ mr: 1 }}>נקה</Button>
+                            <TextField
+                                label="חיפוש ניתוח"
+                                variant="outlined"
+                                value={searchValue}
+                                onChange={onChangeSearch}
+                                sx={{ width: 250, direction: 'rtl' }}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="start">
+                                            <IconButton>
+                                                <SearchIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                InputLabelProps={{
+                                    shrink: true,  // This will make the label always appear above the TextField
+                                }}
+                            />
+
+                            {/* <TextField
+                                label="חיפוש ניתוח"
+                                variant="outlined"
+                                value={searchValue}
+                                onChange={onChangeSearch}
+                                sx={{ width: 250, direction: 'rtl' }}
+                            /> */}
+                        </Box>
+                        <TableContainer component={Paper} sx={{ maxHeight: 620, mb: "100px", direction: "rtl", overflowX: "auto" }}>
                             <Table stickyHeader aria-label="collapsible table" sx={{ tableLayout: 'fixed', overflow: "scroll" }}>
                                 <TableHead>
                                     <TableRow>
