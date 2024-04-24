@@ -17,20 +17,18 @@ import { getDetailedSyllabusOfIntern } from './Server.jsx';
 import MenuLogo from '../FFCompos/MenuLogo';
 import Grid from '@mui/material/Grid';
 import '../App.css';
-import { TextField, Button } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { TextField } from '@mui/material';
 
 function displayStyle(requiredAsPosition) {
   return requiredAsPosition === 0 ? 'grey' : 'black';
 }
 
 export default function DetailedSyllabusTable() {
-  const location = useLocation();
-  const internId = location.state?.internId;
+
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    getDetailedSyllabusOfIntern(internId || JSON.parse(sessionStorage.getItem('currentUserID')))
+    getDetailedSyllabusOfIntern( JSON.parse(sessionStorage.getItem('currentUserID')))
       .then((data) => { setData(data); })
       .catch((error) => {
         console.error("Error in getDetailedSyllabusOfIntern: ", error);

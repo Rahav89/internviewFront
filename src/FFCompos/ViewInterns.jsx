@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuLogo from './MenuLogo';
 import { GetCountProceduresByIntern } from './Server.jsx';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function ViewInterns() {
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     const [data, setData] = useState([]);
     // const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -90,8 +90,8 @@ export default function ViewInterns() {
                 const index = elements[0].index;
                 const internId = filteredData[index].internId;
                 // הנווט לדף המתאים  של מתמחה
-                navigate(`/TableFullSyllabus/${internId}`, { state: { internId } }); // Navigate to the details page using the item ID
-                // window.location.href = `/DetailsIntern/${internId}`; // יש להתאים את הכתובת למבנה הנתיבים של האפליקציה
+                // navigate(`/TableFullSyllabus/${internId}`, { state: { internId } }); // Navigate to the details page using the item ID
+                window.location.href = `/DetailsIntern/${internId}`; // יש להתאים את הכתובת למבנה הנתיבים של האפליקציה
             }
         }
     };
