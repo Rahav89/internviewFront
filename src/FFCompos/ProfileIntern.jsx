@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -16,7 +16,7 @@ import { Container, Box } from '@mui/material';
 import { updateIntern, GetInternByID } from './Server.jsx';
 //------------------------------------------------------------------
 
-export default function ProfileIntern(props) {
+export default function ProfileIntern() {
 
   const [currentUser, setCurrentUser] = useState(null);
   // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
