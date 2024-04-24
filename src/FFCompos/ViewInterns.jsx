@@ -85,15 +85,15 @@ export default function ViewInterns() {
             duration: 2000, // Duration in milliseconds (1000 ms = 1 second)
             easing: 'easeOutCubic',
         },
-        onClick: (event, elements) => {
-            if (elements.length > 0) {
-                const index = elements[0].index;
-                const internId = filteredData[index].internId;
-                // הנווט לדף המתאים  של מתמחה
-                // navigate(`/TableFullSyllabus/${internId}`, { state: { internId } }); // Navigate to the details page using the item ID
-                window.location.href = `/DetailsIntern/${internId}`; // יש להתאים את הכתובת למבנה הנתיבים של האפליקציה
-            }
-        }
+        // onClick: (event, elements) => {
+        //     if (elements.length > 0) {
+        //         const index = elements[0].index;
+        //         const internId = filteredData[index].internId;
+        //         // הנווט לדף המתאים  של מתמחה
+        //         // navigate(`/TableFullSyllabus/${internId}`, { state: { internId } }); // Navigate to the details page using the item ID
+        //         window.location.href = `/DetailsIntern/${internId}`; // יש להתאים את הכתובת למבנה הנתיבים של האפליקציה
+        //     }
+        // }
     };
 
     return (

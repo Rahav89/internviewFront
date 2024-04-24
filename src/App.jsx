@@ -21,6 +21,7 @@ function App() {
     useEffect(() => {
         document.body.dir = "ltr";
         document.body.style.backgroundColor = theme.palette.background.default;
+        document.body.style.color="black"
     }, []);
     return (
         <ThemeProvider theme={theme}>
