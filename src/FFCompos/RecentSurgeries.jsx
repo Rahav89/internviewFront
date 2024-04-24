@@ -30,8 +30,12 @@ export default function RecentSurgeries() {
             setTimelineData(data.map(item => {
                 const [date, time] = item.surgery_date.split('T');
                 const [year, month, day] = date.split('-');
-                return { ...item, surgeryDate: `${day}-${month}-${year}` };
-            }));
+                return { 
+                    ...item, 
+                    surgeryDate: `${day}-${month}-${year}`,
+                    surgeryTime: time.split('.')[0] // Extract time and remove milliseconds
+                };
+            }));            
         })
         .catch(error => {
             console.error("Error in List 5 Recent Surgeries: ", error);
@@ -56,7 +60,7 @@ export default function RecentSurgeries() {
                                     {item.procedureName}
                                 </Typography>
                                 <Typography variant="h6" sx={{ fontSize: '1rem', width: '100%' }}>
-                                    {item.surgeryDate}
+                                    {`${item.surgeryTime}\u00A0\u00A0\u00A0${item.surgeryDate}`}
                                 </Typography>
                             </TimelineContent>
                             <TimelineSeparator>
@@ -69,4 +73,4 @@ export default function RecentSurgeries() {
             </Box>
         </>
     );
-};
+}
