@@ -38,7 +38,7 @@ function FullSyllabus() {
   );
 
   // Sort the data based on the selected criteria
-  const sortedData = filteredData.sort((a, b) => {
+  let sortedData = filteredData.sort((a, b) => {
     if (sortBy === 'procedureName') {
       return a.procedureName.localeCompare(b.procedureName);
     } else if (sortBy === 'haveDone') {
@@ -67,6 +67,17 @@ function FullSyllabus() {
   // Select the top 10 items
   const topTenData = sortedDataByNeed.slice(0, 10);
 
+  // Sort the data based on the selected criteria
+  sortedData = topTenData.sort((a, b) => {
+    if (sortBy === 'procedureName') {
+      return a.procedureName.localeCompare(b.procedureName);
+    } else if (sortBy === 'haveDone') {
+      return b.haveDone - a.haveDone;
+    } else {
+      return b.need - a.need;
+    }
+  });
+
   // Extracting procedureNames, haveDone counts, and left counts from the top 10 data
   const procedureNames = topTenData.map(item => item.procedureName);
   const haveDones = topTenData.map(item => item.haveDone);
@@ -79,7 +90,7 @@ function FullSyllabus() {
     labels: procedureNames,
     datasets: [
       {
-        label: 'Surgeries haveDone',
+        label: 'ניתוחים שעשו',
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
@@ -88,7 +99,7 @@ function FullSyllabus() {
 
       },
       {
-        label: 'Surgeries Left',
+        label: 'ניתוחים שנשאר',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,
@@ -99,29 +110,6 @@ function FullSyllabus() {
     ],
   };
 
-  // Options for the chart Vertical
-  // const chartOptions = {
-  //   plugins: {
-  //     tooltip: {
-  //       mode: 'index',
-  //       intersect: false,
-  //     },
-  //   },
-  //   scales: {
-  //     x: {
-  //       stacked: true,
-  //       ticks: {
-  //         autoSkip: false,
-  //         // maxRotation: 90,
-  //         // minRotation: 90,
-  //       },
-  //     },
-  //     y: {
-  //       stacked: true,
-  //     },
-  //   },
-  // };
-
   // Options for the chart Horizontal
   const chartOptions = {
     indexAxis: 'y', // Set index axis to 'y' to make the chart horizontal
@@ -131,6 +119,7 @@ function FullSyllabus() {
       },
     },
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         stacked: true,
@@ -206,7 +195,7 @@ function FullSyllabus() {
         </Box>
 
       </Box>
-      <Box sx={{  overflowY: 'auto', overflowX: "hidden" }}>
+      <Box sx={{ overflowY: 'auto', overflowX: "hidden", height: '500px' }}>
         <Bar data={chartData} options={chartOptions} />
       </Box>
     </Box>
