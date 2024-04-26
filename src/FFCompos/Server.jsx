@@ -1,3 +1,4 @@
+import { ContactSupportOutlined } from "@mui/icons-material";
 
 // קבלת פרטי המתמחה לפי האידי שלו מהשרת
 const localHost="https://localhost:7220/api/"
@@ -174,4 +175,81 @@ export const GetInternSurgeriesByProcedure = (internId, procedure_Id) => {
             console.error("Error in GetInternSurgeriesByProcedure: ", error);
             throw error;
         });
+};
+
+export const GetInternsForChat = (internId) => {
+    return fetch(`${api}Messages/GetInternsForChat?id=${internId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        }
+    })
+        .then(response => {
+            console.log("HTTP Status:", response.status); // Log the HTTP status
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Error in GetInternSurgeriesByProcedure: ", error);
+            throw error;
+        });
+};
+
+
+export const GetChatWithPartner = (internId, Intern_Partner_id) => {
+    return fetch(`${api}Messages/GetChatWithPartner?idIntern=${internId}&idPartner=${Intern_Partner_id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        }
+    })
+        .then(response => {
+            console.log("HTTP Status:", response.status); // Log the HTTP status
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Error in GetInternSurgeriesByProcedure: ", error);
+            throw error;
+        });
+};
+export const InsertNewMessage = (message) => {
+    console.log("Sending message:", message);
+    return fetch(`${api}Messages/AddNewMessage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify(message) // Correctly format the body as a JSON string
+    })
+    .then(response => {
+        console.log("HTTP Status:", response.status); // Log the HTTP status
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                // Log detailed error message from the server
+                console.error("Detailed error response:", errorData);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .catch(error => {
+        if (error instanceof Error) {
+            console.error("Error message: ", error.message);
+        } else {
+            console.error("Error in InsertNewMessage: ", error);
+            return error.text().then((errorMessage) => {
+                console.error("Detailed error from server: ", errorMessage);
+            });
+        }
+        throw error;
+    });
+    
 };

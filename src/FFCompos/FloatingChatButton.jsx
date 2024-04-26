@@ -1,11 +1,22 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Fab, Popover, DialogTitle, List, ListItem, ListItemText, IconButton, Divider, Avatar } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CloseIcon from '@mui/icons-material/Close';
 import ChatUI from './Chat'; // Import your Chat component
+import { GetInternsForChat } from './Server.jsx';
 
 export default function FloatingChatButton() {
+    const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
+    const [internsToTalk, setInternsToTalk] = useState([]);
+
+    useEffect(() => {
+        GetInternsForChat(internID)
+            .then((data) => { setInternsToTalk(data); })
+            .catch((error) => {
+                console.error("Error in GetInternsForChat: ", error);
+            });
+    }, []);
+
+    console.log(internsToTalk);
     const [open, setOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const anchorRef = useRef(null);
@@ -57,23 +68,27 @@ export default function FloatingChatButton() {
                 {/* Use the IconButton with CloseIcon for a closing button if needed */}
                 {selectedUser == null ? (
                     <>
-                        <DialogTitle id="user-select-title">Select a user to chat with</DialogTitle>
-                        <List sx={{ pt: 0, height: "50vh" }}>
-                            {['User 1', 'User 2', 'User 3', 'User 4'].map((user, index, array) => (
-                                <React.Fragment key={user}>
-                                    <ListItem button onClick={() => handleUserSelect(user)}>
+                        <DialogTitle id="user-select-title" sx={{ textAlign: 'right' , mr:2}}>בחר עם מי תרצה לשוחח</DialogTitle>
+                        <List sx={{ pt: 0, height: "50vh" }} dir="rtl">
+                            {internsToTalk.map((intern, index, array) => (
+                                <React.Fragment key={intern.Intern_id}>
+                                    <ListItem button onClick={() => handleUserSelect(intern)}>
                                         <Avatar sx={{
-                                            width:"4vh",
-                                            height:"4vh",
+                                            width: "4vh",
+                                            height: "4vh",
                                             border: '1px solid #72bcd4',
                                             mr: 2,
                                             bgcolor: '#99cfe0'
-                                        }}>{user[1]}</Avatar>
-                                        <ListItemText primary={user} />
+                                        }}>
+                                            {/* Using the first letter of the first name as the Avatar content */}
+                                            {intern.First_name[0]}
+                                        </Avatar>
+                                        <ListItemText
+                                            sx={{ textAlign: 'right' , mr:2}}
+                                            primary={`${intern.First_name} ${intern.Last_name}`} />
                                     </ListItem>
                                     {index < array.length - 1 && <Divider />}
                                 </React.Fragment>
-                                
                             ))}
                         </List>
                     </>
