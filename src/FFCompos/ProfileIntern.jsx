@@ -22,17 +22,21 @@ export default function ProfileIntern() {
     password_i: "",
     first_name: "",
     last_name: "",
+    email_i: ""
   });
+  // console.log(formData)
 
   useEffect(() => {
     const internID = JSON.parse(sessionStorage.getItem("currentUserID"));
     GetInternByID(internID) // Call GetInternByID to fetch intern data
       .then((data) => {
         setCurrentUser(data);
+        console.log(data)
         setFormData({
           password_i: data.password_i, // Keep existing password if any
           first_name: data.first_name, // Assuming the data has a 'firstName' property
           last_name: data.last_name, // Assuming the data has a 'lastName' property
+          email_i: data.email_I // Assuming data property is email_i
         });
       })
       .catch((error) => {
@@ -64,6 +68,7 @@ export default function ProfileIntern() {
     passwordConfirmation: false,
     first_name: false,
     last_name: false,
+    email_i: false
   });
 
   // טיפול בשינויים בשדות הטופס
@@ -73,6 +78,15 @@ export default function ProfileIntern() {
       ...prevData,
       [name]: value,
     }));
+
+    // אם מדובר בשדה האימייל, בצע ולידציה
+    if(name === "email_i") {
+      const isValidEmail = validateEmail(value);
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        email_i: !isValidEmail,
+      }));
+    }
   };
 
   //פונקציה הבודקת את הולידציה של הסיסמא
@@ -96,6 +110,12 @@ export default function ProfileIntern() {
     );
   }
 
+  // פונקציה לבדיקת תקינות כתובת מייל
+  function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const isPasswordValid = validatCurrentePassword(formData.currentPassword);
@@ -104,24 +124,27 @@ export default function ProfileIntern() {
     );
     const isFirstNameValid = validateTextOnly(formData.firstName);
     const isLastNameValid = validateTextOnly(formData.lastName);
-    console.log(isPasswordValid, isFirstNameValid, isLastNameValid);
+    const isEmailIValid = validateEmail(formData.email_i);
+    console.log(isPasswordValid, isFirstNameValid, isLastNameValid, isEmailIValid);
     setFormErrors({
       password_i: !isPasswordValid,
       passwordConfirmation: !isPasswordConfirmationValid,
       firstName: !isFirstNameValid,
       lastName: !isLastNameValid,
+      email_i: !isEmailIValid
     });
 
     if (
       isPasswordConfirmationValid &&
       isPasswordValid &&
       isFirstNameValid &&
-      isLastNameValid
+      isLastNameValid &&
+      isEmailIValid
     ) {
       // פונקציה לעדכון פרטי המתמחה בשרת
       updateIntern(currentUser.id, formData)
         .then((data) => {
-          //console.log('Submitting form data:', data);
+          console.log('Submitting form data:', data);
           if (data) {
             Swal.fire({
               title: "Success!",
@@ -200,6 +223,25 @@ export default function ProfileIntern() {
                             : ""
                         }
                         disabled
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        name="email_i"
+                        id="email"
+                        label="כתובת אימייל"
+                        autoComplete="כתובת אימייל"
+                        value={formData.email_i}
+                        onChange={handleChange}
+                        error={formErrors.email_i}
+                        helperText={
+                          formErrors.email_i ? "אנא הזן כתובת אימייל תקינה" : ""
+                        }
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
                       />
                     </Grid>
 

@@ -35,6 +35,8 @@ function displayBackground(pos1, pos2) {
     return 'white';
 }
 
+//פונקציה להמרת מערך הנתונים
+//ממירה את המערך הנתונים מהשרת לפורמט שניתן להציג כטבלה
 function transformArray(procedures) {
     let result = [];
 

@@ -6,6 +6,7 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
+import { api } from './Server';
 
 // קומפוננטת הניתוחים האחרונים
 export default function RecentSurgeries() {
@@ -13,7 +14,7 @@ export default function RecentSurgeries() {
     const [timelineData, setTimelineData] = React.useState([]);
 
     React.useEffect(() => {
-        fetch(`https://localhost:7220/api/Interns/FiveRecentInternSurgeries?internId=${currentUserID}`, {
+        fetch(`${api}Interns/FiveRecentInternSurgeries?internId=${currentUserID}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',

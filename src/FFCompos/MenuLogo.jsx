@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import MailIcon from '@mui/icons-material/Mail'; // Import for message icon
 import logoImage from '/src/Image/doctor1.png';
+//-----------------------------------------------------------
 const settings = ['ניהול משתמש', 'Account', 'התנתק'];
 
 export default function MenuLogo() {

@@ -1,8 +1,10 @@
 
 // קבלת פרטי המתמחה לפי האידי שלו מהשרת
-
+const localHost="https://localhost:7220/api/"
+const ruppinApi="https://proj.ruppin.ac.il/cgroup10/api..."
+export const api = localHost
 export const GetInternByID = (iternID) => {
-    return fetch(`https://localhost:7220/api/Interns/GetInternByID/${iternID}`, {
+    return fetch(`${api}Interns/GetInternByID/${iternID}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -23,7 +25,7 @@ export const GetInternByID = (iternID) => {
 
 // קבלת הסילבוס של המתמחה לפי האידי שלו מהשרת
 export const getSyllabus = (internId) => {
-    return fetch(`https://localhost:7220/api/Interns/GetSyllabusOfIntern?internId=${internId}`, {
+    return fetch(`${api}Interns/GetSyllabusOfIntern?internId=${internId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -52,8 +54,9 @@ export const LogInIntern = (internId, password) => {
         Interns_year: "",
         Interns_rating: 0,
         isManager: false,
+        Email_i: ""
     };
-    return fetch('https://localhost:7220/api/Interns/LogInIntern', {
+    return fetch('${api}Interns/LogInIntern', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -80,9 +83,10 @@ export const updateIntern = (internID, formData) => {
         Interns_year: "",
         Interns_rating: 0,
         isManager: false,
+        Email_I: formData.email_i
     };
     console.log(internObjectUpdate);
-    return fetch(`https://localhost:7220/api/Interns/updateIntern/${internID}`, {
+    return fetch(`${api}Interns/updateIntern/${internID}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -99,14 +103,14 @@ export const updateIntern = (internID, formData) => {
             console.error("Error in updateIntern: ", error);
             throw error;
         });
-
 }
+
 
 
 
 //קבלת כמות הפרוצדורות של המתמחים
 export const GetCountProceduresByIntern = () => {
-    return fetch(`https://localhost:7220/api/Interns/GetInternProcedureCounter`, {
+    return fetch(`${api}Interns/GetInternProcedureCounter`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -126,7 +130,7 @@ export const GetCountProceduresByIntern = () => {
 }
 
 export const getDetailedSyllabusOfIntern = (internId) => {
-    return fetch(`https://localhost:7220/api/Interns/fullDetailedSyllabusOfIntern?internID=${internId}`, {
+    return fetch(`${api}Interns/fullDetailedSyllabusOfIntern?internID=${internId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -148,7 +152,7 @@ export const getDetailedSyllabusOfIntern = (internId) => {
 
 
 export const GetInternSurgeriesByProcedure = (internId, procedure_Id) => {
-    return fetch(`https://localhost:7220/api/Interns/GetInternSurgeriesByProcedure/${procedure_Id}/${internId}`, {
+    return fetch(`${api}Interns/GetInternSurgeriesByProcedure/${procedure_Id}/${internId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
