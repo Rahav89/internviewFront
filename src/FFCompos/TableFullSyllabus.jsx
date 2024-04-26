@@ -1,29 +1,24 @@
-/* eslint-disable react/prop-types */
+
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
-import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
+import { useState, useEffect, useMemo} from 'react';
 import { getDetailedSyllabusOfIntern } from './Server.jsx';
 import MenuLogo from '../FFCompos/MenuLogo';
-import Grid from '@mui/material/Grid';
 import '../App.css';
-import { TextField, Button,InputAdornment} from '@mui/material';
-import { useMemo } from 'react';
-import ImportExportIcon from '@mui/icons-material/ImportExport';
-import SearchIcon from '@mui/icons-material/Search';
+import FloatingChatButton from './FloatingChatButton';
+/* icons */
+import {
+    KeyboardArrowDown as KeyboardArrowDownIcon,
+    KeyboardArrowUp as KeyboardArrowUpIcon,
+    VerticalAlignTop as VerticalAlignTopIcon,
+    VerticalAlignBottom as VerticalAlignBottomIcon,
+    ImportExport as ImportExportIcon,
+    Search as SearchIcon
+  } from '@mui/icons-material';
+/* mui material */
+import {
+  Box, Collapse, IconButton, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Typography, Paper, Grid, TextField, Button, InputAdornment
+} from '@mui/material';
 
 function displayColor(requiredAsPosition) {
     return requiredAsPosition === 0 ? 'grey' : 'black';
@@ -35,8 +30,6 @@ function displayBackground(pos1, pos2) {
     return 'white';
 }
 
-//פונקציה להמרת מערך הנתונים
-//ממירה את המערך הנתונים מהשרת לפורמט שניתן להציג כטבלה
 function transformArray(procedures) {
     let result = [];
 
@@ -101,7 +94,7 @@ export default function DetailedSyllabusTable(props) {
 
     function Row(props) {
         const { row } = props; 
-        const [open, setOpen] = React.useState(false);
+        const [open, setOpen] = useState(false);
         let pName = row.procedureName;
         let reqAsAdmin = row.requiredAsMain;
         let doneAsAsmin = row.doneAsMain;
@@ -269,14 +262,6 @@ export default function DetailedSyllabusTable(props) {
                                     shrink: true,  // This will make the label always appear above the TextField
                                 }}
                             />
-
-                            {/* <TextField
-                                label="חיפוש ניתוח"
-                                variant="outlined"
-                                value={searchValue}
-                                onChange={onChangeSearch}
-                                sx={{ width: 250, direction: 'rtl' }}
-                            /> */}
                         </Box>
                         <TableContainer component={Paper} sx={{ maxHeight: 620, mb: "100px", direction: "rtl", overflowX: "auto" }}>
                             <Table stickyHeader aria-label="collapsible table" sx={{ tableLayout: 'fixed', overflow: "scroll" }}>
@@ -321,6 +306,7 @@ export default function DetailedSyllabusTable(props) {
                     </Grid>
                 </Box>
 
+                <FloatingChatButton/>
             </Grid>
         </>
 

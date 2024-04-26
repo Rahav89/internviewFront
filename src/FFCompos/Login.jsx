@@ -20,7 +20,7 @@ import doctorHomePic from '/src/Image/doctorHomePic.png'
 import logoHomePic from '/src/Image/InternView.png';
 import { api } from './Server';
 
-
+import { LogInIntern } from './Server';
 //--------------------------------------------------
 
 export default function Login() {

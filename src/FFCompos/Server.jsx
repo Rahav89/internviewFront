@@ -56,7 +56,7 @@ export const LogInIntern = (internId, password) => {
         isManager: false,
         Email_i: ""
     };
-    return fetch('${api}Interns/LogInIntern', {
+    return fetch(`${api}Interns/LogInIntern`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
