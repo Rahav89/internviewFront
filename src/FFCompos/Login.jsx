@@ -35,6 +35,8 @@ export default function Login() {
         internId: '',
         password: '',
     });
+
+    //שליחת אימייל- useState
     const [emailIntern, setEmailIntern] = React.useState("")
 
     // אובייקט של שגיאות הטופס - useState 
@@ -43,7 +45,13 @@ export default function Login() {
         password: false,
     });
 
+    // open the dialog-  useState
     const [open, setOpen] = React.useState(false);
+
+    //useState- פונקציה רנדומלית שמגרילה מספרים
+    const [number, setNumber] = React.useState(generateRandomNumber());
+    //useState- סטטוס של שליחה המייל 
+    const [status, setStatus] = React.useState('');
 
     // פונקציה המטפלת בצ'אק בוקס של הסיסמא - בכל לחיצה נשנה מאמת לשקר ולהפך
     const handleShowPassword = () => {
@@ -139,56 +147,113 @@ export default function Login() {
         setOpen(false);
     };
 
-    const handleResetPassword = async () => {
 
-        // Validate the email address before sending it to the server
-        if (!validateGmailAddress(emailIntern)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Email',
-                text: 'Please enter a valid Gmail address.',
-            });
-            return;
-        }
+    // async function handleResetPassword(event) {
+    //     event.preventDefault(); // Prevent form submission page reload
 
-        // Make the API request
-        try {
-            const response = await fetch(`${api}Interns/checkEmailIntern/${emailIntern}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Accept': 'application/json; charset=UTF-8',
-                },
-            });
+    //     // Validate the email address before sending it to the server
+    //     if (!validateGmailAddress(emailIntern)) {
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Invalid Email',
+    //             text: 'Please enter a valid Gmail address.',
+    //         });
+    //         return;
+    //     }
 
-            const data = await response.json();  // Assuming the server responds with JSON
+    //     const generatedNumber = generateRandomNumber(); // Generate a new random number
+    //     setNumber(generatedNumber); // Update the number in the state
 
-            // Handle response based on success or error
-            handleClose();  // Close the dialog 
-            if (data) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Check your email for reset instructions.',
-                });
-            } else {
-                throw new Error(data.message || 'Failed to reset password');
-            }
-        } catch (error) {
-            console.error('Reset password error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: `Error reseting password: ${error.message}`,
-            });
-        }
-    };
+    //     const postData = {
+    //         email: emailIntern,
+    //         number: generatedNumber
+    //     };
+
+    //     // Make the API request
+    //     try {
+    //         const response = await fetch(`${api}/reset-password`, {  // Updated endpoint for clarity
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json; charset=UTF-8',
+    //                 'Accept': 'application/json; charset=UTF-8',
+    //             },
+    //             body: JSON.stringify(postData)
+    //         });
+
+    //         if (!response.ok) {  // Check if the HTTP response status code is successful
+    //             throw new Error('Network response was not ok');
+    //         }
+
+    //         const data = await response.json();  // Assuming the server responds with JSON
+
+    //         // Handle response based on success or error
+    //         handleClose();  // Close the dialog 
+    //         if (data.success) {  // Assuming success is a boolean in the returned JSON
+    //             Swal.fire({
+    //                 icon: 'success',
+    //                 title: 'Success',
+    //                 text: 'Check your email for reset instructions.',
+    //             });
+    //         } else {
+    //             throw new Error(data.message || 'Failed to reset password');
+    //         }
+    //     } catch (error) {
+    //         console.error('Reset password error:', error);
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Error',
+    //             text: `Error resetting password: ${error.message}`,
+    //         });
+    //     }
+    // };
 
     // פונקציה לבדיקת תקינות כתובת מייל
     function validateGmailAddress(email) {
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        return emailRegex.test(email);
+        const regex = /^[a-zA-Z0-9.+_-]+@gmail\.com$/;
+        return regex.test(email);
     }
+
+    // פונקציה שמגרילה מספר בן 10 ספרות
+    function generateRandomNumber() {
+        const min = 1000000000;
+        const max = 9999999999;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // //POST פונקציה ששולחת את המייל והמספר בבקשת 
+    // async function handleSubmitEmail(event) {
+    //     event.preventDefault(); // מניעת טעינת הדף
+    //     const generatedNumber = generateRandomNumber(); // גרילת מספר חדש
+    //     setNumber(generatedNumber); // עדכון המספר במצב
+
+    //     const postData = {
+    //         email: email,
+    //         number: generatedNumber
+    //     };
+
+    //     try {
+    //         const response = await fetch('YOUR_ENDPOINT_URL', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json; charset=UTF-8',
+    //                 'Accept': 'application/json; charset=UTF-8',
+    //             },
+    //             body: JSON.stringify(postData)
+    //         });
+    //         if (response.ok) {
+    //             const result = await response.json();
+    //             setStatus('הנתונים נשלחו בהצלחה: ' + JSON.stringify(result));
+    //         } else {
+    //             throw new Error('בעיה בשליחת הנתונים');
+    //         }
+    //     } catch (error) {
+    //         setStatus('שגיאה: ' + error.message);
+    //     }
+    // }
+
+    // רנדר סיסמא 
+    // שולחת API 
+    //POST - Email,passRend
 
     return (
         <Container component="main" maxWidth="xs">
@@ -278,7 +343,8 @@ export default function Login() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleResetPassword}>Reset Password</Button>
+                    {/* <Button onClick={handleResetPassword}>check Email Intern</Button> */}
+                    {/* <Button onClick={handleResetPassword}>Reset Password</Button> */}
                 </DialogActions>
             </Dialog>
         </Container>

@@ -80,7 +80,7 @@ export default function ProfileIntern() {
     }));
 
     // אם מדובר בשדה האימייל, בצע ולידציה
-    if(name === "email_i") {
+    if (name === "email_i") {
       const isValidEmail = validateEmail(value);
       setFormErrors((prevErrors) => ({
         ...prevErrors,
@@ -112,8 +112,8 @@ export default function ProfileIntern() {
 
   // פונקציה לבדיקת תקינות כתובת מייל
   function validateEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
+    const regex = /^[a-zA-Z0-9.+_-]+@gmail\.com$/;
+    return regex.test(email);
   }
 
   const handleSubmit = (event) => {

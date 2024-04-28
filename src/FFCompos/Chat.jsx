@@ -22,7 +22,7 @@ const ChatUI = ({ user, onBack }) => {
 
     const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
     const [chatMessages, setChatMessages] = useState([]);
-
+    // לוקח את כל הנתונים מהפיירבייס
     useEffect(() => {
         // Create a reference to the 'messages/' path in the Firebase Realtime Database
         const messagesRef = ref(database, 'messages/');
@@ -48,6 +48,7 @@ const ChatUI = ({ user, onBack }) => {
         return () => off(messagesRef);
     }, []);
 
+    //כששולחים הודעה זה מכניס לפיירבייס
     const handleSend = () => {
         if (input.trim() !== "") {
             // Create a new reference for a message in the 'messages/' path of the Firebase Realtime Database.
@@ -56,6 +57,7 @@ const ChatUI = ({ user, onBack }) => {
                 from_id: internID,
                 to_id: user.Intern_id,
                 content: input.trim(),
+                messages_date: new Date().toISOString()
                 messages_date: new Date().toISOString()
             };
             // Push the new message object to the Firebase Realtime Database.
