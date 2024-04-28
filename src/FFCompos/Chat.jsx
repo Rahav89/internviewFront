@@ -58,7 +58,6 @@ const ChatUI = ({ user, onBack }) => {
                 to_id: user.Intern_id,
                 content: input.trim(),
                 messages_date: new Date().toISOString()
-                messages_date: new Date().toISOString()
             };
             // Push the new message object to the Firebase Realtime Database.
             push(newMessageRef, message);
