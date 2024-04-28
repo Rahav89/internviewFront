@@ -1,66 +1,31 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import React from 'react';
+import emailjs from 'emailjs-com';
 
-export default function FormDialog() {
-  const [open, setOpen] = React.useState(false);
+function sendEmail(e) {
+    e.preventDefault();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open form dialog
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          component: 'form',
-          onSubmit: (event) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries(formData.entries());
-            const email = formJson.email;
-            console.log(email);
-            handleClose();
-          },
-        }}
-      >
-        <DialogTitle>Subscribe</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="email"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Subscribe</Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-  );
+    emailjs.sendForm('service_riczz6e', 'YOUR_TEMPLATE_ID', e.target, 'XevYnHw2VwCxgAt_1')
+        .then((result) => {
+            console.log('Email successfully sent!', result.text);
+            alert('Email sent successfully!');
+        }, (error) => {
+            console.log('Failed to send email.', error.text);
+            alert('Failed to send email: ' + error.text);
+        });
 }
+
+function ContactForm() {
+    return (
+        <form onSubmit={sendEmail}>
+            <label>שם:</label>
+            <input type="text" name="user_name" required />
+            <label>אימייל:</label>
+            <input type="email" name="user_email" required />
+            <label>הודעה:</label>
+            <textarea name="message" required />
+            <button type="submit">שלח</button>
+        </form>
+    );
+}
+
+export default ContactForm;

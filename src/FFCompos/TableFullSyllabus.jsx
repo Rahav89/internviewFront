@@ -19,10 +19,12 @@ import {
   Box, Collapse, IconButton, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Typography, Paper, Grid, TextField, Button, InputAdornment
 } from '@mui/material';
+//-----------------------------------------------------------
 
 function displayColor(requiredAsPosition) {
     return requiredAsPosition === 0 ? 'grey' : 'black';
 }
+
 function displayBackground(pos1, pos2) {
     if (pos1 != 0) {
         return pos1 <= pos2 ? '#90ee90' : 'white';
@@ -30,6 +32,8 @@ function displayBackground(pos1, pos2) {
     return 'white';
 }
 
+//פונקציה להמרת מערך הנתונים
+//ממירה את המערך הנתונים מהשרת לפורמט שניתן להציג כטבלה
 function transformArray(procedures) {
     let result = [];
 
