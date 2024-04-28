@@ -13,7 +13,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
 import '../App.css';
-import { GetChatWithPartner, InsertNewMessage } from './Server.jsx';
+import { database } from '../firebase'; // adjust path as necessary
+import { ref, onValue, push, off } from 'firebase/database';
+
 
 const ChatUI = ({ user, onBack }) => {
 
@@ -22,12 +24,41 @@ const ChatUI = ({ user, onBack }) => {
     const [chatMessages, setChatMessages] = useState([]);
 
     useEffect(() => {
-        GetChatWithPartner(internID, user.Intern_id)
-            .then((data) => { setChatMessages(data); })
-            .catch((error) => {
-                console.error("Error in GetInternsForChat: ", error);
-            });
-    }, []);
+        const messagesRef = ref(database, 'messages/');
+        onValue(messagesRef, (snapshot) => {
+            const data = snapshot.val();
+            const loadedMessages = [];
+            for (const key in data) {             
+                loadedMessages.push({ messages_id: key, ...data[key] });
+            }
+            //נטען רק את ההודעות בין 2 המשתמשים
+            const filteredMessages = loadedMessages.filter(message => 
+                (message.from_id === internID && message.to_id === user.Intern_id) ||
+                (message.from_id === user.Intern_id && message.to_id === internID)
+            );
+            setChatMessages(filteredMessages);
+            scrollToBottom();
+        });
+
+        // Detach listener when the component unmounts
+        return () => off(messagesRef);
+    }, [internID, user.Intern_id]);
+
+    const handleSend = () => {
+        if (input.trim() !== "") {
+            const newMessageRef = ref(database,'messages/');
+            const message = {
+                from_id: internID,
+                to_id: user.Intern_id,
+                content: input.trim(),
+                messages_date: new Date().toISOString() 
+            };
+
+            push(newMessageRef, message);
+            setInput("");
+        }
+    };
+
 
     console.log(chatMessages);
 
@@ -40,39 +71,9 @@ const ChatUI = ({ user, onBack }) => {
     // Scroll to the bottom of the messages every time the messages array changes
     useEffect(() => {
         scrollToBottom();
-    }, []);
+    }, [chatMessages]);
 
     const [input, setInput] = useState("");
-
-    function getCurrentDateTime() {
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 to month since it's zero-based
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const hours = String(currentDate.getHours()).padStart(2, '0');
-        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    }
-              
-    const handleSend = () => {
-        if (input.trim() !== "") {
-            console.log(input);
-            let message = {
-                messages_id: 0,
-                from_id:internID,
-                to_id: user.Intern_id,
-                content:input.trim(),
-                messages_date:  Date().toISOString()// Correct usage
-            }
-            InsertNewMessage(message)
-            .then((data) => { console.log(data); })
-            .catch((error) => {
-                console.error("Error in GetInternsForChat: ", error);
-            });
-            setInput("");
-        }
-    };
 
     const handleInputChange = (event) => {
         setInput(event.target.value);
