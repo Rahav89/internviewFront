@@ -3,6 +3,7 @@ import { Fab, Popover, DialogTitle, List, ListItem, ListItemText, IconButton, Di
 import ChatIcon from '@mui/icons-material/Chat';
 import ChatUI from './Chat'; // Import your Chat component
 import { GetInternsForChat } from './Server.jsx';
+import { Badge } from '@mui/material';
 
 export default function FloatingChatButton() {
     const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
@@ -38,12 +39,29 @@ export default function FloatingChatButton() {
         setSelectedUser(null);
     };
 
+    const [unreadCount, setUnreadCount] = useState(1);
+
+
     return (
         <>
+
             <Fab color="primary" aria-label="chat" onClick={handleClickOpen}
                 style={{ position: 'fixed', bottom: 20, right: 20 }} ref={anchorRef}>
-                <ChatIcon />
+                <Badge badgeContent={unreadCount} color="error"
+                    sx={{
+                        '.MuiBadge-badge': {
+                            top: '-10px', // Moves the badge up
+                            right: '-7px', // Moves the badge to the right
+                            height: '21px', // Increase the height of the badge
+                            minWidth: '21px', // Increase the minimum width of the badge to make it round
+                            fontSize: '0.8rem', // Increase the font size of the badge content
+                        },
+                    }}>
+                    <ChatIcon />
+                </Badge>
             </Fab>
+
+
             <Popover
                 open={open}
                 onClose={handleClose}
@@ -68,7 +86,7 @@ export default function FloatingChatButton() {
                 {/* Use the IconButton with CloseIcon for a closing button if needed */}
                 {selectedUser == null ? (
                     <>
-                        <DialogTitle id="user-select-title" sx={{ textAlign: 'right' , mr:2}}>בחר עם מי תרצה לשוחח</DialogTitle>
+                        <DialogTitle id="user-select-title" sx={{ textAlign: 'right', mr: 2 }}>בחר עם מי תרצה לשוחח</DialogTitle>
                         <List sx={{ pt: 0, height: "50vh" }} dir="rtl">
                             {internsToTalk.map((intern, index, array) => (
                                 <React.Fragment key={intern.Intern_id}>
@@ -84,7 +102,7 @@ export default function FloatingChatButton() {
                                             {intern.First_name[0]}
                                         </Avatar>
                                         <ListItemText
-                                            sx={{ textAlign: 'right' , mr:2}}
+                                            sx={{ textAlign: 'right', mr: 2 }}
                                             primary={`${intern.First_name} ${intern.Last_name}`} />
                                     </ListItem>
                                     {index < array.length - 1 && <Divider />}

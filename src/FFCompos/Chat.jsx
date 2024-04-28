@@ -13,7 +13,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
 import '../App.css';
-import { database } from '../firebase'; // adjust path as necessary
+import { database } from '../firebase'; // the data from Firebase Realtime Database
 import { ref, onValue, push, off } from 'firebase/database';
 
 
@@ -24,15 +24,19 @@ const ChatUI = ({ user, onBack }) => {
     const [chatMessages, setChatMessages] = useState([]);
 
     useEffect(() => {
+        // Create a reference to the 'messages/' path in the Firebase Realtime Database
         const messagesRef = ref(database, 'messages/');
+        // Listen for changes at the 'messages/' path with onValue method.
         onValue(messagesRef, (snapshot) => {
+            //gets the current data from the Firebase database's 'messages/' section.
             const data = snapshot.val();
             const loadedMessages = [];
-            for (const key in data) {             
+            for (const key in data) {
+                //add to the array all the messages and their id (the default key from Firebase Realtime Database)
                 loadedMessages.push({ messages_id: key, ...data[key] });
             }
-            //נטען רק את ההודעות בין 2 המשתמשים
-            const filteredMessages = loadedMessages.filter(message => 
+            // Filter the messages to include only those that are between the current user and the chat partner.
+            const filteredMessages = loadedMessages.filter(message =>
                 (message.from_id === internID && message.to_id === user.Intern_id) ||
                 (message.from_id === user.Intern_id && message.to_id === internID)
             );
@@ -42,18 +46,19 @@ const ChatUI = ({ user, onBack }) => {
 
         // Detach listener when the component unmounts
         return () => off(messagesRef);
-    }, [internID, user.Intern_id]);
+    }, []);
 
     const handleSend = () => {
         if (input.trim() !== "") {
-            const newMessageRef = ref(database,'messages/');
+            // Create a new reference for a message in the 'messages/' path of the Firebase Realtime Database.
+            const newMessageRef = ref(database, 'messages/');
             const message = {
                 from_id: internID,
                 to_id: user.Intern_id,
                 content: input.trim(),
-                messages_date: new Date().toISOString() 
+                messages_date: new Date().toISOString()
             };
-
+            // Push the new message object to the Firebase Realtime Database.
             push(newMessageRef, message);
             setInput("");
         }
