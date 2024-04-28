@@ -22,17 +22,17 @@ const ChatUI = ({ user, onBack }) => {
 
     const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
     const [chatMessages, setChatMessages] = useState([]);
-
+    // לוקח את כל הנתונים מהפיירבייס
     useEffect(() => {
         const messagesRef = ref(database, 'messages/');
         onValue(messagesRef, (snapshot) => {
             const data = snapshot.val();
             const loadedMessages = [];
-            for (const key in data) {             
+            for (const key in data) {
                 loadedMessages.push({ messages_id: key, ...data[key] });
             }
             //נטען רק את ההודעות בין 2 המשתמשים
-            const filteredMessages = loadedMessages.filter(message => 
+            const filteredMessages = loadedMessages.filter(message =>
                 (message.from_id === internID && message.to_id === user.Intern_id) ||
                 (message.from_id === user.Intern_id && message.to_id === internID)
             );
@@ -44,14 +44,15 @@ const ChatUI = ({ user, onBack }) => {
         return () => off(messagesRef);
     }, [internID, user.Intern_id]);
 
+    //כששולחים הודעה זה מכניס לפיירבייס
     const handleSend = () => {
         if (input.trim() !== "") {
-            const newMessageRef = ref(database,'messages/');
+            const newMessageRef = ref(database, 'messages/');
             const message = {
                 from_id: internID,
                 to_id: user.Intern_id,
                 content: input.trim(),
-                messages_date: new Date().toISOString() 
+                messages_date: new Date().toISOString()
             };
 
             push(newMessageRef, message);

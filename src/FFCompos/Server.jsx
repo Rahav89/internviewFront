@@ -1,14 +1,15 @@
-import { ContactSupportOutlined } from "@mui/icons-material";
+
+const localHost = "https://localhost:7220/api/"
+const ruppinApi = "https://proj.ruppin.ac.il/cgroup10/api..."
 
 // קבלת פרטי המתמחה לפי האידי שלו מהשרת
-const localHost="https://localhost:7220/api/"
-const ruppinApi="https://proj.ruppin.ac.il/cgroup10/api..."
 export const api = localHost
 export const GetInternByID = (iternID) => {
     return fetch(`${api}Interns/GetInternByID/${iternID}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
         },
     })
         .then(response => {
@@ -229,27 +230,27 @@ export const InsertNewMessage = (message) => {
         },
         body: JSON.stringify(message) // Correctly format the body as a JSON string
     })
-    .then(response => {
-        console.log("HTTP Status:", response.status); // Log the HTTP status
-        if (!response.ok) {
-            return response.json().then(errorData => {
-                // Log detailed error message from the server
-                console.error("Detailed error response:", errorData);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            });
-        }
-        return response.json();
-    })
-    .catch(error => {
-        if (error instanceof Error) {
-            console.error("Error message: ", error.message);
-        } else {
-            console.error("Error in InsertNewMessage: ", error);
-            return error.text().then((errorMessage) => {
-                console.error("Detailed error from server: ", errorMessage);
-            });
-        }
-        throw error;
-    });
-    
+        .then(response => {
+            console.log("HTTP Status:", response.status); // Log the HTTP status
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    // Log detailed error message from the server
+                    console.error("Detailed error response:", errorData);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .catch(error => {
+            if (error instanceof Error) {
+                console.error("Error message: ", error.message);
+            } else {
+                console.error("Error in InsertNewMessage: ", error);
+                return error.text().then((errorMessage) => {
+                    console.error("Detailed error from server: ", errorMessage);
+                });
+            }
+            throw error;
+        });
+
 };

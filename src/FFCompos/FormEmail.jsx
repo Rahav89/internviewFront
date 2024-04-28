@@ -4,13 +4,13 @@ import emailjs from 'emailjs-com';
 function sendEmail(e) {
     e.preventDefault();
 
-    emailjs.sendForm('service_riczz6e', 'YOUR_TEMPLATE_ID', e.target, 'XevYnHw2VwCxgAt_1')
+    emailjs.sendForm('service_riczz6e', 'template_ysrygc8', e.target, 'XevYnHw2VwCxgAt_1')
         .then((result) => {
             console.log('Email successfully sent!', result.text);
-            alert('Email sent successfully!');
+            // alert('Email sent successfully!');
         }, (error) => {
             console.log('Failed to send email.', error.text);
-            alert('Failed to send email: ' + error.text);
+            // alert('Failed to send email: ' + error.text);
         });
 }
 
