@@ -106,6 +106,25 @@ export const updateIntern = (internID, formData) => {
             throw error;
         });
 }
+export const updateInternPassword = (email, password) => {
+
+    return fetch(`${api}Interns/UpdateInternPassword/${email}/${password}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Error in updateIntern: ", error);
+            throw error;
+        });
+}
 
 
 

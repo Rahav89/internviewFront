@@ -15,7 +15,9 @@
     transform: rotate(360deg);
   }
 }
-
+.swal2-container {
+  z-index: 1500 !important; /* Higher than most elements */
+}
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;

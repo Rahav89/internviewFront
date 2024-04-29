@@ -18,7 +18,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Swal from 'sweetalert2';
 import doctorHomePic from '/src/Image/doctorHomePic.png'
 import logoHomePic from '/src/Image/InternView.png';
-import { api } from './Server';
+import { api, updateInternPassword } from './Server';
+import emailjs from 'emailjs-com';
+
 
 import { LogInIntern } from './Server';
 //--------------------------------------------------
@@ -29,6 +31,7 @@ export default function Login() {
 
     //צאק בוקס של צפייה בסיסמא - useState
     const [showPassword, setShowPassword] = React.useState(false);
+    const [tempPassDialog, setTempPassDialog] = React.useState(false);
 
     // אובייקט של הטופס - useState 
     const [formData, setFormData] = React.useState({
@@ -38,6 +41,13 @@ export default function Login() {
 
     //שליחת אימייל- useState
     const [emailIntern, setEmailIntern] = React.useState("")
+
+    const [newPassword, setNewPassword] = React.useState("")
+    const [tempPassCorrect, setTempPassCorrect] = React.useState(false)
+    const [tempPass, setTempPass] = React.useState("bla")
+    React.useEffect(() => {
+        setTempPassCorrect(Number(number) === Number(tempPass))
+    }, [tempPass])
 
     // אובייקט של שגיאות הטופס - useState 
     const [formErrors, setFormErrors] = React.useState({
@@ -49,9 +59,8 @@ export default function Login() {
     const [open, setOpen] = React.useState(false);
 
     //useState- פונקציה רנדומלית שמגרילה מספרים
-    const [number, setNumber] = React.useState(generateRandomNumber());
-    //useState- סטטוס של שליחה המייל 
-    const [status, setStatus] = React.useState('');
+    const [number, setNumber] = React.useState();
+
 
     // פונקציה המטפלת בצ'אק בוקס של הסיסמא - בכל לחיצה נשנה מאמת לשקר ולהפך
     const handleShowPassword = () => {
@@ -162,49 +171,37 @@ export default function Login() {
         }
 
         const generatedNumber = generateRandomNumber(); // Generate a new random number
-        setNumber(generatedNumber); // Update the number in the state
 
-        const postData = {
-            email: emailIntern,
-            number: generatedNumber
-        };
+        //Check if Email is a valid email that exist
 
-        // Make the API request
-        try {
-            const response = await fetch(`${api}/reset-password`, {  // Updated endpoint for clarity
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Accept': 'application/json; charset=UTF-8',
-                },
-                body: JSON.stringify(postData)
-            });
+        const response = await fetch(`${api}Interns/checkEmailIntern/${emailIntern}`);
 
-            if (!response.ok) {  // Check if the HTTP response status code is successful
-                throw new Error('Network response was not ok');
-            }
+        if (!response.ok) {  // Check if the HTTP response status code is successful
+            throw new Error('Network response was not ok');
+        }
 
-            const data = await response.json();  // Assuming the server responds with JSON
-
-            // Handle response based on success or error
-            handleClose();  // Close the dialog 
-            if (data.success) {  // Assuming success is a boolean in the returned JSON
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Check your email for reset instructions.',
-                });
-            } else {
-                throw new Error(data.message || 'Failed to reset password');
-            }
-        } catch (error) {
-            console.error('Reset password error:', error);
+        const data = await response.json();  // Assuming the server responds with JSON
+        console.log(data);
+        handleClose();  // Close the dialog 
+        if (data == 0) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: `Error resetting password: ${error.message}`,
+                text: `This User email do not exist: ${emailIntern}`,
             });
         }
+        if (data == 1) {
+            emailjs.send('service_riczz6e', 'template_ysrygc8', { to_email: emailIntern, pass: generatedNumber }, 'XevYnHw2VwCxgAt_1')
+                .then((result) => {
+                    setNumber(generatedNumber);
+                    setTempPassDialog(true);
+                    console.log('Email successfully sent!', result.text);
+                }).catch((error) => {
+                    console.log('Failed to send email.', error.text);
+                })
+        }
+
+
     };
 
     // פונקציה לבדיקת תקינות כתובת מייל
@@ -220,41 +217,40 @@ export default function Login() {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // //POST פונקציה ששולחת את המייל והמספר בבקשת 
-    // async function handleSubmitEmail(event) {
-    //     event.preventDefault(); // מניעת טעינת הדף
-    //     const generatedNumber = generateRandomNumber(); // גרילת מספר חדש
-    //     setNumber(generatedNumber); // עדכון המספר במצב
+    function handleNewPassword() {
+        if (tempPassCorrect) {
+            if (validatePassword(newPassword)) {
+                //changeUserPassword
+                updateInternPassword(emailIntern,newPassword).then((data) => {
+                    if (data) {
+                      Swal.fire({
+                        title: "Success!",
+                        text: "פרטיך עודכנו בהצלחה",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                      });
+                    } else {
+                      Swal.fire({
+                        title: "Error!",
+                        text: "העדכון נכשל. אנא נסה שוב.",
+                        icon: "error",
+                        confirmButtonText: "Close",
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+                setTempPassDialog(false)
+            }
+            else Swal.fire({
+                icon: 'error',
+                title: 'Password invalid!',
+                text: 'Password should contain at least one upper case letter and a digit',
+            });
+        }
 
-    //     const postData = {
-    //         email: email,
-    //         number: generatedNumber
-    //     };
-
-    //     try {
-    //         const response = await fetch('YOUR_ENDPOINT_URL', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json; charset=UTF-8',
-    //                 'Accept': 'application/json; charset=UTF-8',
-    //             },
-    //             body: JSON.stringify(postData)
-    //         });
-    //         if (response.ok) {
-    //             const result = await response.json();
-    //             setStatus('הנתונים נשלחו בהצלחה: ' + JSON.stringify(result));
-    //         } else {
-    //             throw new Error('בעיה בשליחת הנתונים');
-    //         }
-    //     } catch (error) {
-    //         setStatus('שגיאה: ' + error.message);
-    //     }
-    // }
-
-    // רנדר סיסמא 
-    // שולחת API 
-    //POST - Email,passRend
-
+    }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -343,8 +339,43 @@ export default function Login() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleResetPassword}>Reset Password</Button>
+                    <Button onClick={handleResetPassword}>Send Temporary Password</Button>
                     {/* <Button onClick={handleResetPassword}>Reset Password</Button> */}
+                </DialogActions>
+            </Dialog>
+            <Dialog open={tempPassDialog} onClose={() => setTempPassDialog(false)}>
+                <DialogTitle>Reset Your Password</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>To reset your password, please enter the temporary password</DialogContentText>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        id="tempPass"
+                        name="tempPass"
+                        label="Temporary Password"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        onChange={(event) => { setTempPass(event.target.value) }}
+                    />
+                    {tempPassCorrect &&
+                        <TextField
+                            autoFocus
+                            required
+                            margin="dense"
+                            id="newPass"
+                            name="newPass"
+                            label="New Password"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            onChange={(event) => { setNewPassword(event.target.value) }}
+                        />}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setTempPassDialog(false)}>Cancel</Button>
+                    <Button onClick={handleNewPassword}>Reset Password</Button>
                 </DialogActions>
             </Dialog>
         </Container>
