@@ -147,65 +147,65 @@ export default function Login() {
         setOpen(false);
     };
 
+    //פונקציה לאיפוס סיסמא  
+    async function handleResetPassword(event) {
+        event.preventDefault(); // Prevent form submission page reload
 
-    // async function handleResetPassword(event) {
-    //     event.preventDefault(); // Prevent form submission page reload
+        // Validate the email address before sending it to the server
+        if (!validateGmailAddress(emailIntern)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Email',
+                text: 'Please enter a valid Gmail address.',
+            });
+            return;
+        }
 
-    //     // Validate the email address before sending it to the server
-    //     if (!validateGmailAddress(emailIntern)) {
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Invalid Email',
-    //             text: 'Please enter a valid Gmail address.',
-    //         });
-    //         return;
-    //     }
+        const generatedNumber = generateRandomNumber(); // Generate a new random number
+        setNumber(generatedNumber); // Update the number in the state
 
-    //     const generatedNumber = generateRandomNumber(); // Generate a new random number
-    //     setNumber(generatedNumber); // Update the number in the state
+        const postData = {
+            email: emailIntern,
+            number: generatedNumber
+        };
 
-    //     const postData = {
-    //         email: emailIntern,
-    //         number: generatedNumber
-    //     };
+        // Make the API request
+        try {
+            const response = await fetch(`${api}/reset-password`, {  // Updated endpoint for clarity
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify(postData)
+            });
 
-    //     // Make the API request
-    //     try {
-    //         const response = await fetch(`${api}/reset-password`, {  // Updated endpoint for clarity
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json; charset=UTF-8',
-    //                 'Accept': 'application/json; charset=UTF-8',
-    //             },
-    //             body: JSON.stringify(postData)
-    //         });
+            if (!response.ok) {  // Check if the HTTP response status code is successful
+                throw new Error('Network response was not ok');
+            }
 
-    //         if (!response.ok) {  // Check if the HTTP response status code is successful
-    //             throw new Error('Network response was not ok');
-    //         }
+            const data = await response.json();  // Assuming the server responds with JSON
 
-    //         const data = await response.json();  // Assuming the server responds with JSON
-
-    //         // Handle response based on success or error
-    //         handleClose();  // Close the dialog 
-    //         if (data.success) {  // Assuming success is a boolean in the returned JSON
-    //             Swal.fire({
-    //                 icon: 'success',
-    //                 title: 'Success',
-    //                 text: 'Check your email for reset instructions.',
-    //             });
-    //         } else {
-    //             throw new Error(data.message || 'Failed to reset password');
-    //         }
-    //     } catch (error) {
-    //         console.error('Reset password error:', error);
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error',
-    //             text: `Error resetting password: ${error.message}`,
-    //         });
-    //     }
-    // };
+            // Handle response based on success or error
+            handleClose();  // Close the dialog 
+            if (data.success) {  // Assuming success is a boolean in the returned JSON
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Check your email for reset instructions.',
+                });
+            } else {
+                throw new Error(data.message || 'Failed to reset password');
+            }
+        } catch (error) {
+            console.error('Reset password error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Error resetting password: ${error.message}`,
+            });
+        }
+    };
 
     // פונקציה לבדיקת תקינות כתובת מייל
     function validateGmailAddress(email) {
@@ -343,7 +343,7 @@ export default function Login() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    {/* <Button onClick={handleResetPassword}>check Email Intern</Button> */}
+                    <Button onClick={handleResetPassword}>Reset Password</Button>
                     {/* <Button onClick={handleResetPassword}>Reset Password</Button> */}
                 </DialogActions>
             </Dialog>

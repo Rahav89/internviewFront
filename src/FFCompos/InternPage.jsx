@@ -10,31 +10,39 @@ import TableChartIcon from '@mui/icons-material/TableChart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { GetInternByID } from './Server.jsx';
 
+
 //--------------------------------------------------------
 
 export default function InternPage() {
 
+  // משתנה מצב לאחסון נתוני המשתמש הנוכחי
   const [currentUser, setCurrentUser] = useState(null);
 
-  useEffect(() => {
-    const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
+  // Hook לניווט תוכניתי בין דפים
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    //session storage- שליפת מזהה המתמחה מה
+    const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
+    
+    // קריאה לפונקציה GetInternByID כדי לשלוף את נתוני המתמחה
     GetInternByID(internID)  // Call GetInternByID to fetch intern data
       .then((data) => {
         //console.log(data);
-        setCurrentUser(data); // Set fetched data to currentUser state
+        // במקרה של קבלת נתונים, הגדרת המשתמש הנוכחי עם הנתונים המתקבלים
+        setCurrentUser(data);
       })
       .catch((error) => {
         console.error("Error in GetInternByID: ", error);
       });
-  }, []); // Empty dependency array ensures this runs only once after the initial render
+  }, []);  // רשימת תלויות ריקה מבטיחה שהקוד ירוץ רק פעם אחת לאחר טעינת הקומפוננטה
 
-  const navigate = useNavigate();
 
-  //מנווט לדף של הסילבוס המלא
+  // פונקציה לניווט לדף הסילבוס המלא
   const handleViewFullSyllabus = () => {
     navigate('/TableFullSyllabus/:id');
   };
+
   //מנווט לדף של כל המתמחים
   const handleViewIntern = () => {
     navigate('/ViewInterns');

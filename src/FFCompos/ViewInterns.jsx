@@ -177,6 +177,7 @@ export default function ViewInterns() {
     const [sortBy, setSortBy] = useState('ProcedureCount');// אופציית מיון דיפולטיבית
     const [selectedInternId, setSelectedInternId] = useState(null);  // Changed to null for better null-checking
     const [selectedInternDetails, setSelectedInternDetails] = useState(null);// פרטי המתמחה הנבחר
+    const [currentUserId, setCurrentUserId] = useState(null);//פרטי המשתמש הנוכחי המחובר לאתר
 
     //טעינת הנתונים מהשרת
     useEffect(() => {
@@ -187,9 +188,16 @@ export default function ViewInterns() {
         });
     }, []);
 
+
+    useEffect(() => {
+        const userId = JSON.parse(sessionStorage.getItem('currentUserID'));
+        setCurrentUserId(userId);
+    }, []);
+
     // פילטור ומיון הנתונים בהתאם לקריטריונים שנבחרו
     const filteredData = data.filter(item =>
-        item.firstName.toLowerCase().includes(searchTerm.toLowerCase())
+        item.firstName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        item.internId !== currentUserId // פילטור שלא כולל את המשתמש הנוכחי
     ).sort((a, b) => {
         if (sortBy === 'ProcedureCount') {
             return b.procedureCount - a.procedureCount;
@@ -246,7 +254,7 @@ export default function ViewInterns() {
             duration: 2000, // Duration in milliseconds
             easing: 'easeOutCubic',
         },
-         // פונקציה שמופעלת בלחיצה על אלמנט בגרף
+        // פונקציה שמופעלת בלחיצה על אלמנט בגרף
         onClick: (event, elements) => {
             if (elements.length > 0) {
                 const elementIndex = elements[0].index;

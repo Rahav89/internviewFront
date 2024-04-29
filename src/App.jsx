@@ -9,7 +9,7 @@ import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 import ViewInterns from './FFCompos/ViewInterns';
 import '@fontsource/roboto/300.css';
 import CardsDetailsInterns from './FFCompos/CardsDetailsInterns';
-import DetailsOfIntern from './FFCompos/DetailsOfIntern';
+
 
 const theme = createTheme({
     typography: {
@@ -33,7 +33,7 @@ function App() {
                     <Route path="/TableFullSyllabus/:id" element={<TableFullSyllabus />} />
                     <Route path="/ViewInterns" element={<ViewInterns />} />
                     <Route path="/details/:id" element={<CardsDetailsInterns />} />
-                    <Route path="/DetailsIntern/:id" element={<DetailsOfIntern />} />
+                   
                 </Routes>
             </Router>
         </ThemeProvider>
