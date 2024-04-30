@@ -1,7 +1,7 @@
 import { Box, TextField, InputAdornment, MenuItem, FormControl, InputLabel, Select, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { getSyllabus } from './Server.jsx';
@@ -11,6 +11,9 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate from React
 Chart.register(CategoryScale, LinearScale, BarElement);
 
 function FullSyllabus() {
+  const [containerWidth, setContainerWidth] = useState(0); // State to track container width
+  const chartContainerRef = useRef(null); // Ref to access container element
+
   const [data, setData] = useState(null);
   const [sortBy, setSortBy] = useState('procedureName'); // Default sort by procedureName
   const [searchQuery, setSearchQuery] = useState(''); // Query to search
@@ -25,6 +28,21 @@ function FullSyllabus() {
       .catch((error) => {
         console.error("Error in getSyllabusDetails: ", error);
       });
+  }, []);
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      if (chartContainerRef.current) {
+        setContainerWidth(chartContainerRef.current.offsetWidth);
+      }
+    };
+
+    updateContainerWidth();
+
+    window.addEventListener('resize', updateContainerWidth);
+
+    return () => {
+      window.removeEventListener('resize', updateContainerWidth);
+    };
   }, []);
 
   if (!data) {
@@ -131,8 +149,24 @@ function FullSyllabus() {
           font: {
             size: 14, // Adjust font size
           },
+          callback: function(value, index, values) {
+            const label = procedureNames[index];
+            let maxLength = 80; 
+            const windowWidth = window.innerWidth;
+            if(windowWidth > 1100) return label;
+            if (windowWidth < 1100) {
+              const widthDifference = 1100 - windowWidth;
+              const lengthDecrease = Math.floor(widthDifference / 100) * 10;
+              maxLength -= lengthDecrease;
+            }
+              if (label.length > maxLength) {
+              return label.substring(0, maxLength) + '...';
+            }
+            return label;
+          }
+  
+        },
 
-        }
       },
     },
     onClick: function (event, chartElement) {
@@ -143,7 +177,13 @@ function FullSyllabus() {
         const procedureId = topTenData[clickedIndex]?.procedure_Id; // Assuming each item has a unique ID property
         navigate(`/details/${procedureId}`, { state: { procedureId: procedureId } }); // Navigate to the details page using the item ID
       }
-    }
+    },
+    plugins: {
+      legend: {
+        position: 'top', // You can adjust the position of the legend as needed
+      },
+    },
+
   };
 
 
@@ -195,12 +235,11 @@ function FullSyllabus() {
         </Box>
 
       </Box>
-      <Box sx={{ overflowY: 'auto', overflowX: "hidden", height: '500px' }}>
+      <Box sx={{ overflowY: 'auto', overflowX: "hidden", height: '500px' }} ref={chartContainerRef}>
         <Bar data={chartData} options={chartOptions} />
       </Box>
     </Box>
   );
-
 }
 
 export default FullSyllabus;
