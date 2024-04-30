@@ -13,6 +13,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/Visibility";
 import { Container, Box } from "@mui/material";
 import { updateIntern, GetInternByID } from "./Server.jsx";
+import FloatingChatButton from './FloatingChatButton';
 //------------------------------------------------------------------
 
 export default function ProfileIntern() {
@@ -149,7 +150,7 @@ export default function ProfileIntern() {
     if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid && isEmailIValid) {
       //טיפול במקרה שלא הכניס סיסמאות - ניתן לעדכן בכל זאת עם הסיסמה הקודמת
       let newPass = formData.password_i;
-      if (formData.currentPassword == "" && formData.password_i == "") { newPass = currentUser.password_i;}
+      if (formData.currentPassword == "" && formData.password_i == "") { newPass = currentUser.password_i; }
       // פונקציה לעדכון פרטי המתמחה בשרת
       updateIntern(currentUser.id, formData, newPass)
         .then((data) => {
@@ -413,6 +414,7 @@ export default function ProfileIntern() {
           </Grid>
         </Grid>
       </Container>
+      <FloatingChatButton />
     </>
   );
 }

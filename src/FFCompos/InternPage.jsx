@@ -9,7 +9,7 @@ import StepperOfIntern from './StepperOfIntern';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { GetInternByID } from './Server.jsx';
-
+import FloatingChatButton from './FloatingChatButton';
 
 //--------------------------------------------------------
 
@@ -112,7 +112,7 @@ export default function InternPage() {
 
         </Grid>
       </Container>
-
+      <FloatingChatButton/>
     </>
   );
 }

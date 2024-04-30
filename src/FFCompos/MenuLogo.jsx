@@ -41,8 +41,8 @@ export default function MenuLogo() {
 
 
   return (
-    <AppBar>
-      <Container maxWidth="100%">
+    <AppBar sx={{marginBottom:12}}>
+      <Container maxWidth="100%" >
         <Toolbar disableGutters>
           <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
             <IconButton onClick={handleLogoClick} sx={{ p: 0, '&:focus': { outline: 'none' } }} disableRipple>

@@ -20,7 +20,11 @@ import { GetInternSurgeriesByProcedure } from "./Server.jsx";
 import MenuLogo from "./MenuLogo.jsx";
 import { useLocation } from "react-router-dom";
 import surgeryDateImage from "/src/Image/surgerydate.png";
+import FloatingChatButton from './FloatingChatButton';
 
+
+
+//-------------------------------------
 export default function CardsDetailsInterns() {
   const [data, setData] = useState([]); // Original data fetched from the server
   const [filteredData, setFilteredData] = useState([]); // Filtered data based on search criteria
@@ -62,7 +66,7 @@ export default function CardsDetailsInterns() {
         (selectedRole === "all" || item.Intern_role === selectedRole) &&
         (searchDate === "" ||
           new Date(item.Surgery_date).toLocaleDateString() ===
-            new Date(searchDate).toLocaleDateString()) &&
+          new Date(searchDate).toLocaleDateString()) &&
         (searchHospital === "" || item.Hospital_name.includes(searchHospital))
     );
     setFilteredData(filtered);
@@ -93,7 +97,7 @@ export default function CardsDetailsInterns() {
       <MenuLogo />
       <Typography
         variant="h6"
-        sx={{ marginTop: 10, textAlign: "center", fontWeight: "bold" }}
+        sx={{ marginTop: 8, textAlign: "center", fontWeight: "bold" }}
       >
         הצגת הניתוחים
       </Typography>
@@ -212,6 +216,7 @@ export default function CardsDetailsInterns() {
         onClose={() => setError("")}
         message={error}
       />
+      < FloatingChatButton />
     </>
   );
 }

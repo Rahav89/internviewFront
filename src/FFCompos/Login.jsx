@@ -41,11 +41,18 @@ export default function Login() {
     //שליחת אימייל- useState
     const [emailIntern, setEmailIntern] = React.useState("")
 
+    // יצירת סיסמא חדשה- useState
     const [newPassword, setNewPassword] = React.useState("")
-    const [tempPassCorrect, setTempPassCorrect] = React.useState(false)
-    const [tempPass, setTempPass] = React.useState("bla")
 
-    
+    //משתנה בוליאני שמתעדכן כדי לבדוק אם הסיסמה הזמנית שהוזנה על ידי 
+    //המשתמש תואמת למספר הרנדומלי שנשלח אליו.
+    const [tempPassCorrect, setTempPassCorrect] = React.useState(false)
+
+    //מחזיק את הסיסמה הזמנית שהמשתמש צריך
+    // להזין כדי לאשר את זהותו בטרם יוכל להגדיר סיסמה חדשה
+    const [tempPass, setTempPass] = React.useState("")
+
+    //משמש לצורך בדיקה של הסיסמה הזמנית
     React.useEffect(() => {
         setTempPassCorrect(Number(number) === Number(tempPass))
     }, [tempPass])
@@ -180,7 +187,7 @@ export default function Login() {
             throw new Error('Network response was not ok');
         }
 
-        const data = await response.json(); 
+        const data = await response.json();
         console.log(data);
         handleClose();  // Close the dialog 
         if (data == 0) {
@@ -200,8 +207,6 @@ export default function Login() {
                     console.log('Failed to send email.', error.text);
                 })
         }
-
-
     };
 
     // פונקציה לבדיקת תקינות כתובת מייל
@@ -217,30 +222,33 @@ export default function Login() {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    //פונקציה המטפלת בסיסמא החדשה
     function handleNewPassword() {
+        // אם המשתנה בוליאני הופך לטרו
         if (tempPassCorrect) {
+            //בודקים את הולידציה לסיסמה
             if (validatePassword(newPassword)) {
                 //changeUserPassword
-                updateInternPassword(emailIntern,newPassword).then((data) => {
+                updateInternPassword(emailIntern, newPassword).then((data) => {
                     if (data) {
-                      Swal.fire({
-                        title: "Success!",
-                        text: "פרטיך עודכנו בהצלחה",
-                        icon: "success",
-                        confirmButtonText: "OK",
-                      });
+                        Swal.fire({
+                            title: "Success!",
+                            text: "פרטיך עודכנו בהצלחה",
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
                     } else {
-                      Swal.fire({
-                        title: "Error!",
-                        text: "העדכון נכשל. אנא נסה שוב.",
-                        icon: "error",
-                        confirmButtonText: "Close",
-                      });
+                        Swal.fire({
+                            title: "Error!",
+                            text: "העדכון נכשל. אנא נסה שוב.",
+                            icon: "error",
+                            confirmButtonText: "Close",
+                        });
                     }
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  });
+                })
+                    .catch((error) => {
+                        console.error(error);
+                    });
                 setTempPassDialog(false)
             }
             else Swal.fire({
@@ -345,7 +353,6 @@ export default function Login() {
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleResetPassword}>Send Temporary Password</Button>
-                    {/* <Button onClick={handleResetPassword}>Reset Password</Button> */}
                 </DialogActions>
             </Dialog>
             <Dialog open={tempPassDialog} onClose={() => setTempPassDialog(false)}>

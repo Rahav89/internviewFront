@@ -2,7 +2,7 @@
   /* max-width: 100%; */
   margin: auto;
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 12px;
   text-align: center;
 }
 
@@ -15,9 +15,11 @@
     transform: rotate(360deg);
   }
 }
+/* להציג את השגיאה שלא קיימת הסיסמא בלוג אין */
 .swal2-container {
   z-index: 1500 !important; /* Higher than most elements */
 }
+
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
@@ -73,4 +75,21 @@
 
 .css-ur1vvw {
   width: 28vh;
+}
+
+/* App.css or a similar file */
+.MuiTimelineItem-root {
+  min-height: 0; /* Reduce extra spacing between items */
+}
+
+.MuiTimelineDot-root {
+  position: relative; /* Ensure the dot is properly positioned */
+  z-index: 1; /* Bring the dot above the connector */
+}
+
+.MuiTimelineConnector-root {
+  position: absolute; /* Stretch connector full length */
+  top: 50%; /* Center the connector vertically */
+  transform: translateY(-50%); /* Adjust placement to connect dots */
+  height: 100%; /* Full height to stretch between items */
 }
