@@ -19,25 +19,26 @@ export default function ProfileIntern() {
   const [currentUser, setCurrentUser] = useState(null);
   // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
   const [formData, setFormData] = useState({
+    currentPassword: "",
     password_i: "",
     first_name: "",
     last_name: "",
     email_i: ""
   });
-  // console.log(formData)
 
   useEffect(() => {
     const internID = JSON.parse(sessionStorage.getItem("currentUserID"));
     GetInternByID(internID) // Call GetInternByID to fetch intern data
       .then((data) => {
         setCurrentUser(data);
-        console.log(data)
-        setFormData({
-          password_i: data.password_i, // Keep existing password if any
-          first_name: data.first_name, // Assuming the data has a 'firstName' property
-          last_name: data.last_name, // Assuming the data has a 'lastName' property
-          email_i: data.email_I // Assuming data property is email_i
-        });
+        //console.log(data)
+        setFormData((prevData) => ({
+          ...prevData,
+          password_i: data.password_i,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          email_i: data.email_I
+        }));
       })
       .catch((error) => {
         console.error("Error in GetInternByID: ", error);
@@ -91,6 +92,11 @@ export default function ProfileIntern() {
 
   //פונקציה הבודקת את הולידציה של הסיסמא
   function validatCurrentePassword(password) {
+    //לאפשר למשתמש לא להכניס סיסמאות (כדי לשנות משהו אחר)
+    if (password == "" && formData.password_i == "" ||
+      password == "" && formData.password_i == currentUser.password_i) {
+      return true;
+    }
     //בודק שהסיסמה שהכניס היא הסיסמה הנוכחית שלו
     return currentUser.password_i == password;
   }
@@ -102,16 +108,22 @@ export default function ProfileIntern() {
 
   //פונקציה הבודקת את הולידציה של הסיסמא החדשה
   function validateNewPassword(password) {
+    //לאפשר למשתמש לא להכניס סיסמאות (כדי לשנות משהו אחר)
+    if (password == "" && formData.currentPassword == "" ||
+      password == currentUser.password_i && formData.currentPassword == "") {
+      return true;
+    }
     //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
     const uppercaseLetter = /[A-Z]/;
     const digit = /[0-9]/;
     return (
-      password != "" && uppercaseLetter.test(password) && digit.test(password)
+      uppercaseLetter.test(password) && digit.test(password)
     );
   }
 
   // פונקציה לבדיקת תקינות כתובת מייל
   function validateEmail(email) {
+    console.log(email);
     const regex = /^[a-zA-Z0-9.+_-]+@gmail\.com$/;
     return regex.test(email);
   }
@@ -119,12 +131,11 @@ export default function ProfileIntern() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const isPasswordValid = validatCurrentePassword(formData.currentPassword);
-    const isPasswordConfirmationValid = validateNewPassword(
-      formData.password_i
-    );
+    const isPasswordConfirmationValid = validateNewPassword(formData.password_i);
     const isFirstNameValid = validateTextOnly(formData.firstName);
     const isLastNameValid = validateTextOnly(formData.lastName);
     const isEmailIValid = validateEmail(formData.email_i);
+
     console.log(isPasswordValid, isFirstNameValid, isLastNameValid, isEmailIValid);
     setFormErrors({
       password_i: !isPasswordValid,
@@ -134,15 +145,13 @@ export default function ProfileIntern() {
       email_i: !isEmailIValid
     });
 
-    if (
-      isPasswordConfirmationValid &&
-      isPasswordValid &&
-      isFirstNameValid &&
-      isLastNameValid &&
-      isEmailIValid
-    ) {
+    //אם כל הולידציות תקינות - שלח עדכון לשרת
+    if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid && isEmailIValid) {
+      //טיפול במקרה שלא הכניס סיסמאות - ניתן לעדכן בכל זאת עם הסיסמה הקודמת
+      let newPass = formData.password_i;
+      if (formData.currentPassword == "" && formData.password_i == "") { newPass = currentUser.password_i;}
       // פונקציה לעדכון פרטי המתמחה בשרת
-      updateIntern(currentUser.id, formData)
+      updateIntern(currentUser.id, formData, newPass)
         .then((data) => {
           console.log('Submitting form data:', data);
           if (data) {
@@ -257,7 +266,7 @@ export default function ProfileIntern() {
                         onChange={handleChange}
                         error={formErrors.password_i}
                         InputLabelProps={{
-                          shrink: true, // This will make the label always appear above the TextField
+                          shrink: true, // make the label always appear above the TextField
                         }}
                         helperText={
                           formErrors.password_i

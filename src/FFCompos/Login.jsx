@@ -21,7 +21,6 @@ import logoHomePic from '/src/Image/InternView.png';
 import { api, updateInternPassword } from './Server';
 import emailjs from 'emailjs-com';
 
-
 import { LogInIntern } from './Server';
 //--------------------------------------------------
 
@@ -45,6 +44,8 @@ export default function Login() {
     const [newPassword, setNewPassword] = React.useState("")
     const [tempPassCorrect, setTempPassCorrect] = React.useState(false)
     const [tempPass, setTempPass] = React.useState("bla")
+
+    
     React.useEffect(() => {
         setTempPassCorrect(Number(number) === Number(tempPass))
     }, [tempPass])
@@ -173,14 +174,13 @@ export default function Login() {
         const generatedNumber = generateRandomNumber(); // Generate a new random number
 
         //Check if Email is a valid email that exist
-
         const response = await fetch(`${api}Interns/checkEmailIntern/${emailIntern}`);
 
         if (!response.ok) {  // Check if the HTTP response status code is successful
             throw new Error('Network response was not ok');
         }
 
-        const data = await response.json();  // Assuming the server responds with JSON
+        const data = await response.json(); 
         console.log(data);
         handleClose();  // Close the dialog 
         if (data == 0) {
@@ -249,6 +249,11 @@ export default function Login() {
                 text: 'Password should contain at least one upper case letter and a digit',
             });
         }
+        else Swal.fire({
+            icon: 'error',
+            title: 'Password invalid!',
+            text: 'please enter the temporary password you received in the email we sent you',
+        });
 
     }
     return (
@@ -294,7 +299,7 @@ export default function Login() {
                                 label="Password"
                                 autoComplete="new-password"
                                 error={formErrors.password}
-                                helperText={formErrors.password ? "The password must contain capital letters and numbers" : ''}
+                                helperText={formErrors.password ? "The new password must contain capital letters and numbers" : ''}
                                 onChange={handleChange}
                                 type={showPassword ? 'text' : 'password'}
                             />
@@ -346,7 +351,7 @@ export default function Login() {
             <Dialog open={tempPassDialog} onClose={() => setTempPassDialog(false)}>
                 <DialogTitle>Reset Your Password</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>To reset your password, please enter the temporary password</DialogContentText>
+                    <DialogContentText>To reset your password, please enter the temporary password you received in the email we sent you</DialogContentText>
                     <TextField
                         autoFocus
                         required
