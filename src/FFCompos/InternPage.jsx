@@ -11,6 +11,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { GetInternByID } from './Server.jsx';
 import FloatingChatButton from './FloatingChatButton';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+
 //--------------------------------------------------------
 
 export default function InternPage() {
@@ -84,7 +85,7 @@ export default function InternPage() {
           <Grid item xs={12} display="flex" justifyContent="center">
             <Button
               variant="contained"
-              onClick={handleAllocationIntern}
+              onClick={handleViewFullSyllabus}
               sx={{
                 width: '100%',
                 maxWidth: 300,
@@ -104,12 +105,14 @@ export default function InternPage() {
             </Button>
           </Grid>
 
+    
+
           {/* רק כאשר המנהל מחובר מופיע הכפתור ומעביר לדף המתאים- צפייה במתמחים */}
           {currentUser && currentUser.isManager == true && (
             <Grid item xs={12} display="flex" justifyContent="center">
               <Button
                 variant="contained"
-                onClick={handleAllocationIntern}
+                onClick={handleViewIntern}
                 sx={{
                   width: '100%',
                   maxWidth: 300,
