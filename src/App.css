@@ -64,10 +64,12 @@
   border-left: 1px solid rgba(224, 224, 224, 1);
 }
 
+/* for padding of thr table of the full detailed syllabus */
 .custom-cell {
   padding: 0 !important;
   padding-right: 5px !important;
 }
+
 .css-1xsq4dq-MuiModal-root-MuiPopover-root .MuiPopover-paper {
   margin-right: 50px;
   width: 40vh;
@@ -93,3 +95,29 @@
   transform: translateY(-50%); /* Adjust placement to connect dots */
   height: 100%; /* Full height to stretch between items */
 }
+
+
+/************ STYLED SCROLLBAR OF THE HOLE APP ************/
+::-webkit-scrollbar {
+  width: 12px;  /* for vertical scrollbars */
+  height: 12px; /* for horizontal scrollbars */
+}
+
+/* Targets the draggable part of the scrollbar */
+::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius: 10px;
+  border: 3px solid white; /* Creates padding around the scroll thumb */
+}
+
+/* Targets the part of the scrollbar track where there isn't a thumb */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* Optional: style the scrollbar button (arrows) */
+::-webkit-scrollbar-button {
+  display: none; /* This can be set to 'block' if you want arrows on your scrollbar */
+}
+/************ STYLED SCROLLBAR OF THE HOLE APP ************ /

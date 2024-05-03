@@ -12,7 +12,6 @@ import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
-import '../App.css';
 import { database } from '../firebase'; // the data from Firebase Realtime Database
 import { ref, onValue, push, off, update } from 'firebase/database';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
@@ -150,10 +149,10 @@ const ChatUI = ({ user, onBack }) => {
                 <Grid container spacing={2}>
                     <Grid item xs={10}>
                         <TextField
+                            autoFocus
                             dir="rtl"
                             size="small"
-                            fullWidth
-                            placeholder="Type a message"
+                            fullWidth                     
                             variant="outlined"
                             value={input}
                             onChange={() => { setInput(event.target.value)}}
@@ -170,7 +169,7 @@ const ChatUI = ({ user, onBack }) => {
                             endIcon={<SendIcon />}
                             onClick={handleSend}
                         >
-                            Send
+                            שלח
                         </Button>
                     </Grid>
                 </Grid>
@@ -228,7 +227,7 @@ const Message = ({ message, user }) => {
                         {message.from_id == internID ?
                             <DoneAllIcon sx={{ color: messageReadColor, ml: 0.3, mt: 0.3, height: 17 }} /> : ''
                         }
-                        <Typography variant="" sx={{ color: 'gray', fontSize: '13px', ml: 1, mr: isPartner ? 1 : 0 }}>
+                        <Typography variant="" sx={{ color: 'grey', fontSize: '13px', ml: 1, mr: isPartner ? 1 : 0 }}>
                             {message.messages_date.slice(11, 16)}
                         </Typography>
 
