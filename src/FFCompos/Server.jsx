@@ -234,3 +234,25 @@ export const GetAllNameProcedure = () => {
             throw error;
         });
 };
+
+//לקבל את השמות הפרוצדורות
+export const GetFutureSurgeries = () => {
+    return fetch(`${api}Surgeries/GetFutureSurgeries`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        }
+    })
+        .then(response => {
+            console.log("HTTP Status:", response.status); // Log the HTTP status
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Error in GetAllNameProcedure: ", error);
+            throw error;
+        });
+};

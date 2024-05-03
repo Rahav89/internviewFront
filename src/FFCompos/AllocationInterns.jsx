@@ -2,18 +2,28 @@ import React, { useState, useEffect } from 'react';
 import MenuLogo from './MenuLogo';
 import { Typography, Box, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import { GetAllNameProcedure } from './Server.jsx';
+import { GetFutureSurgeries } from './Server.jsx';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+const theme = createTheme({
+  direction: 'rtl', // Right to left
+});
 export default function AllocationInterns() {
-    const [procedures, setProcedures] = useState([]); // מערך המחזיק את כל הפרוצדורות
+    const [SurgeriesAsObject, setSurgeriesAsObject] = useState([]); // מערך המחזיק את כל הפרוצדורות
+    const [SurgeriesAsString, setSurgeriesAsString] = useState([]); // מערך המחזיק את כל הפרוצדורות
     const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
 
     // קריאה לשרת כדי לקבל את כל הפרוצדורות בעת טעינת הקומפוננטה
     useEffect(() => {
-        GetAllNameProcedure()
+        GetFutureSurgeries()
             .then((data) => {
+                setSurgeriesAsObject(data); // שמירת הנתונים במערך הפרוצדורות
+                let SurgeriesAsString = [];
+                data.map((surgery) => (
+                    SurgeriesAsString.push(`פרוצדורות בניתוח: ${surgery.procedureName} ▌ תאריך: ${surgery.Surgery_date.split('T')} ▌ רמת קושי: ${surgery.Difficulty_level} ▌ בית חולים: ${surgery.Hospital_name}`)
+                ));
+                setSurgeriesAsString(SurgeriesAsString);
                 console.log(data); // הדפסת הנתונים לבדיקה
-                setProcedures(data); // שמירת הנתונים במערך הפרוצדורות
             })
             .catch((error) => {
                 console.error("Error in GetAllNameProcedure: ", error); // הדפסת שגיאה במקרה של בעיה
@@ -26,7 +36,9 @@ export default function AllocationInterns() {
     };
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
+       
+            {console.log(SurgeriesAsString)}
             <MenuLogo /> {/* קומפוננטת לוגו התפריט */}
             <Typography
                 variant="h6"
@@ -35,7 +47,9 @@ export default function AllocationInterns() {
                 הקצאת מתמחים {/* כותרת הסעיף */}
             </Typography>
             <Box
+               
                 sx={{
+                    textAlign: 'right',
                     margin: "10px",
                     display: "flex",
                     flexDirection: "column",
@@ -46,21 +60,28 @@ export default function AllocationInterns() {
             >
                 {/* קומפוננטת בחירת פרוצדורות עם אפשרות חיפוש */}
                 <Autocomplete
+                    dir="rtl"
                     value={selectedProcedure}
                     onChange={handleProcedureChange}
-                    options={procedures}
-                    getOptionLabel={(option) => option.procedureName || ""}
-                    sx={{ width: 300, textAlign: 'center' }} 
-                    renderInput={(params) => <TextField {...params} label="בחירת שם ניתוח" />} // תיבת הטקסט לקלט
-                    isOptionEqualToValue={(option, value) => option.procedureName === value.procedureName} // השוואה בין אפשרויות לערך הנוכחי
-                    renderOption={(props, option, { selected }) => (
-                        // עיצוב מיוחד לכל אפשרות עם קו מפריד
-                        <Box component="li" {...props} sx={{ borderBottom: '1px solid #ccc' }}>
-                            {option.procedureName}
-                        </Box>
-                    )}
+                    options={SurgeriesAsString}
+                    getOptionLabel={(option) => option}  // option is a string
+                    sx={{ width: '70%' }}
+                    renderInput={(params) => <TextField {...params} label="בחירת ניתוח"/>}
+                    isOptionEqualToValue={(option, value) => option === value}  // comparing strings directly
+                    renderOption={(props, option, index) => {
+                        // Extract the key from the props
+                        const { key, ...otherProps } = props;
+                        return (
+                            <Box component="li" key={key}  dir="rtl" {...otherProps} sx={{ borderBottom: '1px solid #ccc' }}>
+                                {option}
+                            </Box>
+                        );
+                    }}
+                    
                 />
+
             </Box>
-        </>
+  
+        </ThemeProvider>
     );
 }
