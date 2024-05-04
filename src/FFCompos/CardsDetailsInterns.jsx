@@ -26,7 +26,7 @@ export default function CardsDetailsInterns() {
   const theme = useTheme(); // Access theme object
   const [procedures, setProcedures] = useState([]); // מערך המחזיק את כל הפרוצדורות
   const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
-  
+
   // Effect to fetch all procedure names
   useEffect(() => {
     GetAllNameProcedure()
@@ -202,9 +202,9 @@ export default function CardsDetailsInterns() {
                   maxWidth: "100%",
                   width: "100%",
                   display: "flex",
-                  marginLeft: '12px',
                   flexDirection: "column",
                   backgroundColor: theme.palette.grey[200],
+                  marginLeft: { xs: 0, md: 1} ,
                   ...(card.Hospital_name in hospitalColors && {
                     backgroundColor: hospitalColors[card.Hospital_name],
                   }),
