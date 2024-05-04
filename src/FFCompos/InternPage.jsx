@@ -11,7 +11,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { GetInternByID } from './Server.jsx';
 import FloatingChatButton from './FloatingChatButton';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-
+import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 //--------------------------------------------------------
 
 export default function InternPage() {
@@ -53,6 +53,9 @@ export default function InternPage() {
     navigate('/AllocationInterns');
   }
 
+  const handleViewAllSurgeries = () => {
+    navigate('/details/:id');
+  }
   return (
     <>
 
@@ -105,7 +108,30 @@ export default function InternPage() {
             </Button>
           </Grid>
 
-    
+          {/* Full Syllabus Button */}
+          <Grid item xs={12} display="flex" justifyContent="center">
+            <Button
+              variant="contained"
+              onClick={handleViewAllSurgeries}
+              sx={{
+                width: '100%',
+                maxWidth: 300,
+                backgroundColor: 'white',       // Set background color to white
+                color: '#1976d2',                  // Set text color to blue
+                borderColor: '#1976d2',            // Set border color to blue
+                borderWidth: 2,                 // Set border width
+                borderStyle: 'solid',           // Define border as solid
+                '&:hover': {
+                  backgroundColor: '#f0f0f0', // Light grey background on hover for slight effect
+                  borderColor: 'darkblue'     // Darker blue border on hover
+                }
+              }}
+            >
+              צפייה בניתוחים שבוצעו
+              <DomainVerificationIcon sx={{ mr: 1 }} />
+            </Button>
+          </Grid>
+
 
           {/* רק כאשר המנהל מחובר מופיע הכפתור ומעביר לדף המתאים- צפייה במתמחים */}
           {currentUser && currentUser.isManager == true && (

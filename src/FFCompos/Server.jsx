@@ -235,9 +235,15 @@ export const GetAllNameProcedure = () => {
         });
 };
 
+<<<<<<< Updated upstream
 //לקבל את השמות הפרוצדורות
 export const GetFutureSurgeries = () => {
     return fetch(`${api}Surgeries/GetFutureSurgeries`, {
+=======
+
+export const GetInternSurgeriesByProcedureName = (internId, procedure_Name) => {
+    return fetch(`${api}Interns/GetInternSurgeriesByProcedureName/${procedure_Name}/${internId}`, {
+>>>>>>> Stashed changes
         method: 'GET',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -251,8 +257,20 @@ export const GetFutureSurgeries = () => {
             }
             return response.json();
         })
+<<<<<<< Updated upstream
         .catch(error => {
             console.error("Error in GetAllNameProcedure: ", error);
             throw error;
         });
 };
+=======
+        .then(data => {
+            console.log("Response Data:", data); // Log the actual data received
+            return data;
+        })
+        .catch(error => {
+            console.error("Error in GetInternSurgeriesByProcedureName: ", error);
+            throw error;
+        });
+};
+>>>>>>> Stashed changes
