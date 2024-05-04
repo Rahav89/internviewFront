@@ -3,11 +3,10 @@ import MenuLogo from './MenuLogo';
 import { Typography, Box, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { GetFutureSurgeries } from './Server.jsx';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const theme = createTheme({
-  direction: 'rtl', // Right to left
-});
+import AlgoResults from './AlgoResults.jsx'
+
+
 export default function AllocationInterns() {
     const [SurgeriesAsObject, setSurgeriesAsObject] = useState([]); // מערך המחזיק את כל הפרוצדורות
     const [SurgeriesAsString, setSurgeriesAsString] = useState([]); // מערך המחזיק את כל הפרוצדורות
@@ -20,7 +19,7 @@ export default function AllocationInterns() {
                 setSurgeriesAsObject(data); // שמירת הנתונים במערך הפרוצדורות
                 let SurgeriesAsString = [];
                 data.map((surgery) => (
-                    SurgeriesAsString.push(`פרוצדורות בניתוח: ${surgery.procedureName} ▌ תאריך: ${surgery.Surgery_date.split('T')} ▌ רמת קושי: ${surgery.Difficulty_level} ▌ בית חולים: ${surgery.Hospital_name}`)
+                    SurgeriesAsString.push(`פרוצדורות בניתוח: ${surgery.procedureName} (תאריך: ${surgery.Surgery_date.slice(0, 10)} | רמת קושי: ${surgery.Difficulty_level} | בית חולים: ${surgery.Hospital_name})`)
                 ));
                 setSurgeriesAsString(SurgeriesAsString);
                 console.log(data); // הדפסת הנתונים לבדיקה
@@ -36,8 +35,8 @@ export default function AllocationInterns() {
     };
 
     return (
-        <ThemeProvider theme={theme}>
-       
+        <>
+
             {console.log(SurgeriesAsString)}
             <MenuLogo /> {/* קומפוננטת לוגו התפריט */}
             <Typography
@@ -47,7 +46,7 @@ export default function AllocationInterns() {
                 הקצאת מתמחים {/* כותרת הסעיף */}
             </Typography>
             <Box
-               
+
                 sx={{
                     textAlign: 'right',
                     margin: "10px",
@@ -66,22 +65,32 @@ export default function AllocationInterns() {
                     options={SurgeriesAsString}
                     getOptionLabel={(option) => option}  // option is a string
                     sx={{ width: '70%' }}
-                    renderInput={(params) => <TextField {...params} label="בחירת ניתוח"/>}
+                    renderInput={(params) => <TextField {...params} label="בחירת ניתוח" />}
                     isOptionEqualToValue={(option, value) => option === value}  // comparing strings directly
                     renderOption={(props, option, index) => {
                         // Extract the key from the props
                         const { key, ...otherProps } = props;
                         return (
-                            <Box component="li" key={key}  dir="rtl" {...otherProps} sx={{ borderBottom: '1px solid #ccc' }}>
+                            <Box component="li" key={key} dir="rtl" {...otherProps} sx={{ textAlign: 'right', borderBottom: '1px solid #ccc' }}>
                                 {option}
                             </Box>
                         );
                     }}
-                    
+
                 />
 
             </Box>
-  
-        </ThemeProvider>
+            {selectedProcedure &&
+
+                <>
+                <Typography
+                    variant="h6"
+                    sx={{ padding: 2, textAlign: "center", fontWeight: "bold" }}>
+                  תוצאות
+                </Typography>
+                    <AlgoResults /></>
+
+            }
+        </>
     );
 }

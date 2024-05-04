@@ -97,7 +97,7 @@
 }
 
 
-/************ STYLED SCROLLBAR OF THE HOLE APP ************/
+/****** STYLED SCROLLBAR OF THE HOLE APP ******/
 ::-webkit-scrollbar {
   width: 12px;  /* for vertical scrollbars */
   height: 12px; /* for horizontal scrollbars */

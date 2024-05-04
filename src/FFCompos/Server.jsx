@@ -261,6 +261,30 @@ export const GetInternSurgeriesByProcedureName = (internId, procedure_Name) => {
 };
 
 
+export const GetInterns = () => {
+    return fetch(`${api}Interns`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        }
+    }).then(response => {
+        console.log("HTTP Status:", response.status); // Log the HTTP status
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+        .then(data => {
+            console.log("Response Data:", data); // Log the actual data received
+            return data;
+        })
+        .catch(error => {
+            console.error("Error in GetFutureSurgeries: ", error);
+            throw error;
+        });
+};
+
 export const GetFutureSurgeries = () => {
     return fetch(`${api}Surgeries/GetFutureSurgeries`, {
         method: 'GET',
@@ -284,4 +308,3 @@ export const GetFutureSurgeries = () => {
             throw error;
         });
 };
-
