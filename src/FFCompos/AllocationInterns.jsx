@@ -3,8 +3,8 @@ import MenuLogo from './MenuLogo';
 import { Typography, Box, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { GetFutureSurgeries } from './Server.jsx';
-
 import AlgoResults from './AlgoResults.jsx'
+import Calendar from './Calendar.jsx'
 
 
 export default function AllocationInterns() {
@@ -92,6 +92,7 @@ export default function AllocationInterns() {
                 </>
 
             }
+            <Calendar/>
         </>
     );
 }
