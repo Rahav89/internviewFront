@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import { Badge, AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, ListItemIcon, ListItemText } from '@mui/material';
 import logoImage from '/src/Image/doctor1.png';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useState } from 'react';
@@ -12,13 +12,14 @@ import NotificationsIcon from '@mui/icons-material/Notifications'; // ייבוא
 const settings = [
   { label: 'ניהול משתמש', icon: <SettingsIcon />, action: 'profile' },
   { label: 'התראות', icon: <NotificationsIcon />, action: 'notifications' },
-  { label: 'התנתק', icon: <ExitToAppIcon />, action: 'logout' }
+  { label: '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות', icon: <ExitToAppIcon sx={{}} />, action: 'logout' }
 ];
 
 export default function MenuLogo() {
   const navigate = useNavigate(); // Hook for navigation
   const [anchorElUser, setAnchorElUser] = useState(null);//פתיחה וסגירת התפריט של ההגדרות
   const [openDialog, setOpenDialog] = useState(false); // ניהול פתיחת דיאלוג
+  const [notificationCount, setNotificationCount] = useState(5); // Example count, update as needed
 
   //פתיחת התפריט של הההגדרות 
   const handleOpenUserMenu = (event) => {
@@ -69,8 +70,11 @@ export default function MenuLogo() {
             <Tooltip title="פתח הגדרות">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, '&:focus': { outline: 'none' } }}>
                 <Avatar src={logoImage} />
+                <Badge badgeContent={notificationCount} color="error" sx={{ top: -13, right: 5 }} />
+
               </IconButton>
             </Tooltip>
+
             <Menu
               sx={{ mt: '30px' }}
               id="menu-appbar"
@@ -81,11 +85,28 @@ export default function MenuLogo() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting.label} onClick={() => handleMenuItemClick(setting.action)} sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row-reverse' }}>
-                  <Typography sx={{ textAlign: "right", ml: 1 }}>{setting.icon}</Typography>
-                  {setting.label}
+                <MenuItem
+                  key={setting.label}
+                  onClick={() => handleMenuItemClick(setting.action)}
+                  sx={{
+                    display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', flexDirection: 'row-reverse'
+                  }}
+                >
+                  <ListItemIcon sx={{ mr: -2, paddingLeft: 1 }}>
+                    {setting.icon}
+                  </ListItemIcon>
+                  <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                    {setting.label === 'התראות' && (
+                      <Badge badgeContent={notificationCount} color="error" sx={{ mr: 4 }}>
+                      </Badge>)}
+                    <ListItemText primary={setting.label} />
+                  </Box>
+
+
                 </MenuItem>
               ))}
+
             </Menu>
           </Box>
         </Toolbar>
