@@ -8,6 +8,7 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
 const generateCalendar = (month) => {
+    
     const startOfTheMonth = month.startOf('month').startOf('week');  // Start the calendar from the start of the week of the first day of the month
     const endOfTheMonth = month.endOf('month').endOf('week');  // End the calendar at the end of the week of the last day of the month
     const days = [];
