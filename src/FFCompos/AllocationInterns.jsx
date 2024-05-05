@@ -83,12 +83,13 @@ export default function AllocationInterns() {
             {selectedProcedure &&
 
                 <>
-                <Typography
-                    variant="h6"
-                    sx={{ padding: 2, textAlign: "center", fontWeight: "bold" }}>
-                  תוצאות
-                </Typography>
-                    <AlgoResults /></>
+                    <Typography
+                        variant="h6"
+                        sx={{ padding: 2, textAlign: "center", fontWeight: "bold" }}>
+                        תוצאות
+                    </Typography>
+                    <AlgoResults />
+                </>
 
             }
         </>
