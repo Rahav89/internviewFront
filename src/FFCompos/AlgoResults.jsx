@@ -13,17 +13,17 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { GetInterns } from './Server.jsx';
+import { GetInterns } from './Server.jsx';// פונקציה לשליפת נתונים מהשרת
 import Swal from 'sweetalert2';
-
+//----------------------------------------------
 export default function AlgoResults() {
-    const [interns, setInterns] = useState([]);
-    const [openDialogId, setOpenDialogId] = useState(null);
+    const [interns, setInterns] = useState([]); //מערך שמאחסן את פרטי המתמחים
+    const [openDialogId, setOpenDialogId] = useState(null);// מזהה לשליטה בפתיחה וסגירה של חלון הדיאלוג
+    let scores = ['90%', '85%', '70%', '60%', '50%'] // מזהה לשליטה בפתיחה וסגירה של חלון הדיאלוג
 
-    let scores = ['90%', '85%', '70%', '60%', '50%']
     useEffect(() => {
-        let interns =[];
-        GetInterns()
+        let interns = [];
+        GetInterns()// שליפת נתוני המתמחים מהשרת
             .then(data => {
                 for (let i = 0; i < data.length; i++) {
                     let intern = data[i];
@@ -32,26 +32,26 @@ export default function AlgoResults() {
                         fullName: `${intern.first_name} ${intern.last_name}`,
                         year: intern.interns_year,
                         rating: intern.interns_rating,
-                        score:scores[i]
+                        score: scores[i]// ציון התיאום מהמערך שמוגדר למעלה
                     }
                     interns.push(internObj);
                 }
-                
-                setInterns(interns);
+
+                setInterns(interns);// עדכון מערך המתמחים במצב הרכיב
             })
             .catch(error => {
-                console.error("Error in GetInterns: ", error);
+                console.error("Error in GetInterns: ", error);// טיפול בשגיאות בזמן שליפת נתונים
             });
     }, []);
-
+    // פונקציה לפתיחת הדיאלוג
     const handleOpenDialog = (id) => {
-
         setOpenDialogId(id);
     };
-
+    // פונקציה לסגירת הדיאלוג
     const handleCloseDialog = () => {
         setOpenDialogId(null);
     };
+    // פונקציה שמטפלת באישור שיבוץ
     const handleAgree = () => {
         Swal.fire({
             text: "שיבוץ בוצע בהצלחה",
@@ -64,6 +64,7 @@ export default function AlgoResults() {
 
 
     return (
+        //  רכיב להצגת הטבלה
         <TableContainer component={Paper} dir="rtl">
             <Table sx={{ minWidth: 650 }}>
                 <TableHead>

@@ -13,33 +13,34 @@ import { GetAllNameProcedure, GetInternSurgeriesByProcedure, GetInternSurgeriesB
 
 //-------------------------------------
 export default function CardsDetailsInterns() {
-  const [data, setData] = useState([]); // Original data fetched from the server
-  const [filteredData, setFilteredData] = useState([]); // Filtered data based on search criteria
-  const [searchDate, setSearchDate] = useState(""); // State for search by surgery date
-  const [selectedRole, setSelectedRole] = useState("all"); // State for selected role filter
-  const [searchHospital, setSearchHospital] = useState(""); // State for search by hospital name
-  const [loading, setLoading] = useState(false); // State for loading indicator
-  const [error, setError] = useState(""); // State for error message display
-  const location = useLocation(); // Access location object
-  const internId = JSON.parse(sessionStorage.getItem("currentUserID")) || 0; // Retrieve intern ID from session storage
-  const procedure_Id = location.state?.procedureId; // Retrieve procedure ID from location state
-  const theme = useTheme(); // Access theme object
+  const [data, setData] = useState([]); // נתונים ראשוניים שנשלפים מהשרת
+  const [filteredData, setFilteredData] = useState([]); // נתונים מסוננים בהתבסס על קריטריוני חיפוש
+  const [searchDate, setSearchDate] = useState(""); // מצב לחיפוש לפי תאריך ניתוח
+  const [selectedRole, setSelectedRole] = useState("all"); // מצב לסינון לפי תפקיד נבחר
+  const [searchHospital, setSearchHospital] = useState(""); // מצב לחיפוש לפי שם בית חולים
+  const [loading, setLoading] = useState(false); // מצב לאינדיקציה של טעינה
+  const [error, setError] = useState(""); // מצב להצגת הודעות שגיאה
+  const location = useLocation(); // גישה לאובייקט המיקום
+  const internId = JSON.parse(sessionStorage.getItem("currentUserID")) || 0; // שליפת מזהה המתמחה מאחסון הסשן
+  const procedure_Id = location.state?.procedureId; // שליפת מזהה הפרוצדורה ממצב המיקום
+  const theme = useTheme(); // גישה לאובייקט העיצוב
   const [procedures, setProcedures] = useState([]); // מערך המחזיק את כל הפרוצדורות
   const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
 
-  // Effect to fetch all procedure names
+
+  // הוק לשליפת כל שמות הפרוצדורות
   useEffect(() => {
     GetAllNameProcedure()
       .then((data) => {
-        console.log(data); // Print data for debugging
-        setProcedures(data); // Save data in procedures array
+        console.log(data); // הדפסת הנתונים לצורך דיבאגינג
+        setProcedures(data); // שמירת הנתונים במערך הפרוצדורות
       })
       .catch((error) => {
-        console.error("Error in GetAllNameProcedure: ", error); // Print error in case of a problem
+        console.error("Error in GetAllNameProcedure: ", error); // הדפסת שגיאה במקרה של בעיה
       });
   }, []);
 
-  // Effect to fetch data from the server based on internId and procedure_Id
+  // הוק לשליפת נתונים מהשרת בהתבסס על internId ו-procedure_Id
   useEffect(() => {
     setLoading(true);
     if (internId) {
@@ -51,16 +52,16 @@ export default function CardsDetailsInterns() {
         })
         .catch((err) => {
           console.error("Error fetching data:", err);
-          setError("Failed to fetch data.");
+          setError("Failed to fetch data."); // הצגת הודעת שגיאה כשלוקחים נתונים
           setLoading(false);
         });
     } else {
-      setError("Invalid intern ID.");
+      setError("Invalid intern ID."); // הצגת שגיאה במקרה של מזהה מתמחה לא תקין
       setLoading(false);
     }
   }, [internId, procedure_Id]);
 
-  // Effect to fetch data based on selected procedure
+  // הוק לשליפת נתונים על פי הפרוצדורה שנבחרה
   useEffect(() => {
     if (internId && selectedProcedure) {
       setLoading(true);
@@ -72,11 +73,12 @@ export default function CardsDetailsInterns() {
         })
         .catch((err) => {
           console.error("Error fetching data:", err);
-          setError("Failed to fetch data.");
+          setError("Failed to fetch data."); // הצגת שגיאה במקרה של כשל בשליפת נתונים
           setLoading(false);
         });
     }
   }, [internId, selectedProcedure]);
+
 
   // Effect to filter data based on search criteria
   useEffect(() => {
@@ -204,7 +206,7 @@ export default function CardsDetailsInterns() {
                   display: "flex",
                   flexDirection: "column",
                   backgroundColor: theme.palette.grey[200],
-                  marginLeft: { xs: 0, md: 1} ,
+                  marginLeft: { xs: 0, md: 1 },
                   ...(card.Hospital_name in hospitalColors && {
                     backgroundColor: hospitalColors[card.Hospital_name],
                   }),

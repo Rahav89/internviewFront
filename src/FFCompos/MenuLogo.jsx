@@ -1,93 +1,105 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, Badge } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import MailIcon from '@mui/icons-material/Mail'; // Import for message icon
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 import logoImage from '/src/Image/doctor1.png';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useState } from 'react';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // ייבוא האייקון של התנתקות
+import SettingsIcon from '@mui/icons-material/Settings'; // ייבוא אייקון הגדרות
+import NotificationsIcon from '@mui/icons-material/Notifications'; // ייבוא אייקון התראות
+
 //-----------------------------------------------------------
-const settings = ['ניהול משתמש', 'Account', 'התנתק'];
+const settings = [
+  { label: 'ניהול משתמש', icon: <SettingsIcon />, action: 'profile' },
+  { label: 'התראות', icon: <NotificationsIcon />, action: 'notifications' },
+  { label: 'התנתק', icon: <ExitToAppIcon />, action: 'logout' }
+];
 
 export default function MenuLogo() {
   const navigate = useNavigate(); // Hook for navigation
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [anchorElUser, setAnchorElUser] = React.useState(null);//פתיחה וסגירת התפריט של ההגדרות
+  const [anchorElUser, setAnchorElUser] = useState(null);//פתיחה וסגירת התפריט של ההגדרות
+  const [openDialog, setOpenDialog] = useState(false); // ניהול פתיחת דיאלוג
 
   //פתיחת התפריט של הההגדרות 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
+
   //פונקציה שמופעלת כדי לסגור את התפריט
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  const handleLogout = () => {
-    navigate('/'); // Navigate to login page
+  // טיפול בלחיצה על אפשרויות התפריט
+  const handleMenuItemClick = (action) => {
+    if (action === 'logout') {
+      navigate('/');
+    } else if (action === 'profile') {
+      navigate('/profile');
+    } else if (action === 'notifications') {
+      setOpenDialog(true);
+    }
+    handleCloseUserMenu();
   };
-
-  // New function to navigate to the profile page
-  const handleProfileClick = () => {
-    navigate('/profile'); //Navigate to profile page
+  // טיפול בסגירת התיבה דו שיח
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
-
-  const handleLogoClick = () => {
-    navigate('/intern'); ////Navigate to intern page
-  };
-
-  //התראות של ההודעות
-  const unreadMessages = 5;
-
-
+  // פונקציה לניווט לעמוד הלוח שנה
+  const handleCalenderPage = () => {
+    navigate('/calender');
+  }
   return (
-    <AppBar sx={{marginBottom:12}}>
+    <AppBar sx={{ marginBottom: 12 }}>
       <Container maxWidth="100%" >
         <Toolbar disableGutters>
           <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-            <IconButton onClick={handleLogoClick} sx={{ p: 0, '&:focus': { outline: 'none' } }} disableRipple>
+            <IconButton onClick={() => navigate('/intern')} sx={{ p: 0, '&:focus': { outline: 'none' } }} disableRipple>
               <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
             </IconButton>
-
           </Box>
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-            <Tooltip title="הודעות">
-              {/* מייל */}
-              <IconButton onClick={() => { handleMailMess }} sx={{ mr: 2 }}>
-                <Badge badgeContent={unreadMessages} color="error">
-                  <MailIcon style={{ color: 'white' }} fontSize="medium" />
-                </Badge>
-              </IconButton>
+            <Tooltip title="לוח שנה">
+              <Box>
+                {/* לוח שנה */}
+                <IconButton onClick={() => { handleCalenderPage() }} sx={{ mr: 2, '&:focus': { outline: 'none' } }} >
+                  <CalendarMonthIcon style={{ color: 'white' }} fontSize="medium" />
+                </IconButton>
+              </Box>
             </Tooltip>
             <Tooltip title="פתח הגדרות">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, '&:focus': { outline: 'none' } }}>
                 <Avatar src={logoImage} />
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: '30px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: isSmallScreen ? 'right' : 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: isSmallScreen ? 'right' : 'center',
-              }}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} dir='rtl' onClick={setting === 'התנתק' ? handleLogout : (setting === 'ניהול משתמש' ? handleProfileClick : handleCloseUserMenu)}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.label} onClick={() => handleMenuItemClick(setting.action)} sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row-reverse' }}>
+                  <Typography sx={{ textAlign: "right", ml: 1 }}>{setting.icon}</Typography>
+                  {setting.label}
                 </MenuItem>
               ))}
             </Menu>
           </Box>
         </Toolbar>
       </Container>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>התראות</DialogTitle>
+        <DialogContent>
+          <DialogContentText>כאן יוצגו התראות שלך.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>סגור</Button>
+        </DialogActions>
+      </Dialog>
+
     </AppBar>
   );
 }

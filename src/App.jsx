@@ -10,6 +10,8 @@ import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 import ViewInterns from './FFCompos/ViewInterns';
 import '@fontsource/roboto/300.css';
 import CardsDetailsInterns from './FFCompos/CardsDetailsInterns';
+import Calendar from './FFCompos/Calendar';
+
 
 const theme = createTheme({
     typography: {
@@ -21,7 +23,7 @@ function App() {
     useEffect(() => {
         document.body.dir = "ltr";
         document.body.style.backgroundColor = theme.palette.background.default;
-        document.body.style.color="black"
+        document.body.style.color = "black"
     }, []);
     return (
         <ThemeProvider theme={theme}>
@@ -30,6 +32,7 @@ function App() {
                     <Route path="/" element={<Login />} />
                     <Route path="/intern" element={<InternPage />} />
                     <Route path="/profile" element={<ProfileIntern />} />
+                    <Route path="/calender" element={<Calendar />} />
                     <Route path="/TableFullSyllabus/:id" element={<TableFullSyllabus />} />
                     <Route path="/ViewInterns" element={<ViewInterns />} />
                     <Route path="/details/:id" element={<CardsDetailsInterns />} />
