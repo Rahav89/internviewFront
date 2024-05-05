@@ -170,7 +170,7 @@ function FullSyllabus() {
       },
     },
     onClick: function (event, chartElement) {
-      if (chartElement.length > 0) {
+      if (chartElement.length > 0 && window.innerWidth > 600) {
         // Need to remember to modify this by sync with the index in that chart and the index in the array ( to tget the procedure_id)
         const clickedIndex = chartElement[0].index;
         // Extract the item ID associated with the clicked bar

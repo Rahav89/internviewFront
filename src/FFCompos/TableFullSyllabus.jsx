@@ -237,7 +237,15 @@ export default function DetailedSyllabusTable(props) {
         );
     }
 
-
+    const styles = {
+        tableContainer: {
+            overflowX: 'auto',
+        },
+        table: {
+            minWidth: 650, 
+        },
+    };
+    
     return (
         <>
             <MenuLogo />
@@ -267,8 +275,8 @@ export default function DetailedSyllabusTable(props) {
                                 }}
                             />
                         </Box>
-                        <TableContainer component={Paper} sx={{ maxHeight: 620, mb: "100px", direction: "rtl", overflowX: "auto" }}>
-                            <Table stickyHeader aria-label="collapsible table" sx={{ tableLayout: 'fixed', overflow: "scroll" }}>
+                        <TableContainer component={Paper} sx={{ ...styles.tableContainer, maxHeight: 620, mb: "100px", direction: "rtl" }}>
+                            <Table stickyHeader aria-label="collapsible table" sx={{ ...styles.table }}>
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align="right" width="2%" />
@@ -294,7 +302,7 @@ export default function DetailedSyllabusTable(props) {
                                             <ButtonSort colName="requiredAsSecond" />
                                         </TableCell>
                                         <TableCell align="center" width="11%" className="custom-cell">
-                                            נעשה כעוזר שני
+                                        <div style={{ display: 'inline-block' }}>נעשה כעוזר שני</div>
                                             <ButtonSort colName="doneAsSecond" />
                                         </TableCell>
                                     </TableRow>
