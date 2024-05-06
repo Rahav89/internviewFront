@@ -11,7 +11,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications'; // ייבוא
 //-----------------------------------------------------------
 const settings = [
   { label: 'ניהול משתמש', icon: <SettingsIcon />, action: 'profile' },
-  { label: 'התראות', icon: <NotificationsIcon />, action: 'notifications' },
+  // { label: 'התראות', icon: <NotificationsIcon />, action: 'notifications' },
   { label: '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות', icon: <ExitToAppIcon sx={{}} />, action: 'logout' }
 ];
 
@@ -70,8 +70,7 @@ export default function MenuLogo() {
             <Tooltip title="פתח הגדרות">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, '&:focus': { outline: 'none' } }}>
                 <Avatar src={logoImage} />
-                <Badge badgeContent={notificationCount} color="error" sx={{ top: -13, right: 5 }} />
-
+                {/* <Badge badgeContent={notificationCount} color="error" sx={{ top: -13, right: 5 }} /> */}
               </IconButton>
             </Tooltip>
 
@@ -97,9 +96,9 @@ export default function MenuLogo() {
                     {setting.icon}
                   </ListItemIcon>
                   <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-                    {setting.label === 'התראות' && (
+                    {/* {setting.label === 'התראות' && (
                       <Badge badgeContent={notificationCount} color="error" sx={{ mr: 4 }}>
-                      </Badge>)}
+                      </Badge>)} */}
                     <ListItemText primary={setting.label} />
                   </Box>
 
@@ -111,7 +110,7 @@ export default function MenuLogo() {
           </Box>
         </Toolbar>
       </Container>
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
+      {/* <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>התראות</DialogTitle>
         <DialogContent>
           <DialogContentText>כאן יוצגו התראות שלך.</DialogContentText>
@@ -119,7 +118,7 @@ export default function MenuLogo() {
         <DialogActions>
           <Button onClick={handleCloseDialog}>סגור</Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
     </AppBar>
   );

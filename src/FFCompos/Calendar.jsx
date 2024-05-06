@@ -82,29 +82,43 @@ export default function Calendar() {
                     ))}
                     {days.map((day, index) => (
                         <Grid item xs={1.714} key={index} sx={{
-                            height: 120, border: '0.1px solid #ccc', overflowY: 'scroll',
-                            '&:hover': { overflowY: 'auto' },
-                            '&::-webkit-scrollbar': { display: 'none' }
+                            height: 80, 
+                            border: '0.1px solid #ccc', 
+                            overflowY: 'scroll',
+                            '&::-webkit-scrollbar': { display: 'none' },
+                            '&:hover': { overflowY: 'auto' }, // אפשר גלילה בעת מעבר העכבר
+                            overflowY: 'auto', // מאפשר גלילה אופקית
+                            whiteSpace: 'nowrap' // שומר על טקסט בשורה אחת
                         }}>
                             <Button dir="rtl" sx={{ width: '100%', height: '100%', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start' }}
                                 onClick={() => handleDayClick(day)}>
                                 <Typography
                                     variant="caption"
                                     sx={{
-
-                                        fontSize: 14,
+                                        mr:1,
+                                        fontSize: 10,
                                         color: currentMonth.isSame(day, 'month') ? 'text.primary' : 'grey.500',
                                         position: 'sticky',
                                         top: 0,
                                         backgroundColor: 'white',
-                                        zIndex: 1, // Ensure it stays above other elements                 
+                                        zIndex: 1, // מבטיח שזה נשאר מעל יתר האלמנטים     
+                                        mr:2,            
                                     }}
                                 >
                                     {day.format('D')}
                                 </Typography>
 
                                 {day && events[day.format('YYYY-MM-DD')] && events[day.format('YYYY-MM-DD')].map((event, i) => (
-                                    <Typography key={i} variant="body2" sx={{ color: 'black', mt: 0.5, whiteSpace: 'nowrap', textOverflowY: 'ellipsis', backgroundColor: event.isNewMatch ? 'Azure' : 'transparent' }}>
+                                    <Typography key={i} variant="body2" sx={{
+                                        color: 'DarkBlue',
+                                        mt: 0.5, // מרווח מעל
+                                        whiteSpace: 'scroll', // אין גלילה אופקית בטקסט
+                                        overflow: 'hidden', // מסתיר תוכן שלא מתאים לתא
+                                        textOverflow: 'ellipsis', // מוסיף נקודות קץ אם הטקסט חורג
+                                        backgroundColor: event.isNewMatch ? 'Azure' : 'transparent', // רקע שונה לאירועים חדשים
+                                        fontSize: '0.60rem', // קטן גודל הגופן
+                                        mr: '5px' // מרווח פנימי קטן לכל צד
+                                    }}>
                                         {event.displayText}
                                     </Typography>
                                 ))
