@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Box, Typography, Button, Grid, Dialog, DialogTitle, DialogContent, DialogContentText } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Button, Grid, Dialog, DialogTitle, DialogContent, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider } from '@mui/material';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
@@ -7,6 +8,7 @@ import MenuLogo from "./MenuLogo.jsx";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import TodayIcon from '@mui/icons-material/Today';
+import { GetAllInternSurgeries } from './Server.jsx';
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
@@ -15,7 +17,6 @@ const generateCalendar = (month) => {
     const startOfTheMonth = month.startOf('month').startOf('week');
     const endOfTheMonth = month.endOf('month').endOf('week');
     const days = [];
-
     let day = startOfTheMonth;
 
     while (day.isSameOrBefore(endOfTheMonth)) {
@@ -27,16 +28,32 @@ const generateCalendar = (month) => {
 };
 
 export default function Calendar() {
+    const internID = JSON.parse(sessionStorage.getItem('currentUserID')); // Adjusted if sessionStorage is used correctly
+    const [events, setEvents] = useState({});
     const [currentMonth, setCurrentMonth] = useState(dayjs());
-    const [events] = useState({
-        '2024-05-07': ['ניתוח בהלל יפ בח בחה', 'ניתוח בהלל יפ בח בחה', 'ניתוח בהלל יפ בח בחה', 'חתונה לחבר']
-    });
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
-    const handlePrevMonth = () => setCurrentMonth(currentMonth.subtract(1, 'month'));
-    const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, 'month'));
-    const handleToday = () => setCurrentMonth(dayjs()); // Function to set to current day
+    useEffect(() => {
+        GetAllInternSurgeries(internID).then((data) => {
+            let allEvents = {};
+            data.forEach((surgery) => {
+                const dateKey = surgery.Surgery_date.slice(0, 10);
+                if (!allEvents[dateKey]) {
+                    allEvents[dateKey] = [];
+                }
+                allEvents[dateKey].push({
+                    ...surgery,
+                    displayText: `ניתוח ב${surgery.Hospital_name}`,
+                    isNewMatch: surgery.newMatch === 1
+                });
+            });
+            setEvents(allEvents);
+        }).catch((error) => {
+            console.error("Error in GetAllInternSurgeries: ", error);
+        });
+    }, [internID]);
+
     const handleDayClick = (day) => {
         setSelectedDayEvents(events[day.format('YYYY-MM-DD')] || []);
         setOpenDialog(true);
@@ -44,6 +61,9 @@ export default function Calendar() {
 
     const days = generateCalendar(currentMonth);
 
+    const handlePrevMonth = () => setCurrentMonth(currentMonth.subtract(1, 'month'));
+    const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, 'month'));
+    const handleToday = () => setCurrentMonth(dayjs()); // Function to set to current day
     return (
         <>
             <MenuLogo />
@@ -71,42 +91,59 @@ export default function Calendar() {
                                 <Typography
                                     variant="caption"
                                     sx={{
+
                                         fontSize: 14,
                                         color: currentMonth.isSame(day, 'month') ? 'text.primary' : 'grey.500',
                                         position: 'sticky',
                                         top: 0,
+                                        backgroundColor: 'white',
                                         zIndex: 1, // Ensure it stays above other elements                 
                                     }}
                                 >
                                     {day.format('D')}
                                 </Typography>
 
-                                {day && events[day.format('YYYY-MM-DD')] &&
-                                    events[day.format('YYYY-MM-DD')].map((event, i) => (
-                                        <Typography key={i} variant="body2" sx={{ color: 'blue', mt: 0.5, whiteSpace: 'nowrap', textOverflowY: 'ellipsis' }}>
-                                            {event}
-                                        </Typography>
-                                    ))
+                                {day && events[day.format('YYYY-MM-DD')] && events[day.format('YYYY-MM-DD')].map((event, i) => (
+                                    <Typography key={i} variant="body2" sx={{ color: 'blue', mt: 0.5, whiteSpace: 'nowrap', textOverflowY: 'ellipsis', backgroundColor: event.isNewMatch ? 'pink' : 'transparent' }}>
+                                        {event.displayText}
+                                    </Typography>
+                                ))
                                 }
                             </Button>
                         </Grid>
                     ))}
                 </Grid>
-                <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-                    <DialogTitle dir="rtl">אירועים</DialogTitle>
+                <Dialog dir="rtl" open={openDialog} onClose={() => setOpenDialog(false)}>
+                    <DialogTitle>Events</DialogTitle>
                     <DialogContent>
-                        {selectedDayEvents.length > 0 ? (
-                            selectedDayEvents.map((event, index) => (
-                                <Typography key={index} dir="rtl" paragraph>
-                                    {event}
-                                </Typography>
-                            ))
-                        ) : (
-                            <Typography dir="rtl">No events</Typography>
-                        )}
+                        <List>
+                            {selectedDayEvents.length > 0 ? selectedDayEvents.map((event, index) => (
+                                <React.Fragment key={index}>
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar sx={{ bgcolor: 'pink' }}>
+                                                <AssignmentIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            sx={{ textAlign: "right" }}
+                                            primary={event.secondaryText}
+                                            secondary={
+                                                <>
+                                                    <Typography component="span" variant="body2" color="text.primary">
+                                                        {`${(event.Surgery_date).slice(11, 16)} ,${event.Hospital_name} (${event.Intern_role})  — `}
+                                                    </Typography>
+                                                    {`${event.procedureName.join(', ')}`}
+                                                </>
+                                            }
+                                        />
+                                    </ListItem>
+                                    <Divider variant="inset" component="li" />
+                                </React.Fragment>
+                            )) : <Typography>No events</Typography>}
+                        </List>
                     </DialogContent>
                 </Dialog>
-
             </Box>
         </>
     );
