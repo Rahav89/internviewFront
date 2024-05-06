@@ -2,6 +2,7 @@
   "name": "internviewfront",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://proj.ruppin.ac.il/igroup145/test2/tar6/build/",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -52,4 +53,5 @@
     "eslint-plugin-react-refresh": "^0.4.6",
     "vite": "^5.2.0"
   }
+
 }
