@@ -194,14 +194,13 @@ export default function CardsDetailsInterns() {
       ) : (
         <Grid container spacing={{ xs: 1, md: 3 }} sx={{ direction: 'rtl' }}>  {/* שינוי בערכת הרווח בין הכרטיסים */}
           {filteredData.map((card, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={card.id || index}  >
+            <Grid item xs={12} sm={6} md={4} lg={3} key={card.id || index}>
               <Card
                 sx={{
-                  width: "100%", // אורך הכרטיס יתאים אוטומטית לרוחב שלו
                   display: "flex",
                   flexDirection: "column",
                   backgroundColor: "#fff", // רקע לבן
-                  marginLeft: { xs: 0, md: 1 },
+                  marginLeft: {  md: 1 },
                   border: "5px solid", // גודל הבורדר
                   borderRadius: "10px", // ריסוף
                   boxShadow: "0 3px 6px rgba(0, 0, 0, 0.1)", // צל
@@ -209,7 +208,7 @@ export default function CardsDetailsInterns() {
                   "&:hover": {
                     transform: "scale(1.05)", // הגדלת הכרטיס בעת העצמת העכבר
                   },
-                  margin: "0.5rem", // הגדרת הרווח בין הכרטיסים
+                  margin:'0.4rem',
                   borderColor: card.Hospital_name in hospitalColors ? hospitalColors[card.Hospital_name] : "#ccc", // צביעת הבורדר בהתאם לבית החולים
                 }}
               >
