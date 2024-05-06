@@ -13,10 +13,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { GetInterns } from './Server.jsx';
+import { GetInterns, UpdateInternInSurgery } from './Server.jsx';
 import Swal from 'sweetalert2';
 
-export default function AlgoResults() {
+export default function AlgoResults({ surgeryID , refreshComponents }) {
+
     const [interns, setInterns] = useState([]);
     const [openDialogId, setOpenDialogId] = useState(null);
 
@@ -44,27 +45,44 @@ export default function AlgoResults() {
             });
     }, []);
 
-    const handleOpenDialog = (id) => {
+    const handleOpenDialog = (id) => { setOpenDialogId(id); };
+    const handleCloseDialog = () => { setOpenDialogId(null); };
 
-        setOpenDialogId(id);
-    };
+    const handleChooseDialog = (intern_role, intern) => {
 
-    const handleCloseDialog = () => {
+        let matchObj = {
+            Surgery_id: surgeryID,
+            Intern_id: intern.id,
+            Intern_role: intern_role,
+            newMatch: true
+        }
+        UpdateInternInSurgery(matchObj)
+            .then(data => {
+                if (data) {
+                    refreshComponents(); // Trigger data refresh in parent component
+                    Swal.fire({
+                        text: "שיבוץ בוצע בהצלחה",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    })
+                }
+                else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'המתמחה כבר משובץ לאותו התפקיד',
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error in UpdateInternInSurgery: ", error);
+            });
+       
+
         setOpenDialogId(null);
     };
-    const handleAgree = () => {
-        Swal.fire({
-            text: "שיבוץ בוצע בהצלחה",
-            icon: "success",
-            confirmButtonText: "OK",
-        })
-        setOpenDialogId(null);
-    };
-
-
 
     return (
-        <TableContainer component={Paper} dir="rtl" sx={{ marginLeft: 7, marginX: 7,mb:2, width: 'auto' }}>
+        <TableContainer component={Paper} dir="rtl" sx={{ marginLeft: 7, marginX: 7, mb: 2, width: 'auto' }}>
             <Table sx={{ minWidth: 500 }}>
                 <TableHead>
                     <TableRow>
@@ -94,12 +112,14 @@ export default function AlgoResults() {
                                         <DialogTitle dir="rtl">{"שיבוץ מתמחה לניתוח"}</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText dir="rtl" id="alert-dialog-description">
-                                                האם אתה בטוח על שיבוץ {intern.fullName} לניתוח שבחרת?
+                                                לאיזה תפקיד לשבץ את {intern.fullName} ?
                                             </DialogContentText>
                                         </DialogContent>
                                         <DialogActions>
-                                            <Button onClick={handleCloseDialog} autoFocus>ביטול</Button>
-                                            <Button onClick={handleAgree}>אישור שיבוץ</Button>
+                                            <Button onClick={() => handleChooseDialog('עוזר שני', intern)}>עוזר שני </Button>
+                                            <Button onClick={() => handleChooseDialog('עוזר ראשון', intern)}>עוזר ראשון </Button>
+                                            <Button onClick={() => handleChooseDialog('מנתח ראשי', intern)}>מנתח ראשי</Button>
+
                                         </DialogActions>
                                     </Dialog>
                                 )}

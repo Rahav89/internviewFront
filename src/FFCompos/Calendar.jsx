@@ -9,6 +9,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import TodayIcon from '@mui/icons-material/Today';
 import { GetAllInternSurgeries } from './Server.jsx';
+import FloatingChatButton from './FloatingChatButton';
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
@@ -82,11 +83,12 @@ export default function Calendar() {
                     ))}
                     {days.map((day, index) => (
                         <Grid item xs={1.714} key={index} sx={{
-                            height: 80, 
+                            height: 90, 
                             border: '0.1px solid #ccc', 
                             overflowY: 'scroll',
                             '&::-webkit-scrollbar': { display: 'none' },
                             '&:hover': { overflowY: 'auto' }, // אפשר גלילה בעת מעבר העכבר
+                            scrollBehavior: 'smooth', // הוספת אנימציה חלקה לגלילה 
                             overflowY: 'auto', // מאפשר גלילה אופקית
                             whiteSpace: 'nowrap' // שומר על טקסט בשורה אחת
                         }}>
@@ -111,13 +113,13 @@ export default function Calendar() {
                                 {day && events[day.format('YYYY-MM-DD')] && events[day.format('YYYY-MM-DD')].map((event, i) => (
                                     <Typography key={i} variant="body2" sx={{
                                         color: 'DarkBlue',
-                                        mt: 0.5, // מרווח מעל
+                                        mt: 0.2, // מרווח מעל
                                         whiteSpace: 'scroll', // אין גלילה אופקית בטקסט
                                         overflow: 'hidden', // מסתיר תוכן שלא מתאים לתא
                                         textOverflow: 'ellipsis', // מוסיף נקודות קץ אם הטקסט חורג
                                         backgroundColor: event.isNewMatch ? 'Azure' : 'transparent', // רקע שונה לאירועים חדשים
-                                        fontSize: '0.60rem', // קטן גודל הגופן
-                                        mr: '5px' // מרווח פנימי קטן לכל צד
+                                        fontSize: '11px', // קטן גודל הגופן
+                                        mr: '2px' // מרווח פנימי קטן לכל צד
                                     }}>
                                         {event.displayText}
                                     </Typography>
@@ -159,6 +161,7 @@ export default function Calendar() {
                     </DialogContent>
                 </Dialog>
             </Box>
+            <FloatingChatButton/>
         </>
     );
 }
