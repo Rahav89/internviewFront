@@ -1,6 +1,6 @@
 
-const localHost = "https://localhost:7220/api/"
-// const ruppinApi = "https://proj.ruppin.ac.il/igroup145_41856/test2/tar6/build"
+// const localHost = "https://localhost:7220/api/"
+const ruppinApi = "https://proj.ruppin.ac.il/cgroup14/test2/tar1"
 
 // קבלת פרטי המתמחה לפי האידי שלו מהשרת
 export const api = localHost

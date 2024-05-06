@@ -85,7 +85,6 @@ export default function Calendar() {
                         <Grid item xs={1.714} key={index} sx={{
                             height: 90, 
                             border: '0.1px solid #ccc', 
-                            overflowY: 'scroll',
                             '&::-webkit-scrollbar': { display: 'none' },
                             '&:hover': { overflowY: 'auto' }, // אפשר גלילה בעת מעבר העכבר
                             scrollBehavior: 'smooth', // הוספת אנימציה חלקה לגלילה 
@@ -97,7 +96,6 @@ export default function Calendar() {
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        mr:1,
                                         fontSize: 10,
                                         color: currentMonth.isSame(day, 'month') ? 'text.primary' : 'grey.500',
                                         position: 'sticky',
