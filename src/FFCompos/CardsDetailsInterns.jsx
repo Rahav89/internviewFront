@@ -112,7 +112,7 @@ export default function CardsDetailsInterns() {
   };
   // Hospital colors object for customizing card backgrounds
   const hospitalColors = {
-    'רמב"ם': "AliceBlue",
+    'רמב"ם': "Bisque",
     לניאדו: "Lavender",
     "הלל יפה": "LightCyan",
     אכילוב: "LemonChiffon",
@@ -138,7 +138,7 @@ export default function CardsDetailsInterns() {
       >
         {/* תיבה עבור בחירת פרוצדורה */}
         <Box sx={{ width: "100%", maxWidth: 300 }}>
-        <Autocomplete
+          <Autocomplete
             value={selectedProcedure}
             onChange={handleProcedureChange}
             options={procedures}
@@ -192,20 +192,25 @@ export default function CardsDetailsInterns() {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Grid container spacing={2}>
+        <Grid container spacing={{ xs: 1, md: 3 }} sx={{ direction: 'rtl' }}>  {/* שינוי בערכת הרווח בין הכרטיסים */}
           {filteredData.map((card, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={card.id || index}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={card.id || index}  >
               <Card
                 sx={{
-                  maxWidth: "100%",
-                  width: "100%",
+                  width: "100%", // אורך הכרטיס יתאים אוטומטית לרוחב שלו
                   display: "flex",
                   flexDirection: "column",
-                  backgroundColor: theme.palette.grey[200],
+                  backgroundColor: "#fff", // רקע לבן
                   marginLeft: { xs: 0, md: 1 },
-                  ...(card.Hospital_name in hospitalColors && {
-                    backgroundColor: hospitalColors[card.Hospital_name],
-                  }),
+                  border: "5px solid", // גודל הבורדר
+                  borderRadius: "10px", // ריסוף
+                  boxShadow: "0 3px 6px rgba(0, 0, 0, 0.1)", // צל
+                  transition: "transform 0.3s", // אנימציה כאשר העכבר עובר מעל הכרטיס
+                  "&:hover": {
+                    transform: "scale(1.05)", // הגדלת הכרטיס בעת העצמת העכבר
+                  },
+                  margin: "0.5rem", // הגדרת הרווח בין הכרטיסים
+                  borderColor: card.Hospital_name in hospitalColors ? hospitalColors[card.Hospital_name] : "#ccc", // צביעת הבורדר בהתאם לבית החולים
                 }}
               >
                 <CardHeader
@@ -214,31 +219,36 @@ export default function CardsDetailsInterns() {
                     flexDirection: "row-reverse",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    marginBottom: 0, // קיצור הרווח בין הכותרת לתוכן
                   }}
-                  avatar={
-                    <Avatar
-                      sx={{
-                        bgcolor: "MintCream",
-                        width: 50,
-                        height: 50,
-                      }}
-                    >
-                      <img
-                        src={surgeryDateImage}
-                        style={{ width: "70%", height: "70%" }}
-                        alt="Surgery Date"
-                      />
-                    </Avatar>
-                  }
+                  // avatar={
+                  //   <Avatar
+                  //     sx={{
+                  //       bgcolor: "MintCream",
+                  //       width: 50,
+                  //       height: 50,
+                  //     }}
+                  //   >
+                  //     <img
+                  //       src={surgeryDateImage}
+                  //       style={{ width: "70%", height: "70%" }}
+                  //       alt="Surgery Date"
+                  //     />
+                  //   </Avatar>
+                  // }
+                  titleTypographyProps={{
+                    variant: "subtitle1", // קטינות הכותרת
+                    fontWeight: "bold", // טקסט בולד
+                    borderBottom: '2px solid #ccc'
+                  }}
                   title={card.Procedure_name}
                 />
-                <CardContent>
-                  <Typography variant="body2" color="text.secondary">
-                    רמת קושי של הניתוח: {card.Difficulty_level} <br />
-                    שם בית החולים: {card.Hospital_name} <br />
-                    תאריך ניתוח:{" "}
-                    {new Date(card.Surgery_date).toLocaleDateString()} <br />
-                    תפקיד: {card.Intern_role}
+                <CardContent sx={{ paddingTop: 0 }}> {/* הסרת הפדינג מהתוכן */}
+                  <Typography variant="body2" color="text.secondary" align="center">
+                    <strong>רמת קושי של הניתוח:</strong> {card.Difficulty_level} <br />
+                    <strong>שם בית החולים:</strong> {card.Hospital_name} <br />
+                    <strong>תאריך ניתוח:</strong> {new Date(card.Surgery_date).toLocaleDateString()} <br />
+                    <strong>תפקיד:</strong> {card.Intern_role}
                   </Typography>
                 </CardContent>
               </Card>
