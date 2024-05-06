@@ -9,7 +9,7 @@ import { useTheme } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import surgeryDateImage from "/src/Image/surgerydate.png";
 import FloatingChatButton from './FloatingChatButton';
-import { GetAllNameProcedure, GetInternSurgeriesByProcedure, GetInternSurgeriesByProcedureName } from "./Server.jsx";
+import { GetAllProcedure, GetInternSurgeriesByProcedure, GetInternSurgeriesByProcedureName } from "./Server.jsx";
 
 //-------------------------------------
 export default function CardsDetailsInterns() {
@@ -30,13 +30,13 @@ export default function CardsDetailsInterns() {
 
   // // הוק לשליפת כל שמות הפרוצדורות
   useEffect(() => {
-    GetAllNameProcedure()
+    GetAllProcedure()
       .then((data) => {
         console.log(data); // הדפסת הנתונים לצורך דיבאגינג
         setProcedures(data); // שמירת הנתונים במערך הפרוצדורות
       })
       .catch((error) => {
-        console.error("Error in GetAllNameProcedure: ", error); // הדפסת שגיאה במקרה של בעיה
+        console.error("Error in GetAllProcedure: ", error); // הדפסת שגיאה במקרה של בעיה
       });
   }, []);
 
@@ -65,7 +65,7 @@ export default function CardsDetailsInterns() {
   useEffect(() => {
     if (internId && selectedProcedure) {
       setLoading(true);
-      GetInternSurgeriesByProcedureName(internId, selectedProcedure.procedureName)
+      GetInternSurgeriesByProcedure(internId, selectedProcedure.procedure_Id)
         .then((fetchedData) => {
           setData(fetchedData);
           setFilteredData(fetchedData);

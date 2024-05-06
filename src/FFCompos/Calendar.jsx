@@ -104,7 +104,7 @@ export default function Calendar() {
                                 </Typography>
 
                                 {day && events[day.format('YYYY-MM-DD')] && events[day.format('YYYY-MM-DD')].map((event, i) => (
-                                    <Typography key={i} variant="body2" sx={{ color: 'blue', mt: 0.5, whiteSpace: 'nowrap', textOverflowY: 'ellipsis', backgroundColor: event.isNewMatch ? 'pink' : 'transparent' }}>
+                                    <Typography key={i} variant="body2" sx={{ color: 'black', mt: 0.5, whiteSpace: 'nowrap', textOverflowY: 'ellipsis', backgroundColor: event.isNewMatch ? 'Azure' : 'transparent' }}>
                                         {event.displayText}
                                     </Typography>
                                 ))

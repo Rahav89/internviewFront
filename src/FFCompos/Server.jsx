@@ -214,8 +214,8 @@ export const GetInternsForChat = (internId) => {
 };
 
 //לקבל את השמות הפרוצדורות
-export const GetAllNameProcedure = () => {
-    return fetch(`${api}Procedure/GetAllprocedureName`, {
+export const GetAllProcedure = () => {
+    return fetch(`${api}Procedure/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
