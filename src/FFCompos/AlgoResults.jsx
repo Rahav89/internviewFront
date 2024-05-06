@@ -22,7 +22,7 @@ export default function AlgoResults() {
 
     let scores = ['90%', '85%', '70%', '60%', '50%']
     useEffect(() => {
-        let interns =[];
+        let interns = [];
         GetInterns()
             .then(data => {
                 for (let i = 0; i < data.length; i++) {
@@ -32,11 +32,11 @@ export default function AlgoResults() {
                         fullName: `${intern.first_name} ${intern.last_name}`,
                         year: intern.interns_year,
                         rating: intern.interns_rating,
-                        score:scores[i]
+                        score: scores[i]
                     }
                     interns.push(internObj);
                 }
-                
+
                 setInterns(interns);
             })
             .catch(error => {
@@ -64,25 +64,25 @@ export default function AlgoResults() {
 
 
     return (
-        <TableContainer component={Paper} dir="rtl">
-            <Table sx={{ minWidth: 650 }}>
+        <TableContainer component={Paper} dir="rtl" sx={{ marginLeft: 7, marginX: 7,mb:2, width: 'auto' }}>
+            <Table sx={{ minWidth: 500 }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell align="center">שם המתמחה</TableCell>
-                        <TableCell align="center">שנת התמחות</TableCell>
-                        <TableCell align="center">דירוג מתמחה</TableCell>
-                        <TableCell align="center"> ציון תיאום</TableCell>
-                        <TableCell align="center">תאם לניתוח</TableCell>
+                        <TableCell align="center" sx={{ width: '10%' }}>שם המתמחה</TableCell>
+                        <TableCell align="center" sx={{ width: '10%' }}>שנת התמחות</TableCell>
+                        <TableCell align="center" sx={{ width: '10%' }}>דירוג מתמחה</TableCell>
+                        <TableCell align="center" sx={{ width: '10%' }}>ציון תיאום</TableCell>
+                        <TableCell align="center" sx={{ width: '10%' }}>תאם לניתוח</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {interns.map(intern => (
                         <TableRow key={intern.id}>
-                            <TableCell align="center">{intern.fullName}</TableCell>
-                            <TableCell align="center">{intern.year}</TableCell>
-                            <TableCell align="center">{intern.rating}</TableCell>
-                            <TableCell align="center">{intern.score}</TableCell>
-                            <TableCell align="center">
+                            <TableCell align="center" sx={{ width: '10%' }}>{intern.fullName}</TableCell>
+                            <TableCell align="center" sx={{ width: '10%' }}>{intern.year}</TableCell>
+                            <TableCell align="center" sx={{ width: '10%' }}>{intern.rating}</TableCell>
+                            <TableCell align="center" sx={{ width: '10%' }}>{intern.score}</TableCell>
+                            <TableCell align="center" sx={{ width: '10%' }}>
                                 <Button onClick={() => handleOpenDialog(intern.id)} size="small">
                                     <QueueIcon />
                                 </Button>

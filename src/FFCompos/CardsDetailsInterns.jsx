@@ -28,7 +28,7 @@ export default function CardsDetailsInterns() {
   const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
 
 
-  // הוק לשליפת כל שמות הפרוצדורות
+  // // הוק לשליפת כל שמות הפרוצדורות
   useEffect(() => {
     GetAllNameProcedure()
       .then((data) => {
@@ -138,17 +138,13 @@ export default function CardsDetailsInterns() {
       >
         {/* תיבה עבור בחירת פרוצדורה */}
         <Box sx={{ width: "100%", maxWidth: 300 }}>
-          <Autocomplete
+        <Autocomplete
             value={selectedProcedure}
             onChange={handleProcedureChange}
             options={procedures}
             getOptionLabel={(option) => option.procedureName || ""}
-            renderInput={(params) => (
-              <TextField {...params} label="בחירת שם ניתוח" fullWidth />
-            )}
-            isOptionEqualToValue={(option, value) =>
-              option.procedureName === value.procedureName
-            }
+            renderInput={(params) => <TextField {...params} label="בחירת שם ניתוח" fullWidth />}
+            isOptionEqualToValue={(option, value) => option.procedureName === value.procedureName}
           />
         </Box>
       </Box>
