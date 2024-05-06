@@ -22,7 +22,7 @@ export default function CardsDetailsInterns() {
   const [error, setError] = useState(""); // מצב להצגת הודעות שגיאה
   const location = useLocation(); // גישה לאובייקט המיקום
   const internId = JSON.parse(sessionStorage.getItem("currentUserID")) || 0; // שליפת מזהה המתמחה מאחסון הסשן
-  const procedure_Id = location.state?.procedureId; // שליפת מזהה הפרוצדורה ממצב המיקום
+  const procedure_Id = location.state?.procedureId || 0; // שליפת מזהה הפרוצדורה ממצב המיקום או null אם לא קיים
   const theme = useTheme(); // גישה לאובייקט העיצוב
   const [procedures, setProcedures] = useState([]); // מערך המחזיק את כל הפרוצדורות
   const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
