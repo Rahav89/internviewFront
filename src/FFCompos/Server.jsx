@@ -333,3 +333,52 @@ export const GetAllInternSurgeries = (internID) => {
             throw error;
         });
 };
+
+
+
+export const UpdateInternInSurgery = (match) => {
+    console.log("match" ,JSON.stringify(match))
+    return fetch(`${api}Interns/UpdateInternInSurgery`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        },
+        
+        body: JSON.stringify(match)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Error in UpdateInternInSurgery: ", error.message);
+            throw error;
+        });
+};
+
+export const GetSurgeryRoles = (surgeryID) => {
+    return fetch(`${api}Surgeries/GetSurgeryRoles?surgery_id=${surgeryID}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        }
+    }).then(response => {
+        console.log("HTTP Status:", response.status); // Log the HTTP status
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            console.error("Error in GetAllInternSurgeries: ", error);
+            throw error;
+        });
+};
+
