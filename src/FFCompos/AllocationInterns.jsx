@@ -17,6 +17,7 @@ export default function AllocationInterns() {
         GetFutureSurgeries()
             .then((data) => {
                 setSurgeriesAsObject(data); // שמירת הנתונים במערך הפרוצדורות
+                console.log(SurgeriesAsObject);
                 let SurgeriesAsString = [];
                 data.map((surgery) => (
                     SurgeriesAsString.push(`פרוצדורות בניתוח: ${surgery.procedureName} (תאריך: ${surgery.Surgery_date.slice(0, 10)} | רמת קושי: ${surgery.Difficulty_level} | בית חולים: ${surgery.Hospital_name})`)
