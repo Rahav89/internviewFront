@@ -29,18 +29,19 @@ const ChatUI = ({ user, onBack }) => {
         // Listen for changes at the 'messages/' path with onValue method.
         onValue(messagesRef, (snapshot) => {
             //gets the current data from the Firebase database's 'messages/' section.
-            const data = snapshot.val();
+            const data = snapshot.val(); // קבלת הנתונים העדכניים
             const loadedMessages = [];
             for (const key in data) {
                 let message = data[key];
                 // messages will be marked as read when loaded to the user
                 if (message.from_id === user.Intern_id && message.to_id === internID && !message.read) {
                     const messageRef = ref(database, `messages/${key}`);
-                    update(messageRef, { read: true });
+                    update(messageRef, { read: true });// עדכון ההודעה כנקראה
                 }
                 loadedMessages.push({ messages_id: key, ...message });
             }
             // Filter the messages to include only those that are between the current user and the chat partner.
+            // סינון ההודעות להודעות הרלוונטיות בין המשתמשים
             const filteredMessages = loadedMessages.filter(message =>
                 (message.from_id === internID && message.to_id === user.Intern_id) ||
                 (message.from_id === user.Intern_id && message.to_id === internID)
@@ -51,10 +52,11 @@ const ChatUI = ({ user, onBack }) => {
         });
 
         // Detach listener when the component unmounts
-        return () => off(messagesRef);
+        return () => off(messagesRef);// ניתוק המאזין בעת פריקת הרכיב
     }, []);
 
     //PUT new messages into Firebase Realtime Database
+    // שליחת הודעה חדשה
     const handleSend = () => {
         if (input.trim() !== "") {
             // Create a new reference for a message in the 'messages/' path of the Firebase Realtime Database.
@@ -73,7 +75,7 @@ const ChatUI = ({ user, onBack }) => {
         }
     };
 
-    const EndRef = useRef(null);
+    const EndRef = useRef(null);// ref לסקרול אוטומטי לתחתית הצ'אט
     const messagesEndRef = useRef(null);  // Ref for the last message
 
     useEffect(() => {
@@ -81,15 +83,15 @@ const ChatUI = ({ user, onBack }) => {
         //messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }, [chatMessages]);
 
-    const [input, setInput] = useState("");
+    const [input, setInput] = useState(""); // ערך הקלט לשליחת הודעות
 
-  
+    // פורמט תאריך לתצוגה
     const formatDate = (dateStr) => {
         const date = new Date(dateStr);
         return date.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
-    
-    
+
+
     return (
         <Box
             sx={{
@@ -134,8 +136,8 @@ const ChatUI = ({ user, onBack }) => {
                     return (
                         <React.Fragment key={message.messages_id}>
                             {showDateHeader && (
-                                <Typography sx={{ color: 'gray',textAlign: 'center', mb: 2 }}>
-                                   {formatDate(message.messages_date)}
+                                <Typography sx={{ color: 'gray', textAlign: 'center', mb: 2 }}>
+                                    {formatDate(message.messages_date)}
                                 </Typography>
                             )}
                             <Message key={message.messages_id} message={message} user={user} />
@@ -152,10 +154,10 @@ const ChatUI = ({ user, onBack }) => {
                             autoFocus
                             dir="rtl"
                             size="small"
-                            fullWidth                     
+                            fullWidth
                             variant="outlined"
                             value={input}
-                            onChange={() => { setInput(event.target.value)}}
+                            onChange={() => { setInput(event.target.value) }}
                             onKeyPress={(event) => {
                                 if (event.key === 'Enter') { handleSend(); }
                             }}

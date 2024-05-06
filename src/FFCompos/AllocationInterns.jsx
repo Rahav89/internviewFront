@@ -3,8 +3,8 @@ import MenuLogo from './MenuLogo';
 import { Typography, Box, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { GetFutureSurgeries } from './Server.jsx';
-
 import AlgoResults from './AlgoResults.jsx'
+import Calendar from './Calendar.jsx'
 
 
 export default function AllocationInterns() {
@@ -17,6 +17,7 @@ export default function AllocationInterns() {
         GetFutureSurgeries()
             .then((data) => {
                 setSurgeriesAsObject(data); // שמירת הנתונים במערך הפרוצדורות
+                console.log(SurgeriesAsObject);
                 let SurgeriesAsString = [];
                 data.map((surgery) => (
                     SurgeriesAsString.push(`פרוצדורות בניתוח: ${surgery.procedureName} (תאריך: ${surgery.Surgery_date.slice(0, 10)} | רמת קושי: ${surgery.Difficulty_level} | בית חולים: ${surgery.Hospital_name})`)
@@ -83,12 +84,13 @@ export default function AllocationInterns() {
             {selectedProcedure &&
 
                 <>
-                <Typography
-                    variant="h6"
-                    sx={{ padding: 2, textAlign: "center", fontWeight: "bold" }}>
-                  תוצאות
-                </Typography>
-                    <AlgoResults /></>
+                    <Typography
+                        variant="h6"
+                        sx={{ padding: 2, textAlign: "center", fontWeight: "bold" }}>
+                        תוצאות
+                    </Typography>
+                    <AlgoResults />
+                </>
 
             }
         </>

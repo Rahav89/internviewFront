@@ -1,6 +1,6 @@
 
 const localHost = "https://localhost:7220/api/"
-const ruppinApi = "https://proj.ruppin.ac.il/cgroup10/api..."
+// const ruppinApi = "https://proj.ruppin.ac.il/igroup145_41856/test2/tar6/build"
 
 // קבלת פרטי המתמחה לפי האידי שלו מהשרת
 export const api = localHost
@@ -214,8 +214,8 @@ export const GetInternsForChat = (internId) => {
 };
 
 //לקבל את השמות הפרוצדורות
-export const GetAllNameProcedure = () => {
-    return fetch(`${api}Procedure/GetAllprocedureName`, {
+export const GetAllProcedure = () => {
+    return fetch(`${api}Procedure/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -305,6 +305,31 @@ export const GetFutureSurgeries = () => {
         })
         .catch(error => {
             console.error("Error in GetFutureSurgeries: ", error);
+            throw error;
+        });
+};
+
+
+export const GetAllInternSurgeries = (internID) => {
+    return fetch(`${api}Interns/AllInternSurgeries?internId=${internID}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        }
+    }).then(response => {
+        console.log("HTTP Status:", response.status); // Log the HTTP status
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+        .then(data => {
+            console.log("Response Data:", data); // Log the actual data received
+            return data;
+        })
+        .catch(error => {
+            console.error("Error in GetAllInternSurgeries: ", error);
             throw error;
         });
 };
