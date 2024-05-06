@@ -24,6 +24,7 @@ export default function MenuLogo() {
   };
 
   const handleLogout = () => {
+    sessionStorage.removeItem("currentUserID");
     navigate('/'); // Navigate to login page
   };
 
