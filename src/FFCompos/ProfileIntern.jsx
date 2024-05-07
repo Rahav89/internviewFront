@@ -14,7 +14,7 @@ import VisibilityOff from "@mui/icons-material/Visibility";
 import { Container, Box } from "@mui/material";
 import { updateIntern, GetInternByID } from "./Server.jsx";
 import FloatingChatButton from './FloatingChatButton';
-
+import EditIcon from '@mui/icons-material/Edit';
 
 //------------------------------------------------------------------
 
@@ -196,12 +196,8 @@ export default function ProfileIntern() {
                     alignItems: "center",
                   }}
                 >
-                  <Box sx={{ width: "20%" }}>
-                    <img
-                      width="100%"
-                      src="src/Image/IconUpdate.png"
-                      alt="Update Icon"
-                    />
+                  <Box sx={{ width: "20%", height: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <EditIcon sx={{ fontSize: 'inherit' }} />
                   </Box>
                 </Box>
 
