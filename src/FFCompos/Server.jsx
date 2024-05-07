@@ -106,6 +106,7 @@ export const updateIntern = (internID, formData, newPass) => {
             throw error;
         });
 }
+
 export const updateInternPassword = (email, password) => {
 
     return fetch(`${api}Interns/UpdateInternPassword/${email}/${password}`, {

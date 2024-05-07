@@ -29,7 +29,10 @@ function FullSyllabus() {
         console.error("Error in getSyllabusDetails: ", error);
       });
   }, []);
+
+  //עדכון האלמנט של הגרף- רוחב מסך בהתאם לדפדפן
   useEffect(() => {
+    //מטרתה לעדכן את הרוחב של התרשים
     const updateContainerWidth = () => {
       if (chartContainerRef.current) {
         setContainerWidth(chartContainerRef.current.offsetWidth);
@@ -45,6 +48,7 @@ function FullSyllabus() {
     };
   }, []);
 
+  ///אם אין דאטה מחובר אז תעשה טעינה
   if (!data) {
     // Render loading state until data is fetched
     return <p>Loading...</p>;
@@ -83,6 +87,8 @@ function FullSyllabus() {
   sortedDataByNeed.sort((a, b) => b.remaining - a.remaining);
 
   // Select the top 10 items
+  //מקבלים את ה10 הניתוחים הכי גבוהים 
+  //top 10
   const topTenData = sortedDataByNeed.slice(0, 10);
 
   // Sort the data based on the selected criteria
@@ -149,10 +155,11 @@ function FullSyllabus() {
           font: {
             size: 14, // Adjust font size
           },
+          // אם יש טקסט ארוך אז מופיע נקודות כשהמסך קטן
           callback: function(value, index, values) {
             const label = procedureNames[index];
             let maxLength = 80; 
-            const windowWidth = window.innerWidth;
+            const windowWidth = window.innerWidth;//גודל מסך של האתר 
             if(windowWidth > 1100) return label;
             if (windowWidth < 1100) {
               const widthDifference = 1100 - windowWidth;
@@ -180,7 +187,7 @@ function FullSyllabus() {
     },
     plugins: {
       legend: {
-        position: 'top', // You can adjust the position of the legend as needed
+        position: 'top', 
       },
     },
 

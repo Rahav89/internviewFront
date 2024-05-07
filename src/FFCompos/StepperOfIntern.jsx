@@ -47,28 +47,7 @@ export default function CustomStepper() {
     const currentUserYear = JSON.parse(sessionStorage.getItem('currentUserYear'));
     const activeStep = yearToStepIndex[currentUserYear];
     const steps = getSteps();
-
-
-    // Add a unique animation name for each step
-    const stepAnimations = steps.map((_, index) => `step-enter-animation-${index}`);
-
-    // Inline styles for animations
-    const stepAnimationStyles = steps.map((_, index) => ({
-        animation: `${stepAnimations[index]} 1s ease forwards`,
-        animationDelay: `${index * 0.5}s`, // each step will start animating after the previous one
-    }));
-
-    // Function to create keyframes for animation
-    const createStepKeyframes = () => {
-        return steps.map((_, index) => (
-            <style key={index}>
-                {`@keyframes ${stepAnimations[index]} {
-                from { opacity: 0; transform: translateX(-100%); }
-                to { opacity: 1; transform: translateX(0); }
-            }`}
-            </style>
-        ));
-    };
+    
     return (
         <>
             <Typography

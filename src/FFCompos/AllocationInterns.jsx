@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import MenuLogo from './MenuLogo';
-import { Typography, Box, TextField } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
-import { GetFutureSurgeries } from './Server.jsx';
-import AlgoResults from './AlgoResults.jsx'
-import RolesTable from './RolesTable.jsx'
-import FloatingChatButton from './FloatingChatButton';
+import MenuLogo from './MenuLogo'; // יבוא רכיב הלוגו
+import { Typography, Box, TextField } from '@mui/material'; // יבוא רכיבים מ-MUI
+import Autocomplete from '@mui/material/Autocomplete'; // יבוא רכיב החיפוש האוטומטי
+import { GetFutureSurgeries } from './Server.jsx'; // פונקציית שרת לשליפת נתונים
+import AlgoResults from './AlgoResults.jsx'; // יבוא רכיב תוצאות האלגוריתם
+import RolesTable from './RolesTable.jsx'; // יבוא רכיב טבלת התפקידים
+import FloatingChatButton from './FloatingChatButton'; // יבוא רכיב כפתור הצ'אט הצף
 
 export default function AllocationInterns() {
     const [SurgeriesAsObjects, setSurgeriesAsObject] = useState([]); // מערך המחזיק את כל הפרוצדורות
     const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
     const [refreshKey, setRefreshKey] = useState(0); // Refresh key to trigger updates
+
     // קריאה לשרת כדי לקבל את כל הפרוצדורות בעת טעינת הקומפוננטה
     useEffect(() => {
         GetFutureSurgeries()
             .then((data) => {
-                setSurgeriesAsObject(data);
+                setSurgeriesAsObject(data);// שמירת הנתונים בסטייט
                 console.log(data);
             })
             .catch((error) => {
@@ -61,7 +62,7 @@ export default function AllocationInterns() {
                     dir="rtl"
                     value={selectedProcedure}
                     onChange={handleProcedureChange}
-                    options={SurgeriesAsObjects}  // Use the full objects array
+                    options={SurgeriesAsObjects}  // שימוש במערך האובייקטים של הניתוחים
                     getOptionLabel={(option) => `פרוצדורות בניתוח: ${option.procedureName} (תאריך: ${option.Surgery_date.slice(0, 10)} | רמת קושי: ${option.Difficulty_level} | בית חולים: ${option.Hospital_name})`}
                     sx={{ width: '70%' }}
                     renderInput={(params) => <TextField {...params} label="בחירת ניתוח" />}
@@ -75,10 +76,7 @@ export default function AllocationInterns() {
                             </Box>
                         );
                     }}
-
-
                 />
-
             </Box>
             {selectedProcedure &&
                 <>
@@ -89,7 +87,6 @@ export default function AllocationInterns() {
                         שיבוץ עדכני עבור הניתוח
                     </Typography>
                     <RolesTable key={`roles-${refreshKey}`} surgeryID={selectedProcedure.Surgery_id} />
-
                     <Typography
                         variant="h6"
                         sx={{ padding: 2, textAlign: "center", fontWeight: "bold" }}>

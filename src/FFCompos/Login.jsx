@@ -20,7 +20,6 @@ import doctorHomePic from '/src/Image/doctorHomePic.png'
 import logoHomePic from '/src/Image/InternView.png';
 import { api, updateInternPassword } from './Server';
 import emailjs from 'emailjs-com';
-
 import { LogInIntern } from './Server';
 //--------------------------------------------------
 

@@ -15,13 +15,17 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { GetInterns, UpdateInternInSurgery } from './Server.jsx';
 import Swal from 'sweetalert2';
+//-------------------------------
+//-אלגוריתם של שיבוץ מתמחה פר ניתוח
+//מציגה טבלה של מתמחים ברפואה ומאפשרת שיבוץ שלהם לתפקידים שונים בניתוחים בהתאם לנתונים שהתקבלו מהשרת
+//------------------------------
+export default function AlgoResults({ surgeryID, refreshComponents }) {
 
-export default function AlgoResults({ surgeryID , refreshComponents }) {
+    const [interns, setInterns] = useState([]); // מערך לשמירת הנתונים על המתמחים
+    const [openDialogId, setOpenDialogId] = useState(null); // מזהה לניהול הדיאלוג הפתוח
 
-    const [interns, setInterns] = useState([]);
-    const [openDialogId, setOpenDialogId] = useState(null);
+    let scores = ['90%', '85%', '70%', '60%', '50%'] // ציונים דמו לדוגמה
 
-    let scores = ['90%', '85%', '70%', '60%', '50%']
     useEffect(() => {
         let interns = [];
         GetInterns()
@@ -33,23 +37,23 @@ export default function AlgoResults({ surgeryID , refreshComponents }) {
                         fullName: `${intern.first_name} ${intern.last_name}`,
                         year: intern.interns_year,
                         rating: intern.interns_rating,
-                        score: scores[i]
+                        score: scores[i] // השמת ציון בהתאם לסדר
                     }
                     interns.push(internObj);
                 }
-
-                setInterns(interns);
+                setInterns(interns); // עדכון המערך במידע שהתקבל
             })
             .catch(error => {
                 console.error("Error in GetInterns: ", error);
             });
     }, []);
 
+    // פתיחת הדיאלוג למתמחה מסוים
     const handleOpenDialog = (id) => { setOpenDialogId(id); };
+    // סגירת הדיאלוג הפתוח
     const handleCloseDialog = () => { setOpenDialogId(null); };
-
+    // טיפול בבחירת מתמחה לתפקיד מסוים בניתוח
     const handleChooseDialog = (intern_role, intern) => {
-
         let matchObj = {
             Surgery_id: surgeryID,
             Intern_id: intern.id,
@@ -59,7 +63,7 @@ export default function AlgoResults({ surgeryID , refreshComponents }) {
         UpdateInternInSurgery(matchObj)
             .then(data => {
                 if (data) {
-                    refreshComponents(); // Trigger data refresh in parent component
+                    refreshComponents(); // רענון הנתונים בקומפוננטת האב
                     Swal.fire({
                         text: "שיבוץ בוצע בהצלחה",
                         icon: "success",
@@ -76,9 +80,7 @@ export default function AlgoResults({ surgeryID , refreshComponents }) {
             .catch(error => {
                 console.error("Error in UpdateInternInSurgery: ", error);
             });
-       
-
-        setOpenDialogId(null);
+        setOpenDialogId(null);// סגירת הדיאלוג לאחר הטיפול בפעולה
     };
 
     return (

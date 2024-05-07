@@ -41,12 +41,12 @@ function transformArray(procedures) {
     for (let i = 0; i < procedures.length; i++) {
         let currentP = procedures[i];
         let nextP = procedures[i + 1];
-        if (currentP.category_Id == 0) {
+        if (currentP.category_Id == 0) {//למי שאין קטגוריה
             currentP['expandable'] = false;
             result.push(currentP);
             continue;
         }
-        else if (currentP.category_Id === nextP.category_Id) {
+        else if (currentP.category_Id === nextP.category_Id) {//למי שיש קטגוריה
             let combinedProcedure = {
                 procedureName: currentP.categoryName,
                 requiredAsMain: currentP.requiredAsMain + nextP.requiredAsMain,
@@ -88,7 +88,7 @@ export default function DetailedSyllabusTable(props) {
     let internID =  internIdFromBar ==undefined? JSON.parse(sessionStorage.getItem('currentUserID')) : internIdFromBar;
     
     useEffect(() => {
-        getDetailedSyllabusOfIntern(internID)
+        getDetailedSyllabusOfIntern(internID)//הבאת הפרוצדורות של המתמחה
             .then((data) => { setData(data); })
             .catch((error) => {
                 console.error("Error in getDetailedSyllabusOfIntern: ", error);
