@@ -14,7 +14,7 @@ import VisibilityOff from "@mui/icons-material/Visibility";
 import { Container, Box } from "@mui/material";
 import { updateIntern, GetInternByID } from "./Server.jsx";
 import FloatingChatButton from './FloatingChatButton';
-import updatePic from './src/Image/IconUpdate.png';
+import updatePic from "src/Image/IconUpdate.png";
 
 
 //------------------------------------------------------------------
@@ -200,7 +200,7 @@ export default function ProfileIntern() {
                   <Box sx={{ width: "20%" }}>
                     <img
                       width="100%"
-                      src={updatePic}
+                      src="src/Image/IconUpdate.png"
                       alt="Update Icon"
                     />
                   </Box>
