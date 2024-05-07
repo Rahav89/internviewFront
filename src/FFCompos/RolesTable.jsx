@@ -38,7 +38,7 @@ export default function RolesTable({ surgeryID }) {
 
     return (
         <TableContainer dir="rtl" component={Paper} sx={{ width: '50%', margin: 'auto'}}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table sx={{ minWidth: 400 }} aria-label="simple table">
                 <TableHead>
                     <TableRow sx={{ borderBottom: '2px solid #ccc' }}>
                         <TableCell>תפקיד</TableCell>
