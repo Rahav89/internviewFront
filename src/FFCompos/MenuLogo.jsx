@@ -7,6 +7,7 @@ import { useState } from 'react';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // ייבוא האייקון של התנתקות
 import SettingsIcon from '@mui/icons-material/Settings'; // ייבוא אייקון הגדרות
 import NotificationsIcon from '@mui/icons-material/Notifications'; // ייבוא אייקון התראות
+import logoInternView from '/src/Image/InternViewW.png';
 
 //-----------------------------------------------------------
 const settings = [
@@ -61,7 +62,7 @@ export default function MenuLogo() {
         <Toolbar disableGutters>
           <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
             <IconButton onClick={() => navigate('/intern')} sx={{ p: 0, '&:focus': { outline: 'none' } }} disableRipple>
-              <img width="100px" src="/src/Image/InternViewW.png" alt="logo" />
+              <img width="100px" src={logoInternView} alt="logo" />
             </IconButton>
           </Box>
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
