@@ -14,7 +14,7 @@ import VisibilityOff from "@mui/icons-material/Visibility";
 import { Container, Box } from "@mui/material";
 import { updateIntern, GetInternByID } from "./Server.jsx";
 import FloatingChatButton from './FloatingChatButton';
-import updatePic from './public/IconUpdate.png'
+import updatePic from './src/Image/IconUpdate.png';
 
 
 //------------------------------------------------------------------
