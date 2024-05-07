@@ -42,7 +42,7 @@ export default function RolesTable({ surgeryID }) {
                 <TableHead>
                     <TableRow sx={{ borderBottom: '2px solid #ccc' }}>
                         <TableCell sx={{ width: '30%' }}>תפקיד</TableCell>
-                        <TableCell sx={{ width: '70%' }} align="right">שם מלא</TableCell>
+                        <TableCell sx={{ width: '30%' }} align="center">שם מלא</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -52,7 +52,7 @@ export default function RolesTable({ surgeryID }) {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <TableCell component="th" scope="row"> {row.Intern_role} </TableCell>
-                            <TableCell align="right"> {`${row.First_name} ${row.Last_name} `} </TableCell>
+                            <TableCell align="center"> {`${row.First_name} ${row.Last_name} `} </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
