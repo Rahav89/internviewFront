@@ -32,10 +32,10 @@ export default function MenuLogo() {
     setAnchorElUser(null);
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("currentUserID");
-    navigate('/'); // Navigate to login page
-  }
+  // const handleLogout = () => {
+  //   sessionStorage.removeItem("currentUserID");
+  //   navigate('/'); // Navigate to login page
+  // }
   // טיפול בלחיצה על אפשרויות התפריט
   const handleMenuItemClick = (action) => {
     if (action === 'logout') {
