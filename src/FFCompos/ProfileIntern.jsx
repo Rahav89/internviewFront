@@ -196,7 +196,7 @@ export default function ProfileIntern() {
                     alignItems: "center",
                   }}
                 >
-                  <Box sx={{ width: "100%", height: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Box sx={{ width: "100%", height: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <EditIcon sx={{ fontSize: 'inherit' }} />
                   </Box>
                 </Box>
