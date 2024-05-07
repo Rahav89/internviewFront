@@ -2,7 +2,7 @@ import React from 'react';
 import { Stepper, Step, StepLabel, Typography, Box, StepIcon } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // For completed steps
 import '../App.css';
-// import logoInternView from '../src/Image/doctorForStepper.png';
+import logoDoctor from '../src/Image/doctorForStepper.png';
 
 // Map Hebrew years to step indices
 const yearToStepIndex = {
@@ -26,8 +26,8 @@ function StepIconComponent({ active, completed, icon }) {
     if (active) {
         return (
             <div style={{ position: 'relative' }}>
-                {/* Only render the image if this step is the current step */}
-                {active && <img src={'src/Image/doctorForStepper.png'}
+                <img src={logoDoctor}
+                    alt="Doctor Icon"
                     style={{
                         position: 'absolute',
                         top: '-60px',
@@ -35,7 +35,7 @@ function StepIconComponent({ active, completed, icon }) {
                         transform: 'translateX(-50%)',
                         width: '57px',
                         height: '52px'
-                    }} />}
+                    }} />
                 <StepIcon icon={icon} />
             </div>
         );
