@@ -41,8 +41,8 @@ export default function RolesTable({ surgeryID }) {
             <Table sx={{ minWidth: 400 }} aria-label="simple table">
                 <TableHead>
                     <TableRow sx={{ borderBottom: '2px solid #ccc' }}>
-                        <TableCell sx={{ width: '30%' }}>תפקיד</TableCell>
-                        <TableCell sx={{ width: '30%' }} align="center">שם מלא</TableCell>
+                        <TableCell sx={{ width: '20%' }}>תפקיד</TableCell>
+                        <TableCell sx={{ width: '20%' }} align="center">שם מלא</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
