@@ -37,12 +37,12 @@ export default function RolesTable({ surgeryID }) {
     }, []);
 
     return (
-        <TableContainer dir="rtl" component={Paper} sx={{ width: '50%', margin: 'auto' }}>
-            <Table sx={{ minWidth: 400 }} aria-label="simple table">
+        <TableContainer dir="rtl" component={Paper} sx={{ width: '100%', maxWidth: 300, margin: 'auto' }}>
+            <Table sx={{ minWidth: 300 }} aria-label="simple table">
                 <TableHead>
                     <TableRow sx={{ borderBottom: '2px solid #ccc' }}>
-                        <TableCell sx={{ width: '20%' }}>תפקיד</TableCell>
-                        <TableCell sx={{ width: '20%' }} align="center">שם מלא</TableCell>
+                        <TableCell sx={{ width: '50%' }}>תפקיד</TableCell>
+                        <TableCell sx={{ width: '50%' }} align="center">שם מלא</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -58,5 +58,6 @@ export default function RolesTable({ surgeryID }) {
                 </TableBody>
             </Table>
         </TableContainer>
+
     );
 }
