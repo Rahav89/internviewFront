@@ -23,7 +23,7 @@ const rows = [
 ];
 
 export default function RolesTable({ surgeryID }) {
-    console.log("surgeryID : : : " , surgeryID);
+    console.log("surgeryID : : : ", surgeryID);
     const [rows, setRows] = useState([]);
     useEffect(() => {
         GetSurgeryRoles(surgeryID)
@@ -37,12 +37,12 @@ export default function RolesTable({ surgeryID }) {
     }, []);
 
     return (
-        <TableContainer dir="rtl" component={Paper} sx={{ width: '50%', margin: 'auto'}}>
+        <TableContainer dir="rtl" component={Paper} sx={{ width: '50%', margin: 'auto' }}>
             <Table sx={{ minWidth: 400 }} aria-label="simple table">
                 <TableHead>
                     <TableRow sx={{ borderBottom: '2px solid #ccc' }}>
-                        <TableCell>תפקיד</TableCell>
-                        <TableCell align="right">שם מלא</TableCell>
+                        <TableCell sx={{ width: '30%' }}>תפקיד</TableCell>
+                        <TableCell sx={{ width: '70%' }} align="right">שם מלא</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
