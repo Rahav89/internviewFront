@@ -3,7 +3,7 @@ import { Stepper, Step, StepLabel, Typography, Box, StepIcon } from '@mui/materi
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // For completed steps
 import '../App.css';
 import logoInternPic from 'src/Image/doctorForStepper.png';
-
+//------------------------------------------
 // Map Hebrew years to step indices
 const yearToStepIndex = {
     'א': 0,
@@ -76,7 +76,7 @@ export default function CustomStepper() {
                 component="h3"
                 sx={{
                     textAlign: 'center',
-                    fontWeight:'bold',
+                    fontWeight: 'bold',
                     mb: 10,
                 }}
             >
