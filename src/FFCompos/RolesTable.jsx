@@ -51,7 +51,7 @@ export default function RolesTable({ surgeryID }) {
                             key={row.Intern_role}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell component="th" scope="row"> {row.Intern_role} </TableCell>
+                            <TableCell component="th" scope="row" align="center"> {row.Intern_role} </TableCell>
                             <TableCell align="center"> {`${row.First_name} ${row.Last_name} `} </TableCell>
                         </TableRow>
                     ))}
