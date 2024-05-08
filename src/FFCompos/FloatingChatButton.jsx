@@ -6,6 +6,7 @@ import { GetInternsForChat } from './Server.jsx';
 import { Badge } from '@mui/material';
 import { database } from '../firebase'; // the data from Firebase Realtime Database
 import { ref, onValue, off } from 'firebase/database';
+import '../App.css';
 
 export default function FloatingChatButton() {
 
@@ -120,7 +121,7 @@ export default function FloatingChatButton() {
             >
                 {selectedUser == null ? (
                     <>
-                        <DialogTitle id="user-select-title" sx={{ textAlign: 'right', mr: 2 }}>צ'אטים </DialogTitle>
+                        <DialogTitle id="user-select-title" sx={{ textAlign: 'right', mr: 2 }}>:צ'אטים </DialogTitle>
                         <List sx={{ pt: 0, height: "50vh" }} dir="rtl">
                             {internsToTalk.map((intern, index, array) => (
                                 <React.Fragment key={intern.Intern_id}>
