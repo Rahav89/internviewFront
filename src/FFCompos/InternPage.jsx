@@ -5,6 +5,7 @@ import { Grid, Typography, Button, Container } from '@mui/material';
 import RecentSurgeries from '../FFCompos/RecentSurgeries';
 import FullSyllabus from '../FFCompos/FullSyllabus';
 import MenuLogo from '../FFCompos/MenuLogo';
+import MatchingAlgo from '../FFCompos/MatchingAlgo'; 
 import StepperOfIntern from './StepperOfIntern';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -49,8 +50,13 @@ export default function InternPage() {
     navigate('/ViewInterns');
   };
 
-  const handleAllocationIntern = () => {
-    navigate('/AllocationInterns');
+  // const handleAllocationIntern = () => {
+  //   navigate('/AllocationInterns');
+  // }
+
+  
+  const handleMatchingAlgo = () => {
+    navigate('/MatchingAlgo');
   }
 
   const handleViewAllSurgeries = () => {
@@ -164,7 +170,7 @@ export default function InternPage() {
             <Grid item xs={12} display="flex" justifyContent="center">
               <Button
                 variant="contained"
-                onClick={handleAllocationIntern}
+                onClick={handleMatchingAlgo}
                 sx={{
                   width: '100%',
                   maxWidth: 300,
