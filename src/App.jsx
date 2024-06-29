@@ -8,7 +8,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AllocationInterns from './FFCompos/AllocationInterns';
 import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 import ViewInterns from './FFCompos/ViewInterns';
-import MatchingAlgo from './FFCompos/MatchingAlgo';
+import MatchingAlgo from './FFCompos/MatchingAlgo'; // ודא שהנתיב הוא נכון
 import '@fontsource/roboto/300.css';
 import CardsDetailsInterns from './FFCompos/CardsDetailsInterns';
 import Calendar from './FFCompos/Calendar';
