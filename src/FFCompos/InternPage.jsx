@@ -73,7 +73,7 @@ export default function InternPage() {
           <Grid item xs={12}  >
             {currentUser &&
               (<Typography variant="h6" sx={{ textAlign: 'right', fontWeight: 'bold' }}>
-                ברוך הבא, {currentUser.first_name + " " + currentUser.last_name}👋
+                 שלום, {currentUser.first_name + " " + currentUser.last_name}👋
               </Typography>)
             }
           </Grid>
