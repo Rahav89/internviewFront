@@ -1,15 +1,28 @@
 import React, { useState, useEffect } from "react";
 import MenuLogo from "./MenuLogo.jsx";
 import {
-  Box, Card, CardHeader, CardContent,
-  Avatar, Typography, Grid, TextField, FormControl, InputLabel, Select, MenuItem,
-  CircularProgress, Snackbar, Autocomplete
+  Box,
+  Typography,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+  Snackbar,
+  Autocomplete,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
-import surgeryDateImage from "/src/Image/surgerydate.png";
-import FloatingChatButton from './FloatingChatButton';
-import { GetAllProcedure, GetInternSurgeriesByProcedure, GetInternSurgeriesByProcedureName } from "./Server.jsx";
+import FloatingChatButton from "./FloatingChatButton";
+import { GetAllProcedure, GetInternSurgeriesByProcedure } from "./Server.jsx";
 
 //-------------------------------------
 export default function CardsDetailsInterns() {
@@ -27,8 +40,7 @@ export default function CardsDetailsInterns() {
   const [procedures, setProcedures] = useState([]); // מערך המחזיק את כל הפרוצדורות
   const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
 
-
-  // // הוק לשליפת כל שמות הפרוצדורות
+  // הוק לשליפת כל שמות הפרוצדורות
   useEffect(() => {
     GetAllProcedure()
       .then((data) => {
@@ -79,15 +91,14 @@ export default function CardsDetailsInterns() {
     }
   }, [internId, selectedProcedure]);
 
-
-  // Effect to filter data based on search criteria
+  // סינון הנתונים בהתבסס על הקריטריונים שנבחרו
   useEffect(() => {
     const filtered = data.filter(
       (item) =>
         (selectedRole === "all" || item.Intern_role === selectedRole) &&
         (searchDate === "" ||
           new Date(item.Surgery_date).toLocaleDateString() ===
-          new Date(searchDate).toLocaleDateString()) &&
+            new Date(searchDate).toLocaleDateString()) &&
         (searchHospital === "" || item.Hospital_name.includes(searchHospital))
     );
     setFilteredData(filtered);
@@ -98,24 +109,19 @@ export default function CardsDetailsInterns() {
     setSelectedProcedure(newValue); // עדכון הפרוצדורה הנבחרת
   };
 
-  // Event handler for surgery date search change
+  // פונקציה לעדכון חיפוש לפי תאריך ניתוח
   const handleSearchChange = (event) => {
     setSearchDate(event.target.value);
   };
-  // Event handler for role filter change
+
+  // פונקציה לעדכון חיפוש לפי תפקיד בניתוח
   const handleRoleChange = (event) => {
     setSelectedRole(event.target.value);
   };
-  // Event handler for hospital name search change
+
+  // פונקציה לעדכון חיפוש לפי שם בית חולים
   const handleHospitalSearchChange = (event) => {
     setSearchHospital(event.target.value);
-  };
-  // Hospital colors object for customizing card backgrounds
-  const hospitalColors = {
-    'רמב"ם': "Bisque",
-    לניאדו: "Lavender",
-    "הלל יפה": "LightCyan",
-    אכילוב: "LemonChiffon",
   };
 
   return (
@@ -143,8 +149,12 @@ export default function CardsDetailsInterns() {
             onChange={handleProcedureChange}
             options={procedures}
             getOptionLabel={(option) => option.procedureName || ""}
-            renderInput={(params) => <TextField {...params} label="בחירת שם ניתוח" fullWidth />}
-            isOptionEqualToValue={(option, value) => option.procedureName === value.procedureName}
+            renderInput={(params) => (
+              <TextField {...params} label="בחירת שם ניתוח" fullWidth />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.procedureName === value.procedureName
+            }
           />
         </Box>
       </Box>
@@ -192,68 +202,74 @@ export default function CardsDetailsInterns() {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Grid container spacing={{ xs: 1, md: 3 }} sx={{ direction: 'rtl' }}>  {/* שינוי בערכת הרווח בין הכרטיסים */}
-          {filteredData.map((card, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={card.id || index}>
-              <Card
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  backgroundColor: "#fff", // רקע לבן
-                  marginLeft: {  md: 1 },
-                  border: "5px solid", // גודל הבורדר
-                  borderRadius: "10px", // ריסוף
-                  boxShadow: "0 3px 6px rgba(0, 0, 0, 0.1)", // צל
-                  transition: "transform 0.3s", // אנימציה כאשר העכבר עובר מעל הכרטיס
-                  "&:hover": {
-                    transform: "scale(1.05)", // הגדלת הכרטיס בעת העצמת העכבר
-                  },
-                  margin:'0.4rem',
-                  borderColor: card.Hospital_name in hospitalColors ? hospitalColors[card.Hospital_name] : "#ccc", // צביעת הבורדר בהתאם לבית החולים
-                }}
-              >
-                <CardHeader
+        <TableContainer
+          component={Paper}
+          sx={{ direction: "rtl", boxShadow: 3 }}
+        >
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead sx={{ backgroundColor: "primary.main" }}>
+              <TableRow>
+                <TableCell
+                  align="right"
+                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                >
+                  שם הפרוצדורה
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                >
+                  רמת קושי של הניתוח
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                >
+                  שם בית חולים
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                >
+                  תאריך הניתוח
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                >
+                  תפקיד
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredData.map((row) => (
+                <TableRow
+                  key={row.id}
                   sx={{
-                    display: "flex",
-                    flexDirection: "row-reverse",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 0, // קיצור הרווח בין הכותרת לתוכן
+                    "&:last-child td, &:last-child th": { border: 0 },
+                    "&:nth-of-type(even)": { backgroundColor: "action.hover" },
+                    "&:hover": { backgroundColor: "action.selected" }, // הוספת אפקט רחיפה (hover)
                   }}
-                  // avatar={
-                  //   <Avatar
-                  //     sx={{
-                  //       bgcolor: "MintCream",
-                  //       width: 50,
-                  //       height: 50,
-                  //     }}
-                  //   >
-                  //     <img
-                  //       src={surgeryDateImage}
-                  //       style={{ width: "70%", height: "70%" }}
-                  //       alt="Surgery Date"
-                  //     />
-                  //   </Avatar>
-                  // }
-                  titleTypographyProps={{
-                    variant: "subtitle1", // קטינות הכותרת
-                    fontWeight: "bold", // טקסט בולד
-                    borderBottom: '2px solid #ccc'
-                  }}
-                  title={card.Procedure_name}
-                />
-                <CardContent sx={{ paddingTop: 0 }}> {/* הסרת הפדינג מהתוכן */}
-                  <Typography variant="body2" color="text.secondary" align="center">
-                    <strong>רמת קושי של הניתוח:</strong> {card.Difficulty_level} <br />
-                    <strong>שם בית החולים:</strong> {card.Hospital_name} <br />
-                    <strong>תאריך ניתוח:</strong> {new Date(card.Surgery_date).toLocaleDateString()} <br />
-                    <strong>תפקיד:</strong> {card.Intern_role}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                >
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    align="right"
+                    sx={{ fontSize: "14px" }}
+                  >
+                    {row.Procedure_name}
+                  </TableCell>
+                  <TableCell align="right">{row.Difficulty_level}</TableCell>
+                  <TableCell align="right">{row.Hospital_name}</TableCell>
+                  <TableCell align="right">
+                    {new Date(row.Surgery_date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell align="right">{row.Intern_role}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
       <Snackbar
         open={!!error}
