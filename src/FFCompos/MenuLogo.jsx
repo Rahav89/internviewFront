@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Badge, AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, ListItemIcon, ListItemText } from '@mui/material';
 import logoImage from '/src/Image/doctor1.png';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // ייבוא האייקון של התנתקות
 import SettingsIcon from '@mui/icons-material/Settings'; // ייבוא אייקון הגדרות
 import NotificationsIcon from '@mui/icons-material/Notifications'; // ייבוא אייקון התראות
 import logoInternView from '/src/Image/InternViewW.png';
-
+import { GetInternByID } from './Server.jsx';
 //-----------------------------------------------------------
 const settings = [
   { label: 'ניהול משתמש', icon: <SettingsIcon />, action: 'profile' },
@@ -17,6 +17,26 @@ const settings = [
 ];
 
 export default function MenuLogo() {
+  // משתנה מצב לאחסון נתוני המשתמש הנוכחי
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    //session storage- שליפת מזהה המתמחה מה
+    const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
+
+    // קריאה לפונקציה GetInternByID כדי לשלוף את נתוני המתמחה
+    GetInternByID(internID)  // Call GetInternByID to fetch intern data
+      .then((data) => {
+        //console.log(data);
+        // במקרה של קבלת נתונים, הגדרת המשתמש הנוכחי עם הנתונים המתקבלים
+        setCurrentUser(data);
+      })
+      .catch((error) => {
+        console.error("Error in GetInternByID: ", error);
+      });
+  }, []);  // רשימת תלויות ריקה מבטיחה שהקוד ירוץ רק פעם אחת לאחר טעינת הקומפוננטה
+
+
   const navigate = useNavigate(); // Hook for navigation
   const [anchorElUser, setAnchorElUser] = useState(null);//פתיחה וסגירת התפריט של ההגדרות
   const [openDialog, setOpenDialog] = useState(false); // ניהול פתיחת דיאלוג
@@ -66,6 +86,11 @@ export default function MenuLogo() {
             </IconButton>
           </Box>
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            {currentUser &&
+              (<Typography variant="h6" sx={{ textAlign: 'right', marginBottom:"-50px"}}>
+               👋 שלום, {currentUser.first_name + " " + currentUser.last_name}
+              </Typography>)
+            }
             <Tooltip title="לוח שנה">
               <Box>
                 {/* לוח שנה */}

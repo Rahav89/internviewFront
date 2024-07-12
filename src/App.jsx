@@ -5,7 +5,7 @@ import Login from './FFCompos/Login';
 import ProfileIntern from './FFCompos/ProfileIntern';
 import { useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AllocationInterns from './FFCompos/AllocationInterns';
+//import AllocationInterns from './FFCompos/AllocationInterns';
 import TableFullSyllabus from './FFCompos/TableFullSyllabus';
 import ViewInterns from './FFCompos/ViewInterns';
 import MatchingAlgo from './FFCompos/MatchingAlgo'; // ודא שהנתיב הוא נכון

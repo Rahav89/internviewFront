@@ -66,20 +66,7 @@ export default function InternPage() {
     <>
 
       <MenuLogo />
-      <Container maxWidth="lg" sx={{ mt: 8, mb: 3 }}>
-        <Grid container spacing={3} alignItems="center" dir={'rtl'}>
-
-          {/* Welcome message */}
-          <Grid item xs={12}  >
-            {currentUser &&
-              (<Typography variant="h6" sx={{ textAlign: 'right', fontWeight: 'bold' }}>
-                 שלום, {currentUser.first_name + " " + currentUser.last_name}👋
-              </Typography>)
-            }
-          </Grid>
-        </Grid>
-      </Container>
-
+      
       {/* ציר התקדמות */}
       <StepperOfIntern />
 
