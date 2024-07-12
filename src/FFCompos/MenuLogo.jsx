@@ -85,12 +85,14 @@ export default function MenuLogo() {
               <img width="100px" src={logoInternView} alt="logo" />
             </IconButton>
           </Box>
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
             {currentUser &&
-              (<Typography variant="h6" sx={{ textAlign: 'right', marginBottom:"-50px"}}>
+              (<Typography variant="h6" sx={{ textAlign: 'center' }}>
                👋 שלום, {currentUser.first_name + " " + currentUser.last_name}
               </Typography>)
             }
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
             <Tooltip title="לוח שנה">
               <Box>
                 {/* לוח שנה */}
