@@ -57,9 +57,10 @@ export default function CustomStepper() {
                     textAlign: 'center',
                     fontWeight:'bold',
                     mb: 10,
+                    mt:11,
                 }}
             >
-                צפה בהתקדמות שלך
+                צפייה בהתקדמות שלך
             </Typography>
             <Box sx={{ width: '100%' }}>
                 <Stepper activeStep={activeStep} alternativeLabel>
