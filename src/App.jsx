@@ -12,6 +12,7 @@ import MatchingAlgo from './FFCompos/MatchingAlgo'; // ודא שהנתיב הו�
 import '@fontsource/roboto/300.css';
 import CardsDetailsInterns from './FFCompos/CardsDetailsInterns';
 import Calendar from './FFCompos/Calendar';
+import ManagerOptions from './FFCompos/ManagerOptions'; 
 
 const theme = createTheme({
     typography: {
@@ -30,6 +31,7 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<Login />} />
+                    <Route path="/ManagerOptions" element={<ManagerOptions />} />
                     <Route path="/intern" element={<InternPage />} />
                     <Route path="/profile" element={<ProfileIntern />} />
                     <Route path="/calender" element={<Calendar />} />

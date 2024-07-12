@@ -13,6 +13,7 @@ import { GetInternByID } from './Server.jsx';
 import FloatingChatButton from './FloatingChatButton';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
+import ManagerOptions from '../FFCompos/ManagerOptions'; 
 //--------------------------------------------------------
 
 export default function InternPage() {
@@ -186,6 +187,7 @@ export default function InternPage() {
         </Grid>
       </Container>
       <FloatingChatButton />
+      <ManagerOptions />
     </>
   );
 }

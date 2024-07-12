@@ -140,7 +140,13 @@ export default function Login() {
                     });
                     // Automatically navigate to '/intern' after the toast message
                     setTimeout(() => {
-                        navigate('/intern');
+                        if (currentUser.isManager){
+                            navigate('/ManagerOptions');
+                         
+                        }
+                        else {
+                            navigate('/intern');
+                        }
                     }, 1000); // Match this time with the timer above
                 }
             })
