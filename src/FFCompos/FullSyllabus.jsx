@@ -115,8 +115,10 @@ function FullSyllabus() {
     datasets: [
       {
         label: 'ניתוחים שעשו',
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        borderColor: 'rgba(54, 162, 235, 1)',
+        // backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        // borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'CornflowerBlue',
+        borderColor: 'DarkBlue',
         borderWidth: 1,
         data: haveDones,
         barPercentage: 0.8, // Adjust the width of the bars relative to the category width (80%)
@@ -124,8 +126,10 @@ function FullSyllabus() {
       },
       {
         label: 'ניתוחים שנשאר',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        // backgroundColor: '	CornflowerBlue',
+        // borderColor: 'DarkBlue',
         borderWidth: 1,
         data: needs,
         barPercentage: 0.8, // Adjust the width of the bars relative to the category width (80%)
