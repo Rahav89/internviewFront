@@ -202,74 +202,76 @@ export default function CardsDetailsInterns() {
       {loading ? (
         <CircularProgress />
       ) : (
-        <TableContainer
-          component={Paper}
-          sx={{ direction: "rtl", boxShadow: 3 }}
-        >
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead sx={{ backgroundColor: "primary.main" }}>
-              <TableRow>
-                <TableCell
-                  align="right"
-                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
-                >
-                  שם הפרוצדורה
-                </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
-                >
-                  רמת קושי של הניתוח
-                </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
-                >
-                  שם בית חולים
-                </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
-                >
-                  תאריך הניתוח
-                </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
-                >
-                  תפקיד
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredData.map((row) => (
-                <TableRow
-                  key={row.id}
-                  sx={{
-                    "&:last-child td, &:last-child th": { border: 0 },
-                    "&:nth-of-type(even)": { backgroundColor: "action.hover" },
-                    "&:hover": { backgroundColor: "action.selected" }, // הוספת אפקט רחיפה (hover)
-                  }}
-                >
+        <Box sx={{ margin: '0 20px' }}> {/* Adjust the margin value as needed */}
+          <TableContainer
+            component={Paper}
+            sx={{ direction: "rtl", boxShadow: 3 }}
+          >
+            <Table sx={{ minWidth: 550 }} aria-label="simple table">
+              <TableHead sx={{ backgroundColor: "#1976D2" }}>
+                <TableRow>
                   <TableCell
-                    component="th"
-                    scope="row"
                     align="right"
-                    sx={{ fontSize: "14px" }}
+                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
                   >
-                    {row.Procedure_name}
+                    שם הפרוצדורה
                   </TableCell>
-                  <TableCell align="right">{row.Difficulty_level}</TableCell>
-                  <TableCell align="right">{row.Hospital_name}</TableCell>
-                  <TableCell align="right">
-                    {new Date(row.Surgery_date).toLocaleDateString()}
+                  <TableCell
+                    align="right"
+                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                  >
+                    רמת קושי של הניתוח
                   </TableCell>
-                  <TableCell align="right">{row.Intern_role}</TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                  >
+                    שם בית חולים
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                  >
+                    תאריך הניתוח
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                  >
+                    תפקיד
+                  </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {filteredData.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 },
+                      "&:nth-of-type(even)": { backgroundColor: "action.hover" },
+                      "&:hover": { backgroundColor: "action.selected" },
+                    }}
+                  >
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      align="right"
+                      sx={{ fontSize: "14px" }}
+                    >
+                      {row.Procedure_name}
+                    </TableCell>
+                    <TableCell align="right">{row.Difficulty_level}</TableCell>
+                    <TableCell align="right">{row.Hospital_name}</TableCell>
+                    <TableCell align="right">
+                      {new Date(row.Surgery_date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell align="right">{row.Intern_role}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       )}
       <Snackbar
         open={!!error}
