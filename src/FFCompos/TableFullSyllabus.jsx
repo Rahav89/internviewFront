@@ -271,29 +271,29 @@ export default function DetailedSyllabusTable(props) {
                             <Table stickyHeader aria-label="collapsible table" sx={{ tableLayout: 'fixed', overflow: "scroll" }}>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell align="right" width="2%" />
-                                        <TableCell align="right" width="20%" className="custom-cell, borderLeft">שם הניתוח</TableCell>
-                                        <TableCell align="center" width="11%" className="custom-cell">
+                                        <TableCell align="right" width="2%" sx={{ backgroundColor: "#2083e4", color: "white"  ,fontSize:18, fontWeight:'bold'}}/>
+                                        <TableCell align="right" width="20%" className="custom-cell, borderLeft" sx={{ backgroundColor: "#2083e4", color: "white"  ,fontSize:18, fontWeight:'bold'}}>שם הניתוח</TableCell>
+                                        <TableCell align="center" width="11%" className="custom-cell" sx={{ backgroundColor: "#2083e4", color: "white"  ,fontSize:14, fontWeight:'bold'}}>
                                             <div style={{ display: 'inline-block' }}> דרישה כראשי</div>
                                             <ButtonSort colName="requiredAsMain" />
                                         </TableCell>
-                                        <TableCell align="center" width="11%" className="custom-cell , borderLeft">
+                                        <TableCell align="center" width="11%" className="custom-cell , borderLeft" sx={{ backgroundColor: "#2083e4", color: "white"  ,fontSize:14, fontWeight:'bold'}}>
                                             <div style={{ display: 'inline-block' }}>נעשה כראשי</div>
                                             <ButtonSort colName="doneAsMain" />
                                         </TableCell>
-                                        <TableCell align="center" width="14%" className="custom-cell">
+                                        <TableCell align="center" width="14%" className="custom-cell" sx={{ backgroundColor: "#2083e4", color: "white"  ,fontSize:14, fontWeight:'bold'}}>
                                             <div style={{ display: 'inline-block' }}>דרישה כעוזר ראשון </div>
                                             <ButtonSort colName="requiredAsFirst" />
                                         </TableCell>
-                                        <TableCell align="center" width="14%" className="custom-cell , borderLeft">
+                                        <TableCell align="center" width="14%" className="custom-cell , borderLeft" sx={{ backgroundColor: "#2083e4", color: "white"  ,fontSize:14, fontWeight:'bold'}}>
                                             <div style={{ display: 'inline-block' }}>נעשה כעוזר ראשון</div>
                                             <ButtonSort colName="doneAsFirst" />
                                         </TableCell>
-                                        <TableCell align="center" width="14%" className="custom-cell">
+                                        <TableCell align="center" width="14%" className="custom-cell" sx={{ backgroundColor: "#2083e4", color: "white"  ,fontSize:14, fontWeight:'bold'}}>
                                             <div style={{ display: 'inline-block' }}>נדרש כעוזר שני</div>
                                             <ButtonSort colName="requiredAsSecond" />
                                         </TableCell>
-                                        <TableCell align="center" width="11%" className="custom-cell">
+                                        <TableCell align="center" width="11%" className="custom-cell" sx={{ backgroundColor: "#2083e4", color: "white"  ,fontSize:14, fontWeight:'bold'}}>
                                             נעשה כעוזר שני
                                             <ButtonSort colName="doneAsSecond" />
                                         </TableCell>
