@@ -187,7 +187,8 @@ export default function InternPage() {
         </Grid>
       </Container>
       <FloatingChatButton />
-      <ManagerOptions />
+      {/* Only show ManagerOptions if currentUser.isManager is true */}
+      {currentUser && currentUser.isManager && <ManagerOptions />}
     </>
   );
 }
