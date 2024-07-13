@@ -202,7 +202,9 @@ export default function CardsDetailsInterns() {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Box sx={{ margin: '0 20px' }}> {/* Adjust the margin value as needed */}
+        <Box sx={{ margin: "0 20px" }}>
+          {" "}
+          {/* Adjust the margin value as needed */}
           <TableContainer
             component={Paper}
             sx={{ direction: "rtl", boxShadow: 3 }}
@@ -212,31 +214,51 @@ export default function CardsDetailsInterns() {
                 <TableRow>
                   <TableCell
                     align="right"
-                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                    sx={{
+                      fontWeight: "bold",
+                      color: "white",
+                      fontSize: "16px",
+                    }}
                   >
                     שם הפרוצדורה
                   </TableCell>
                   <TableCell
                     align="right"
-                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                    sx={{
+                      fontWeight: "bold",
+                      color: "white",
+                      fontSize: "16px",
+                    }}
                   >
                     רמת קושי של הניתוח
                   </TableCell>
                   <TableCell
                     align="right"
-                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                    sx={{
+                      fontWeight: "bold",
+                      color: "white",
+                      fontSize: "16px",
+                    }}
                   >
                     שם בית חולים
                   </TableCell>
                   <TableCell
                     align="right"
-                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                    sx={{
+                      fontWeight: "bold",
+                      color: "white",
+                      fontSize: "16px",
+                    }}
                   >
                     תאריך הניתוח
                   </TableCell>
                   <TableCell
                     align="right"
-                    sx={{ fontWeight: "bold", color: "white", fontSize: "16px" }}
+                    sx={{
+                      fontWeight: "bold",
+                      color: "white",
+                      fontSize: "16px",
+                    }}
                   >
                     תפקיד
                   </TableCell>
@@ -245,10 +267,12 @@ export default function CardsDetailsInterns() {
               <TableBody>
                 {filteredData.map((row) => (
                   <TableRow
-                    key={row.id}
+                    key={row.id} // <-- Ensure you have a unique key prop here
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
-                      "&:nth-of-type(even)": { backgroundColor: "action.hover" },
+                      "&:nth-of-type(even)": {
+                        backgroundColor: "action.hover",
+                      },
                       "&:hover": { backgroundColor: "action.selected" },
                     }}
                   >

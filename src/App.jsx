@@ -13,6 +13,8 @@ import '@fontsource/roboto/300.css';
 import CardsDetailsInterns from './FFCompos/CardsDetailsInterns';
 import Calendar from './FFCompos/Calendar';
 import ManagerOptions from './FFCompos/ManagerOptions'; 
+import MangerPage from './FFCompos/MangerPage';
+import AddInterns from './FFCompos/AddInterns';
 
 const theme = createTheme({
     typography: {
@@ -33,7 +35,9 @@ function App() {
                     <Route path="/" element={<Login />} />
                     <Route path="/ManagerOptions" element={<ManagerOptions />} />
                     <Route path="/intern" element={<InternPage />} />
+                    <Route path="/MangerPage" element={<MangerPage />} />
                     <Route path="/profile" element={<ProfileIntern />} />
+                    <Route path="/addIntern" element={<AddInterns />} />
                     <Route path="/calender" element={<Calendar />} />
                     <Route path="/TableFullSyllabus/:id" element={<TableFullSyllabus />} />
                     <Route path="/ViewInterns" element={<ViewInterns />} />

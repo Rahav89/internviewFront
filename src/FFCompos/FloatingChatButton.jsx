@@ -85,7 +85,7 @@ export default function FloatingChatButton() {
 
     return (
         <>
-            {console.log(internsToTalk)}
+            {/* {console.log(internsToTalk)} */}
             <Fab color="primary" aria-label="chat" onClick={handleClickOpen}
                 style={{ position: 'fixed', bottom: 20, right: 20 }} ref={anchorRef}>
                 {/* הודעות שלא נקראו*/}

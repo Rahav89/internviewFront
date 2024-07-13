@@ -23,7 +23,7 @@ function FullSyllabus() {
     getSyllabus(JSON.parse(sessionStorage.getItem('currentUserID')))
       .then((data) => {
         setData(data);
-        console.info(data);
+        // console.info(data);
       })
       .catch((error) => {
         console.error("Error in getSyllabusDetails: ", error);

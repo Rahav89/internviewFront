@@ -1,102 +1,102 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Badge, AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, ListItemIcon, ListItemText } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import logoImage from '/src/Image/doctor1.png';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useState, useEffect } from 'react';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // ייבוא האייקון של התנתקות
-import SettingsIcon from '@mui/icons-material/Settings'; // ייבוא אייקון הגדרות
-import NotificationsIcon from '@mui/icons-material/Notifications'; // ייבוא אייקון התראות
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import SettingsIcon from '@mui/icons-material/Settings';
 import logoInternView from '/src/Image/InternViewW.png';
 import { GetInternByID } from './Server.jsx';
-//-----------------------------------------------------------
+import AddBoxIcon from '@mui/icons-material/AddBox';
+
 const settings = [
   { label: 'ניהול משתמש', icon: <SettingsIcon />, action: 'profile' },
-  // { label: 'התראות', icon: <NotificationsIcon />, action: 'notifications' },
+  { label: 'ניהול מתמחים', icon: <AddBoxIcon />, action: 'addIntern' },
   { label: '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות', icon: <ExitToAppIcon sx={{}} />, action: 'logout' }
 ];
 
 export default function MenuLogo() {
-  // משתנה מצב לאחסון נתוני המשתמש הנוכחי
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    //session storage- שליפת מזהה המתמחה מה
     const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
 
-    // קריאה לפונקציה GetInternByID כדי לשלוף את נתוני המתמחה
-    GetInternByID(internID)  // Call GetInternByID to fetch intern data
+    GetInternByID(internID)
       .then((data) => {
-        //console.log(data);
-        // במקרה של קבלת נתונים, הגדרת המשתמש הנוכחי עם הנתונים המתקבלים
         setCurrentUser(data);
       })
       .catch((error) => {
         console.error("Error in GetInternByID: ", error);
       });
-  }, []);  // רשימת תלויות ריקה מבטיחה שהקוד ירוץ רק פעם אחת לאחר טעינת הקומפוננטה
+  }, []);
 
+  const navigate = useNavigate();
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(5);
 
-  const navigate = useNavigate(); // Hook for navigation
-  const [anchorElUser, setAnchorElUser] = useState(null);//פתיחה וסגירת התפריט של ההגדרות
-  const [openDialog, setOpenDialog] = useState(false); // ניהול פתיחת דיאלוג
-  const [notificationCount, setNotificationCount] = useState(5); // Example count, update as needed
-
-  //פתיחת התפריט של הההגדרות 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  //פונקציה שמופעלת כדי לסגור את התפריט
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
-  // const handleLogout = () => {
-  //   sessionStorage.removeItem("currentUserID");
-  //   navigate('/'); // Navigate to login page
-  // }
-  // טיפול בלחיצה על אפשרויות התפריט
   const handleMenuItemClick = (action) => {
     if (action === 'logout') {
       sessionStorage.removeItem("currentUserID")
       navigate('/');
     } else if (action === 'profile') {
       navigate('/profile');
-    } else if (action === 'notifications') {
-      setOpenDialog(true);
+    } else if (action === 'addIntern') {
+      navigate('/addIntern');
     }
     handleCloseUserMenu();
   };
-  // טיפול בסגירת התיבה דו שיח
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  // פונקציה לניווט לעמוד הלוח שנה
+
   const handleCalenderPage = () => {
     navigate('/calender');
   }
+
+  // Filter settings based on whether the user is a manager
+  const filteredSettings = currentUser?.isManager
+    ? settings
+    : settings.filter(setting => setting.action !== 'addIntern');
+
+  const handleLogoClick = () => {
+    if (currentUser?.isManager) {
+      navigate('/MangerPage');
+    } else {
+      navigate('/intern');
+    }
+  };
+
   return (
     <AppBar sx={{ marginBottom: 12 }}>
-      <Container maxWidth="100%" >
+      <Container maxWidth="100%">
         <Toolbar disableGutters>
           <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-            <IconButton onClick={() => navigate('/intern')} sx={{ p: 0, '&:focus': { outline: 'none' } }} disableRipple>
+            <IconButton onClick={handleLogoClick} sx={{ p: 0, '&:focus': { outline: 'none' } }} disableRipple>
               <img width="100px" src={logoInternView} alt="logo" />
             </IconButton>
           </Box>
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
             {currentUser &&
               (<Typography variant="h6" sx={{ textAlign: 'center' }}>
-               👋 שלום, {currentUser.first_name + " " + currentUser.last_name}
+                👋 שלום, {currentUser.first_name + " " + currentUser.last_name}
               </Typography>)
             }
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
             <Tooltip title="לוח שנה">
               <Box>
-                {/* לוח שנה */}
-                <IconButton onClick={() => { handleCalenderPage() }} sx={{ mr: 2, '&:focus': { outline: 'none' } }} >
+                <IconButton onClick={handleCalenderPage} sx={{ mr: 2, '&:focus': { outline: 'none' } }}>
                   <CalendarMonthIcon style={{ color: 'white' }} fontSize="medium" />
                 </IconButton>
               </Box>
@@ -104,7 +104,6 @@ export default function MenuLogo() {
             <Tooltip title="פתח הגדרות">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, '&:focus': { outline: 'none' } }}>
                 <Avatar src={logoImage} />
-                {/* <Badge badgeContent={notificationCount} color="error" sx={{ top: -13, right: 5 }} /> */}
               </IconButton>
             </Tooltip>
 
@@ -117,7 +116,7 @@ export default function MenuLogo() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {filteredSettings.map((setting) => (
                 <MenuItem
                   key={setting.label}
                   onClick={() => handleMenuItemClick(setting.action)}
@@ -130,30 +129,14 @@ export default function MenuLogo() {
                     {setting.icon}
                   </ListItemIcon>
                   <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-                    {/* {setting.label === 'התראות' && (
-                      <Badge badgeContent={notificationCount} color="error" sx={{ mr: 4 }}>
-                      </Badge>)} */}
                     <ListItemText primary={setting.label} />
                   </Box>
-
-
                 </MenuItem>
               ))}
-
             </Menu>
           </Box>
         </Toolbar>
       </Container>
-      {/* <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>התראות</DialogTitle>
-        <DialogContent>
-          <DialogContentText>כאן יוצגו התראות שלך.</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>סגור</Button>
-        </DialogActions>
-      </Dialog> */}
-
     </AppBar>
   );
 }

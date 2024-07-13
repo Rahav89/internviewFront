@@ -30,7 +30,7 @@ export default function ManagerOptions() {
             name: "מנהל",
             picName: "managerPic",
             opt: ["צפייה במתמחים והתקדמותם", "שיבוץ מתמחים לניתוחים"],
-            route: '/intern'
+            route: '/MangerPage'
         },
         {
             name: "מתמחה",
