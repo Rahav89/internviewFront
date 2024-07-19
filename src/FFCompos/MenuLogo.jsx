@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -23,13 +23,16 @@ import logoInternView from "/src/Image/InternViewW.png";
 import { GetInternByID } from "./Server.jsx";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 
 const settings = [
   { label: "ניהול משתמש", icon: <SettingsIcon />, action: "profile" },
   { label: "ניהול מתמחים", icon: <AddBoxIcon />, action: "addIntern" },
   { label: "צפייה כמתמחה", icon: <RemoveRedEyeIcon />, action: "intern" },
+  { label: "צפייה כמנהל", icon: <SupervisorAccountIcon />, action: "manager" },
   {
-    label: "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות",
+    label:
+      "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות",
     icon: <ExitToAppIcon sx={{}} />,
     action: "logout",
   },
@@ -37,7 +40,12 @@ const settings = [
 
 export default function MenuLogo() {
   const [currentUser, setCurrentUser] = useState(null);
-
+  const location = useLocation();
+  const [isInternView, setIsInternView] = useState(
+    location.pathname === "/intern"
+  );
+  const navigate = useNavigate();
+  const [anchorElUser, setAnchorElUser] = useState(null);
   useEffect(() => {
     const internID = JSON.parse(sessionStorage.getItem("currentUserID"));
 
@@ -49,11 +57,6 @@ export default function MenuLogo() {
         console.error("Error in GetInternByID: ", error);
       });
   }, []);
-
-  const navigate = useNavigate();
-  const [anchorElUser, setAnchorElUser] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(5);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -72,33 +75,39 @@ export default function MenuLogo() {
     } else if (action === "addIntern") {
       navigate("/addIntern");
     } else if (action === "intern") {
+      setIsInternView(true);
       navigate("/intern");
+    } else if (action === "manager") {
+      setIsInternView(false);
+      navigate("/MangerPage");
     }
     handleCloseUserMenu();
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
   };
 
   const handleCalenderPage = () => {
     navigate("/calender");
   };
 
-  // Filter settings based on whether the user is a manager
-  const filteredSettings = currentUser?.isManager
-    ? settings
-    : settings
-        .filter((setting) => setting.action !== "addIntern")
-        .filter((setting) => setting.action !== "intern");
-
   const handleLogoClick = () => {
     if (currentUser?.isManager) {
-      navigate("/MangerPage");
+      navigate(isInternView ? "/intern" : "/MangerPage");
     } else {
       navigate("/intern");
     }
   };
+  const filteredSettings = currentUser?.isManager
+    ? isInternView
+      ? settings.filter(
+          (setting) =>
+            setting.action !== "intern" && setting.action !== "addIntern"
+        )
+      : settings.filter((setting) => setting.action !== "manager")
+    : settings.filter(
+        (setting) =>
+          setting.action !== "addIntern" &&
+          setting.action !== "intern" &&
+          setting.action !== "manager"
+      );
 
   return (
     <AppBar sx={{ marginBottom: 12 }}>
