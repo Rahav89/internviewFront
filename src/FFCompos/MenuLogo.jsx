@@ -26,13 +26,13 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 
 const settings = [
-  { label: "ניהול משתמש", icon: <SettingsIcon />, action: "profile" },
-  { label: "ניהול מתמחים", icon: <AddBoxIcon />, action: "addIntern" },
+  { label: "\u00A0\u00A0\ניהול משתמש", icon: <SettingsIcon />, action: "profile" },
+  { label: "\u00A0\u00A0\ניהול מתמחים", icon: <AddBoxIcon />, action: "addIntern" },
   { label: "צפייה כמתמחה", icon: <RemoveRedEyeIcon />, action: "intern" },
-  { label: "צפייה כמנהל", icon: <SupervisorAccountIcon />, action: "manager" },
+  { label: "\u00A0\u00A0צפייה כמנהל", icon: <SupervisorAccountIcon />, action: "manager" },
   {
     label:
-      "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות",
+      "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות",
     icon: <ExitToAppIcon sx={{}} />,
     action: "logout",
   },
