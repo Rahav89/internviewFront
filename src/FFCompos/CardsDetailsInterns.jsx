@@ -20,78 +20,50 @@ import {
   Paper,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import FloatingChatButton from "./FloatingChatButton";
 import { GetAllProcedure, GetInternSurgeriesByProcedure } from "./Server.jsx";
 
 //-------------------------------------
 export default function CardsDetailsInterns() {
-  const [data, setData] = useState([]); // נתונים ראשוניים שנשלפים מהשרת
-  const [filteredData, setFilteredData] = useState([]); // נתונים מסוננים בהתבסס על קריטריוני חיפוש
-  const [searchDate, setSearchDate] = useState(""); // מצב לחיפוש לפי תאריך ניתוח
-  const [selectedRole, setSelectedRole] = useState("all"); // מצב לסינון לפי תפקיד נבחר
-  const [searchHospital, setSearchHospital] = useState(""); // מצב לחיפוש לפי שם בית חולים
-  const [loading, setLoading] = useState(false); // מצב לאינדיקציה של טעינה
-  const [error, setError] = useState(""); // מצב להצגת הודעות שגיאה
-  const location = useLocation(); // גישה לאובייקט המיקום
-  const internId = JSON.parse(sessionStorage.getItem("currentUserID")) || 0; // שליפת מזהה המתמחה מאחסון הסשן
-  const procedure_Id = location.state?.procedureId || 0; // שליפת מזהה הפרוצדורה ממצב המיקום או null אם לא קיים
-  const theme = useTheme(); // גישה לאובייקט העיצוב
-  const [procedures, setProcedures] = useState([]); // מערך המחזיק את כל הפרוצדורות
-  const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchDate, setSearchDate] = useState("");
+  const [selectedRole, setSelectedRole] = useState("all");
+  const [searchHospital, setSearchHospital] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { id } = useParams(); // Get procedure ID from URL
+  const theme = useTheme();
+  const [procedures, setProcedures] = useState([]);
+  const [selectedProcedure, setSelectedProcedure] = useState(null);
 
-  // הוק לשליפת כל שמות הפרוצדורות
   useEffect(() => {
     GetAllProcedure()
       .then((data) => {
-        console.log(data); // הדפסת הנתונים לצורך דיבאגינג
-        setProcedures(data); // שמירת הנתונים במערך הפרוצדורות
+        setProcedures(data);
       })
       .catch((error) => {
-        console.error("Error in GetAllProcedure: ", error); // הדפסת שגיאה במקרה של בעיה
+        console.error("Error in GetAllProcedure: ", error);
       });
   }, []);
 
-  // הוק לשליפת נתונים מהשרת בהתבסס על internId ו-procedure_Id
   useEffect(() => {
     setLoading(true);
-    if (internId) {
-      GetInternSurgeriesByProcedure(internId, procedure_Id)
-        .then((fetchedData) => {
-          setData(fetchedData);
-          setFilteredData(fetchedData);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching data:", err);
-          setError("Failed to fetch data."); // הצגת הודעת שגיאה כשלוקחים נתונים
-          setLoading(false);
-        });
-    } else {
-      setError("Invalid intern ID."); // הצגת שגיאה במקרה של מזהה מתמחה לא תקין
-      setLoading(false);
-    }
-  }, [internId, procedure_Id]);
+    const internId = JSON.parse(sessionStorage.getItem("currentUserID")) || 0;
+    GetInternSurgeriesByProcedure(internId, id)
+      .then((fetchedData) => {
+        setData(fetchedData);
+        setFilteredData(fetchedData);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+        setError("Failed to fetch data.");
+        setLoading(false);
+      });
+  }, [id]);
 
-  // הוק לשליפת נתונים על פי הפרוצדורה שנבחרה
-  useEffect(() => {
-    if (internId && selectedProcedure) {
-      setLoading(true);
-      GetInternSurgeriesByProcedure(internId, selectedProcedure.procedure_Id)
-        .then((fetchedData) => {
-          setData(fetchedData);
-          setFilteredData(fetchedData);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching data:", err);
-          setError("Failed to fetch data."); // הצגת שגיאה במקרה של כשל בשליפת נתונים
-          setLoading(false);
-        });
-    }
-  }, [internId, selectedProcedure]);
-
-  // סינון הנתונים בהתבסס על הקריטריונים שנבחרו
   useEffect(() => {
     const filtered = data.filter(
       (item) =>
@@ -104,22 +76,18 @@ export default function CardsDetailsInterns() {
     setFilteredData(filtered);
   }, [searchDate, selectedRole, searchHospital, data]);
 
-  // פונקציה שמעדכנת את הפרוצדורה הנבחרת
   const handleProcedureChange = (event, newValue) => {
-    setSelectedProcedure(newValue); // עדכון הפרוצדורה הנבחרת
+    setSelectedProcedure(newValue);
   };
 
-  // פונקציה לעדכון חיפוש לפי תאריך ניתוח
   const handleSearchChange = (event) => {
     setSearchDate(event.target.value);
   };
 
-  // פונקציה לעדכון חיפוש לפי תפקיד בניתוח
   const handleRoleChange = (event) => {
     setSelectedRole(event.target.value);
   };
 
-  // פונקציה לעדכון חיפוש לפי שם בית חולים
   const handleHospitalSearchChange = (event) => {
     setSearchHospital(event.target.value);
   };
@@ -142,7 +110,6 @@ export default function CardsDetailsInterns() {
           marginTop: 2,
         }}
       >
-        {/* תיבה עבור בחירת פרוצדורה */}
         <Box sx={{ width: "100%", maxWidth: 300 }}>
           <Autocomplete
             value={selectedProcedure}
@@ -158,7 +125,6 @@ export default function CardsDetailsInterns() {
           />
         </Box>
       </Box>
-      {/* תיבה עבור שאר הפילטרים */}
       <Box
         sx={{
           margin: "10px",
@@ -203,8 +169,6 @@ export default function CardsDetailsInterns() {
         <CircularProgress />
       ) : (
         <Box sx={{ margin: "0 20px" }}>
-          {" "}
-          {/* Adjust the margin value as needed */}
           <TableContainer
             component={Paper}
             sx={{ direction: "rtl", boxShadow: 3 }}
@@ -265,9 +229,9 @@ export default function CardsDetailsInterns() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredData.map((row) => (
+                {filteredData.map((row, index) => (
                   <TableRow
-                    key={row.id} // <-- Ensure you have a unique key prop here
+                    key={row.id || index}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
                       "&:nth-of-type(even)": {
