@@ -44,7 +44,7 @@ export default function CardsDetailsInterns() {
   useEffect(() => {
     GetAllProcedure()
       .then((data) => {
-        console.log(data); // הדפסת הנתונים לצורך דיבאגינג
+        // console.log(data); // הדפסת הנתונים לצורך דיבאגינג
         setProcedures(data); // שמירת הנתונים במערך הפרוצדורות
       })
       .catch((error) => {
