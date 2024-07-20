@@ -20,7 +20,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import FloatingChatButton from "./FloatingChatButton";
 import { GetAllProcedure, GetInternSurgeriesByProcedure } from "./Server.jsx";
 
@@ -33,7 +33,9 @@ export default function CardsDetailsInterns() {
   const [searchHospital, setSearchHospital] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { id } = useParams(); // Get procedure ID from URL
+  const location = useLocation();
+  const internId = JSON.parse(sessionStorage.getItem("currentUserID")) || 0;
+  const procedure_Id = location.state?.procedureId || 0;
   const theme = useTheme();
   const [procedures, setProcedures] = useState([]);
   const [selectedProcedure, setSelectedProcedure] = useState(null);
@@ -41,6 +43,7 @@ export default function CardsDetailsInterns() {
   useEffect(() => {
     GetAllProcedure()
       .then((data) => {
+        console.log(data);
         setProcedures(data);
       })
       .catch((error) => {
@@ -50,19 +53,41 @@ export default function CardsDetailsInterns() {
 
   useEffect(() => {
     setLoading(true);
-    const internId = JSON.parse(sessionStorage.getItem("currentUserID")) || 0;
-    GetInternSurgeriesByProcedure(internId, id)
-      .then((fetchedData) => {
-        setData(fetchedData);
-        setFilteredData(fetchedData);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching data:", err);
-        setError("Failed to fetch data.");
-        setLoading(false);
-      });
-  }, [id]);
+    if (internId) {
+      GetInternSurgeriesByProcedure(internId, procedure_Id)
+        .then((fetchedData) => {
+          console.log("Fetched data:", fetchedData);
+          setData(fetchedData);
+          setFilteredData(fetchedData);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching data:", err);
+          setError("Failed to fetch data.");
+          setLoading(false);
+        });
+    } else {
+      setError("Invalid intern ID.");
+      setLoading(false);
+    }
+  }, [internId, procedure_Id]);
+
+  useEffect(() => {
+    if (internId && selectedProcedure) {
+      setLoading(true);
+      GetInternSurgeriesByProcedure(internId, selectedProcedure.procedure_Id)
+        .then((fetchedData) => {
+          setData(fetchedData);
+          setFilteredData(fetchedData);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching data:", err);
+          setError("Failed to fetch data.");
+          setLoading(false);
+        });
+    }
+  }, [internId, selectedProcedure]);
 
   useEffect(() => {
     const filtered = data.filter(
@@ -229,6 +254,13 @@ export default function CardsDetailsInterns() {
                 </TableRow>
               </TableHead>
               <TableBody>
+                {filteredData.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      אין נתונים זמינים להצגה.
+                    </TableCell>
+                  </TableRow>
+                )}
                 {filteredData.map((row, index) => (
                   <TableRow
                     key={row.id || index}
