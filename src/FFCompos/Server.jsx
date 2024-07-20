@@ -3,7 +3,7 @@ const localHost = "https://localhost:7220/api/"
 const ruppinApi = "https://proj.ruppin.ac.il/cgroup14/test2/tar1/api/"
 
 // קבלת פרטי המתמחה לפי האידי שלו מהשרת
-export const api = localHost
+export const api = ruppinApi
 export const GetInternByID = (iternID) => {
     return fetch(`${api}Interns/GetInternByID/${iternID}`, {
         method: 'GET',
