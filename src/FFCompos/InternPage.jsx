@@ -128,7 +128,7 @@ export default function InternPage() {
 
 
           {/* רק כאשר המנהל מחובר מופיע הכפתור ומעביר לדף המתאים- צפייה במתמחים */}
-          {currentUser && currentUser.isManager == true && (
+          {/* {currentUser && currentUser.isManager == true && (
             <Grid item xs={12} display="flex" justifyContent="center">
               <Button
                 variant="contained"
@@ -151,9 +151,9 @@ export default function InternPage() {
                 <VisibilityIcon sx={{ mr: 0.5 }} />
               </Button>
             </Grid>
-          )}
+          )} */}
 
-          {/* רק כאשר המנהל מחובר מופיע הכפתור ומעביר לדף המתאים- הקצאת מתמחים */}
+          {/* רק כאשר המנהל מחובר מופיע הכפתור ומעביר לדף המתאים- הקצאת מתמחים
           {currentUser && currentUser.isManager == true && (
             <Grid item xs={12} display="flex" justifyContent="center">
               <Button
@@ -177,7 +177,7 @@ export default function InternPage() {
                 <AssignmentTurnedInIcon sx={{ mr: 0.5 }} />
               </Button>
             </Grid>
-          )}
+          )} */}
 
           {/* Recent Surgeries */}
           <Grid item xs={12}>
