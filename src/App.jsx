@@ -15,6 +15,7 @@ import Calendar from './FFCompos/Calendar';
 import ManagerOptions from './FFCompos/ManagerOptions'; 
 import MangerPage from './FFCompos/MangerPage';
 import AddInterns from './FFCompos/AddInterns';
+import ShowSyllabusPerIntern from './FFCompos/ShowSyllabusPerIntern';
 
 const theme = createTheme({
     typography: {
@@ -43,7 +44,8 @@ function App() {
                     <Route path="/ViewInterns" element={<ViewInterns />} />
                     <Route path="/details/:id" element={<CardsDetailsInterns />} />
                     {/* <Route path="/AllocationInterns" element={<AllocationInterns />} /> */}
-                    <Route path="/MatchingAlgo" element={<MatchingAlgo />} />
+                    <Route path="/MatchingAlgo" element={<MatchingAlgo />} /> 
+                    <Route path="/ShowSyllabusPerIntern" element={<ShowSyllabusPerIntern />} />
                 </Routes>
             </Router>
         </ThemeProvider>

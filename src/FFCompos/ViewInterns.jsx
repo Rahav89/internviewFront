@@ -1,167 +1,229 @@
-import { useState, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Box, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import MenuLogo from './MenuLogo';
-import { GetCountProceduresByIntern } from './Server.jsx';
-import DetailedSyllabusTable from './TableFullSyllabus.jsx';
-import FloatingChatButton from './FloatingChatButton.jsx';
+import { useState, useEffect } from "react";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import {
+  Grid,
+  Box,
+  TextField,
+  InputAdornment,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Autocomplete,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import MenuLogo from "./MenuLogo";
+import { GetCountProceduresByIntern } from "./Server.jsx";
+import DetailedSyllabusTable from "./TableFullSyllabus.jsx";
+import FloatingChatButton from "./FloatingChatButton.jsx";
+import { useNavigate } from "react-router-dom";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function ViewInterns() {
-    const [data, setData] = useState([]);//נתונים המגיעים מהשרת
-    const [searchTerm, setSearchTerm] = useState(''); //חיפוש נתונים
-    const [sortBy, setSortBy] = useState('ProcedureCount');// אופציית מיון דיפולטיבית
-    const [selectedInternId, setSelectedInternId] = useState(null);  // Changed to null for better null-checking
-    const [selectedInternDetails, setSelectedInternDetails] = useState(null);// פרטי המתמחה הנבחר
-    const [currentUserId, setCurrentUserId] = useState(null);//פרטי המשתמש הנוכחי המחובר לאתר
+  const [data, setData] = useState([]); //נתונים המגיעים מהשרת
+  const [searchTerm, setSearchTerm] = useState(""); //חיפוש נתונים
+  const [sortBy, setSortBy] = useState("ProcedureCount"); // אופציית מיון דיפולטיבית
+  const [selectedInternId, setSelectedInternId] = useState(null); // Changed to null for better null-checking
+  const [selectedInternDetails, setSelectedInternDetails] = useState(null); // פרטי המתמחה הנבחר
+  const [currentUserId, setCurrentUserId] = useState(null); //פרטי המשתמש הנוכחי המחובר לאתר
 
-    //טעינת הנתונים מהשרת
-    useEffect(() => {
-        GetCountProceduresByIntern().then(fetchedData => {
-            setData(fetchedData);
-        }).catch(error => {
-            console.error("Error fetching data:", error);
-        });
-    }, []);
+  const navigate = useNavigate();
 
+  //טעינת הנתונים מהשרת
+  useEffect(() => {
+    GetCountProceduresByIntern()
+      .then((fetchedData) => {
+        setData(fetchedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
-    useEffect(() => {
-        const userId = JSON.parse(sessionStorage.getItem('currentUserID'));
-        setCurrentUserId(userId);
-    }, []);
+  useEffect(() => {
+    const userId = JSON.parse(sessionStorage.getItem("currentUserID"));
+    setCurrentUserId(userId);
+  }, []);
 
-    // פילטור ומיון הנתונים בהתאם לקריטריונים שנבחרו
-    const filteredData = data.filter(item =>
+  // פילטור ומיון הנתונים בהתאם לקריטריונים שנבחרו
+  const filteredData = data
+    .filter(
+      (item) =>
         item.firstName.toLowerCase().includes(searchTerm.toLowerCase()) &&
         item.internId !== currentUserId // פילטור שלא כולל את המשתמש הנוכחי
-    ).sort((a, b) => {
-        if (sortBy === 'ProcedureCount') {
-            return b.procedureCount - a.procedureCount;
-        } else if (sortBy === 'RemainingNeed') {
-            return (b.overallNeed - b.procedureCount) - (a.overallNeed - a.procedureCount);
-        }
+    )
+    .sort((a, b) => {
+      if (sortBy === "ProcedureCount") {
+        return b.procedureCount - a.procedureCount;
+      } else if (sortBy === "RemainingNeed") {
+        return (
+          b.overallNeed - b.procedureCount - (a.overallNeed - a.procedureCount)
+        );
+      }
     });
 
-    // הגדרת מבנה הנתונים עבור הגרף
-    const chartData = {
-        labels: filteredData.map(item => item.firstName),
-        datasets: [
-            {
-                label: 'בוצע',
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                data: filteredData.map(item => item.procedureCount),
-                barThickness: 50,
-            },
-            {
-                label: 'חוסר',
-                backgroundColor: 'CornflowerBlue',
-                borderColor: 'DarkBlue',
-                barThickness: 50,
-                data: filteredData.map(item => item.overallNeed - item.procedureCount),
-            }
-        ]
-    };
+  // הגדרת מבנה הנתונים עבור הגרף
+  const chartData = {
+    labels: filteredData.map((item) => item.firstName),
+    datasets: [
+      {
+        label: "בוצע",
+        backgroundColor: "CornflowerBlue",
+        borderColor: "DarkBlue",
+        data: filteredData.map((item) => item.procedureCount),
+        barThickness: 50,
+      },
+      {
+        label: "חוסר",
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        barThickness: 50,
+        data: filteredData.map(
+          (item) => item.overallNeed - item.procedureCount
+        ),
+      },
+    ],
+  };
 
-    // הגדרת אפשרויות להצגת הגרף
-    const options = {
-        scales: {
-            x: {
-                stacked: true
-            },
-            y: {
-                stacked: true,
-                beginAtZero: true,
-                min: 0,
-                max: 900,
-                ticks: {
-                    stepSize: 100
-                }
-            }
+  // הגדרת אפשרויות להצגת הגרף
+  const options = {
+    scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        min: 0,
+        max: 900,
+        ticks: {
+          stepSize: 100,
         },
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-        },
-        animation: {
-            duration: 2000, // Duration in milliseconds
-            easing: 'easeOutCubic',
-        },
-        // פונקציה שמופעלת בלחיצה על אלמנט בגרף
-        onClick: (event, elements) => {
-            if (elements.length > 0) {
-                const elementIndex = elements[0].index;
-                setSelectedInternId(filteredData[elementIndex].internId);
-                setSelectedInternDetails(filteredData[elementIndex]);
-            }
-        }
-    };
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
+    animation: {
+      duration: 2000, // Duration in milliseconds
+      easing: "easeOutCubic",
+    },
+    // // פונקציה שמופעלת בלחיצה על אלמנט בגרף
+    // onClick: (event, elements) => {
+    //   if (elements.length > 0) {
+    //     const elementIndex = elements[0].index;
+    //     setSelectedInternId(filteredData[elementIndex].internId);
+    //     setSelectedInternDetails(filteredData[elementIndex]);
+    //   }
+    // },
+  };
 
-    return (
+  return (
+    <>
+      <MenuLogo />
+      <h3 style={{ marginTop: "5%" }}>רשימת המתמחים</h3>
+      <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
+        <FormControl sx={{ width: 300, m: 1 }}>
+          <InputLabel>מיון</InputLabel>
+          <Select
+            value={sortBy}
+            label="Sort By"
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <MenuItem value="ProcedureCount">מספר פרודצורות שבוצעו</MenuItem>
+            <MenuItem value="RemainingNeed">מספר פרודצורות שחסר</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          label="חיפוש שם מתמחה"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ width: 200, m: 1, direction: "rtl" }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="start">
+                <IconButton>
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      </Box>
+      <Box
+        sx={{
+          width: {
+            xs: "100%",
+            md: "80%",
+          },
+          height: "400px",
+          overflowY: "auto",
+          display: "flex",
+          justifyContent: "center",
+          mb: 4,
+          mx: "auto",
+        }}
+      >
+        <Bar data={chartData} options={options} />
+      </Box>
+      <Grid>
+        <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ m: 1 }}
+            onClick={() => navigate("/MatchingAlgo")}
+          >
+            שיבוץ מתמחים
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ m: 1 }}
+            onClick={() => navigate("/ShowSyllabusPerIntern")}
+          >
+            צפייה בסילבוס של מתמחה
+          </Button>
+        </Box>
+      </Grid>
+      {/* {selectedInternDetails && (
         <>
-            <MenuLogo />
-            <h3 style={{ marginTop: '10%' }}>רשימת המתמחים</h3>
-            <Box sx={{ m: 2, display: 'flex', justifyContent: 'center' }}>
-                <FormControl sx={{ width: 300, m: 1 }}>
-                    <InputLabel>מיון</InputLabel>
-                    <Select
-                        value={sortBy}
-                        label="Sort By"
-                        onChange={(e) => setSortBy(e.target.value)}
-                    >
-                        <MenuItem value="ProcedureCount">מספר פרודצורות שבוצעו</MenuItem>
-                        <MenuItem value="RemainingNeed">מספר פרודצורות שחסר</MenuItem>
-                    </Select>
-                </FormControl>
-                <TextField
-                    label="חיפוש שם מתמחה"
-                    variant="outlined"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    sx={{ width: 200, m: 1, direction: 'rtl' }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="start">
-                                <IconButton>
-                                    <SearchIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-            </Box>
-            <Box sx={{
-                width: {
-                    xs: '100%',
-                    md: '80%'
-                },
-                height: '400px',
-                overflowY: 'auto',
-                display: 'flex',
-                justifyContent: 'center',
-                mb: 4,
-                mx: 'auto'
-            }}>
-                <Bar data={chartData} options={options} />
-            </Box>
-            {selectedInternDetails && (
-                <>
-                    <Box>
-                        <h3>התקדמות של {selectedInternDetails.firstName} בסילבוס הניתוחים</h3>
-                    </Box>
-                    <DetailedSyllabusTable internIdFromView={selectedInternId} />
-                </>
-            )}
-            < FloatingChatButton />
+          <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
+            <h3>
+              התקדמות של {selectedInternDetails.firstName} בסילבוס הניתוחים
+            </h3>
+          </Box>
+          <DetailedSyllabusTable internIdFromView={selectedInternId} />
         </>
-    );
+      )} */}
+      <FloatingChatButton />
+    </>
+  );
 }

@@ -255,7 +255,7 @@ export default function DetailedSyllabusTable(props) {
                     </TableHead>
                     <TableBody>
                       {row.category.map((categoryRow) => {
-                        console.log(categoryRow);
+                        // console.log(categoryRow);
                         return (
                           <TableRow key={categoryRow.name}>
                             <TableCell
