@@ -58,7 +58,7 @@ export default function AlgoResults({ surgeryID, refreshComponents }) {
             Surgery_id: surgeryID,
             Intern_id: intern.id,
             Intern_role: intern_role,
-            newMatch: true //WE DROP IT FROM THE SURGERY TABLE AFTER MODIFY THE ALGORITHM!
+            newMatch: true //WE DROP IT FROM THE [Intern_in_surgery] TABLE AFTER MODIFY THE ALGO
         }
         UpdateInternInSurgery(matchObj)
             .then(data => {
