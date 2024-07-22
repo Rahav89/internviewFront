@@ -13,7 +13,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { GetInterns, UpdateInternInSurgery } from './Server.jsx';
+import { GetInterns, UpdateInternInSurgery } from './server_forOldAlgo.jsx';
 import Swal from 'sweetalert2';
 //-------------------------------
 //-אלגוריתם של שיבוץ מתמחה פר ניתוח
@@ -58,7 +58,7 @@ export default function AlgoResults({ surgeryID, refreshComponents }) {
             Surgery_id: surgeryID,
             Intern_id: intern.id,
             Intern_role: intern_role,
-            newMatch: true
+            newMatch: true //WE DROP IT FROM THE SURGERY TABLE AFTER MODIFY THE ALGORITHM!
         }
         UpdateInternInSurgery(matchObj)
             .then(data => {

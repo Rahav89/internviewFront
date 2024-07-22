@@ -114,7 +114,7 @@ function FullSyllabus() {
     labels: procedureNames,
     datasets: [
       {
-        label: 'ניתוחים שעשו',
+        label: 'ניתוחים שנעשו',
         // backgroundColor: 'rgba(54, 162, 235, 0.5)',
         // borderColor: 'rgba(54, 162, 235, 1)',
         backgroundColor: 'CornflowerBlue',
@@ -125,7 +125,7 @@ function FullSyllabus() {
 
       },
       {
-        label: 'ניתוחים שנשאר',
+        label: 'ניתוחים שנשארו',
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderColor: 'rgba(54, 162, 235, 1)',
         // backgroundColor: '	CornflowerBlue',
