@@ -53,9 +53,19 @@ function StepIconComponent({ active, completed, icon }) {
 }
 
 export default function CustomStepper() {
-  const currentUserYear = JSON.parse(sessionStorage.getItem("currentUserYear"));
-  const activeStep = yearToStepIndex[currentUserYear];
+  const storedDate = sessionStorage.getItem("currentUserYear");
+  const currentDate = new Date();
+  let currentUserYear = 1;
+
+  if (storedDate) {
+    const storedYear = new Date(JSON.parse(storedDate)).getFullYear();
+    const currentYear = currentDate.getFullYear();
+    const yearDifference = currentYear - storedYear + 1; // Adding 1 to account for the first year as well
+    currentUserYear = Math.min(yearDifference, 6);
+  }
+
   const steps = getSteps();
+  const activeStep = 6 - currentUserYear; // Adjusting to map the year difference to the step index
   let counter = steps.length;
 
   return (

@@ -16,6 +16,24 @@ import { updateIntern, GetInternByID } from "./Server.jsx";
 import FloatingChatButton from './FloatingChatButton';
 import EditIcon from '@mui/icons-material/Edit';
 
+// Mapping of year numbers to Hebrew letters
+const yearToHebrew = {
+  1: 'א',
+  2: 'ב',
+  3: 'ג',
+  4: 'ד',
+  5: 'ה',
+  6: 'ו'
+};
+
+// Function to calculate internship year as a Hebrew letter
+function calculateHebrewYear(startYear) {
+  const currentYear = new Date().getFullYear();
+  const startDate = new Date(startYear).getFullYear();
+  const yearDifference = Math.min(currentYear - startDate + 1, 6); // Adding 1 to account for the current year
+  return yearToHebrew[yearDifference] || "";
+}
+
 //------------------------------------------------------------------
 
 export default function ProfileIntern() {
@@ -34,13 +52,12 @@ export default function ProfileIntern() {
     GetInternByID(internID) // Call GetInternByID to fetch intern data
       .then((data) => {
         setCurrentUser(data);
-        //console.log(data)
         setFormData((prevData) => ({
           ...prevData,
-          password_i: data.password_i,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          email_i: data.email_I
+          password_i: data.password_i || "",
+          first_name: data.first_name || "",
+          last_name: data.last_name || "",
+          email_i: data.email_I || ""
         }));
       })
       .catch((error) => {
@@ -96,12 +113,12 @@ export default function ProfileIntern() {
   //פונקציה הבודקת את הולידציה של הסיסמא
   function validatCurrentePassword(password) {
     //לאפשר למשתמש לא להכניס סיסמאות (כדי לשנות משהו אחר)
-    if (password == "" && formData.password_i == "" ||
-      password == "" && formData.password_i == currentUser.password_i) {
+    if (password === "" && formData.password_i === "" ||
+      password === "" && formData.password_i === currentUser.password_i) {
       return true;
     }
     //בודק שהסיסמה שהכניס היא הסיסמה הנוכחית שלו
-    return currentUser.password_i == password;
+    return currentUser.password_i === password;
   }
 
   // ולידציה לטקסט בלבד
@@ -112,8 +129,8 @@ export default function ProfileIntern() {
   //פונקציה הבודקת את הולידציה של הסיסמא החדשה
   function validateNewPassword(password) {
     //לאפשר למשתמש לא להכניס סיסמאות (כדי לשנות משהו אחר)
-    if (password == "" && formData.currentPassword == "" ||
-      password == currentUser.password_i && formData.currentPassword == "") {
+    if (password === "" && formData.currentPassword === "" ||
+      password === currentUser.password_i && formData.currentPassword === "") {
       return true;
     }
     //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
@@ -135,16 +152,16 @@ export default function ProfileIntern() {
     event.preventDefault();
     const isPasswordValid = validatCurrentePassword(formData.currentPassword);
     const isPasswordConfirmationValid = validateNewPassword(formData.password_i);
-    const isFirstNameValid = validateTextOnly(formData.firstName);
-    const isLastNameValid = validateTextOnly(formData.lastName);
+    const isFirstNameValid = validateTextOnly(formData.first_name);
+    const isLastNameValid = validateTextOnly(formData.last_name);
     const isEmailIValid = validateEmail(formData.email_i);
 
     console.log(isPasswordValid, isFirstNameValid, isLastNameValid, isEmailIValid);
     setFormErrors({
       password_i: !isPasswordValid,
       passwordConfirmation: !isPasswordConfirmationValid,
-      firstName: !isFirstNameValid,
-      lastName: !isLastNameValid,
+      first_name: !isFirstNameValid,
+      last_name: !isLastNameValid,
       email_i: !isEmailIValid
     });
 
@@ -152,7 +169,7 @@ export default function ProfileIntern() {
     if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid && isEmailIValid) {
       //טיפול במקרה שלא הכניס סיסמאות - ניתן לעדכן בכל זאת עם הסיסמה הקודמת
       let newPass = formData.password_i;
-      if (formData.currentPassword == "" && formData.password_i == "") { newPass = currentUser.password_i; }
+      if (formData.currentPassword === "" && formData.password_i === "") { newPass = currentUser.password_i; }
       // פונקציה לעדכון פרטי המתמחה בשרת
       updateIntern(currentUser.id, formData, newPass)
         .then((data) => {
@@ -241,7 +258,7 @@ export default function ProfileIntern() {
                         id="email"
                         label="כתובת אימייל"
                         autoComplete="כתובת אימייל"
-                        value={formData.email_i}
+                        value={formData.email_i || ""}
                         onChange={handleChange}
                         error={formErrors.email_i}
                         helperText={
@@ -339,7 +356,7 @@ export default function ProfileIntern() {
                         id="first_name"
                         label="שם פרטי"
                         autoComplete="given-name"
-                        value={formData.first_name}
+                        value={formData.first_name || ""}
                         onChange={handleChange}
                         error={formErrors.first_name}
                         helperText={
@@ -359,7 +376,7 @@ export default function ProfileIntern() {
                         id="last_name"
                         label="שם משפחה"
                         autoComplete="family-name"
-                        value={formData.last_name}
+                        value={formData.last_name || ""}
                         onChange={handleChange}
                         error={formErrors.last_name}
                         helperText={
@@ -375,7 +392,7 @@ export default function ProfileIntern() {
                         id="interns_year"
                         label="שנת התמחות"
                         autoComplete="given-name"
-                        value={currentUser ? currentUser.interns_year : ""}
+                        value={currentUser ? calculateHebrewYear(currentUser.interns_year) : ""}
                         disabled
                       />
                     </Grid>
