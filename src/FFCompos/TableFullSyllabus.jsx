@@ -148,10 +148,10 @@ export default function DetailedSyllabusTable(props) {
             scope="row"
             className="borderLeft"
             style={{
-                cursor: row.procedure_Id ? 'pointer' : 'default',
-                color: row.procedure_Id ? 'blue' : 'black',
-                textDecoration: row.procedure_Id ? 'underline' : 'none',
-              }}
+              cursor: row.procedure_Id ? "pointer" : "default",
+              color: row.procedure_Id ? "blue" : "black",
+              textDecoration: row.procedure_Id ? "underline" : "none",
+            }}
             onClick={() =>
               row.procedure_Id
                 ? navigate(`/details/${row.procedure_Id}`, {
@@ -263,20 +263,19 @@ export default function DetailedSyllabusTable(props) {
                               scope="row"
                               align="right"
                               style={{
-                                cursor: categoryRow.id ? 'pointer' : 'default',
-                                color: categoryRow.id ? 'blue' : 'black',
-                                textDecoration: categoryRow.id ? 'underline' : 'none',
+                                cursor: categoryRow.id ? "pointer" : "default",
+                                color: categoryRow.id ? "blue" : "black",
+                                textDecoration: categoryRow.id
+                                  ? "underline"
+                                  : "none",
                               }}
                               onClick={() =>
                                 categoryRow.id
-                                  ? navigate(
-                                      `/details/${categoryRow.id}`,
-                                      {
-                                        state: {
-                                          procedureId: categoryRow.id,
-                                        },
-                                      }
-                                    )
+                                  ? navigate(`/details/${categoryRow.id}`, {
+                                      state: {
+                                        procedureId: categoryRow.id,
+                                      },
+                                    })
                                   : null
                               }
                             >
@@ -381,7 +380,13 @@ export default function DetailedSyllabusTable(props) {
   return (
     <>
       <MenuLogo />
-
+      {/* <Grid item xs={12}>
+        <Box display="flex" justifyContent="center">
+          <Typography variant="h5" fontWeight="600" mt={10} mb={-4}>
+          צפייה בסילבוס המלא
+          </Typography>
+        </Box>
+      </Grid> */}
       <Grid container spacing={2}>
         <Box display="flex" justifyContent="center">
           <Grid item xs={11} alignItems="center">
