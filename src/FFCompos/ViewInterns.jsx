@@ -58,8 +58,8 @@ export default function ViewInterns() {
             },
             {
                 label: 'חוסר',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'CornflowerBlue',
+                borderColor: 'DarkBlue',
                 barThickness: 50,
                 data: filteredData.map(item => item.overallNeed - item.procedureCount),
             }

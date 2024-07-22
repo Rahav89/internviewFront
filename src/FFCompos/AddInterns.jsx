@@ -15,18 +15,17 @@ import VisibilityOff from "@mui/icons-material/Visibility";
 import { Container, Box } from "@mui/material";
 import { updateIntern, GetInternByID } from "./Server.jsx";
 import FloatingChatButton from "./FloatingChatButton";
-import EditIcon from "@mui/icons-material/Edit";
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 // --------------------------------------------------
 export default function AddInterns() {
   const [currentUser, setCurrentUser] = useState(null);
   // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
   const [formData, setFormData] = useState({
-    currentPassword: "",
-    password_i: "",
     first_name: "",
     last_name: "",
     email_i: "",
+    internId: "",
+    InternshipDate: "",
   });
 
   //   useEffect(() => {
@@ -41,6 +40,8 @@ export default function AddInterns() {
   //           first_name: data.first_name,
   //           last_name: data.last_name,
   //           email_i: data.email_I,
+  //           internId:data.internId,
+  //           InternshipDate: data.InternshipDate,
   //         }));
   //       })
   //       .catch((error) => {
@@ -49,30 +50,19 @@ export default function AddInterns() {
   //   }, []); // Empty dependency array ensures this runs only once after the initial render
 
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
 
   // Function to handle button click
   const handleCancelClick = () => {
     navigate("/MangerPage"); // Navigate to the intern page
   };
 
-  //הפונקציות הללו משמשות לשינוי מצב ההצגה של סיסמאות, ממצב מוסתר למצב מוצג ולהפך
-  const handleToggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleToggleNewShowPassword = () => {
-    setShowNewPassword(!showNewPassword);
-  };
-
   // ניהול שגיאות בטופס
   const [formErrors, setFormErrors] = useState({
-    password_i: false,
-    passwordConfirmation: false,
     first_name: false,
     last_name: false,
     email_i: false,
+    internId: false,
+    InternshipDate: false,
   });
 
   // טיפול בשינויים בשדות הטופס
@@ -91,40 +81,28 @@ export default function AddInterns() {
         email_i: !isValidEmail,
       }));
     }
-  };
 
-  //פונקציה הבודקת את הולידציה של הסיסמא
-  function validatCurrentePassword(password) {
-    //לאפשר למשתמש לא להכניס סיסמאות (כדי לשנות משהו אחר)
-    if (
-      (password == "" && formData.password_i == "") ||
-      (password == "" && formData.password_i == currentUser.password_i)
-    ) {
-      return true;
+    if (name === "internId") {
+      const isValidId = validateId(value);
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        internId: !isValidId,
+      }));
     }
-    //בודק שהסיסמה שהכניס היא הסיסמה הנוכחית שלו
-    return currentUser.password_i == password;
-  }
+
+    if (name === "InternshipDate") {
+      const isValidDate = validateDate(value);
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        InternshipDate: !isValidDate,
+      }));
+    }
+  };
 
   // ולידציה לטקסט בלבד
   const validateTextOnly = (value) => {
     return /^[a-zA-Zא-ת ]*$/.test(value) && value !== "";
   };
-
-  //פונקציה הבודקת את הולידציה של הסיסמא החדשה
-  function validateNewPassword(password) {
-    //לאפשר למשתמש לא להכניס סיסמאות (כדי לשנות משהו אחר)
-    if (
-      (password == "" && formData.currentPassword == "") ||
-      (password == currentUser.password_i && formData.currentPassword == "")
-    ) {
-      return true;
-    }
-    //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
-    const uppercaseLetter = /[A-Z]/;
-    const digit = /[0-9]/;
-    return uppercaseLetter.test(password) && digit.test(password);
-  }
 
   // פונקציה לבדיקת תקינות כתובת מייל
   function validateEmail(email) {
@@ -133,43 +111,46 @@ export default function AddInterns() {
     return regex.test(email);
   }
 
+  function validateId(id) {
+    const regex = /^\d{9}$/;
+    return regex.test(id);
+  }
+
+  function validateDate(date) {
+    const selectedDate = new Date(date);
+    const currentDate = new Date();
+    return selectedDate <= currentDate;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const isPasswordValid = validatCurrentePassword(formData.currentPassword);
-    const isPasswordConfirmationValid = validateNewPassword(
-      formData.password_i
-    );
-    const isFirstNameValid = validateTextOnly(formData.firstName);
-    const isLastNameValid = validateTextOnly(formData.lastName);
+    const isFirstNameValid = validateTextOnly(formData.first_name);
+    const isLastNameValid = validateTextOnly(formData.last_name);
     const isEmailIValid = validateEmail(formData.email_i);
+    const isIdValid = validateId(formData.internId);
+    const isDateValid = validateDate(formData.InternshipDate);
 
-    console.log(
-      isPasswordValid,
-      isFirstNameValid,
-      isLastNameValid,
-      isEmailIValid
-    );
+    console.log(isFirstNameValid, isLastNameValid, isEmailIValid);
     setFormErrors({
-      password_i: !isPasswordValid,
-      passwordConfirmation: !isPasswordConfirmationValid,
-      firstName: !isFirstNameValid,
-      lastName: !isLastNameValid,
+      first_name: !isFirstNameValid,
+      last_name: !isLastNameValid,
       email_i: !isEmailIValid,
+      internId: !isIdValid,
+      InternshipDate: !isDateValid,
     });
 
-    //אם כל הולידציות תקינות - שלח עדכון לשרת
+    // אם כל הולידציות תקינות - שלח עדכון לשרת
     if (
-      isPasswordConfirmationValid &&
-      isPasswordValid &&
       isFirstNameValid &&
       isLastNameValid &&
-      isEmailIValid
+      isEmailIValid &&
+      isIdValid &&
+      isDateValid
     ) {
-      //טיפול במקרה שלא הכניס סיסמאות - ניתן לעדכן בכל זאת עם הסיסמה הקודמת
-      let newPass = formData.password_i;
-      if (formData.currentPassword == "" && formData.password_i == "") {
-        newPass = currentUser.password_i;
-      }
+      // Perform the submit logic here
+      console.log("All validations passed. Form can be submitted.");
+      // For example, call an API to submit the form data
+      // submitForm(formData);
     }
   };
 
@@ -225,21 +206,21 @@ export default function AddInterns() {
                     <Grid item xs={12}>
                       <TextField
                         fullWidth
-                        name="InternID"
-                        id="InternID"
+                        name="internId"
+                        id="internId"
                         label="תעודת זהות"
                         autoComplete="תעודת זהות"
-                        value={currentUser ? currentUser.id : ""}
-                        error={formErrors.id}
+                        value={formData.internId}
+                        onChange={handleChange}
+                        error={formErrors.internId}
                         helperText={
-                          formErrors.id
-                            ? "תעודת זהות חיייבת להכיל רק ספרות"
+                          formErrors.internId
+                            ? "תעודת זהות חייבת להכיל 9 ספרות"
                             : ""
                         }
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        // disabled
                       />
                     </Grid>
 
@@ -261,84 +242,6 @@ export default function AddInterns() {
                         }}
                       />
                     </Grid>
-
-                    {/* <Grid item xs={12}>
-                      <TextField
-                        required
-                        fullWidth
-                        name="currentPassword"
-                        label="סיסמה נוכחית"
-                        type={showPassword ? "text" : "password"}
-                        id="password"
-                        autoComplete="current-password"
-                        onChange={handleChange}
-                        error={formErrors.password_i}
-                        InputLabelProps={{
-                          shrink: true, // make the label always appear above the TextField
-                        }}
-                        helperText={
-                          formErrors.password_i
-                            ? "הסיסמה לא תואמת לסיסמה הנוכחית"
-                            : ""
-                        }
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleToggleShowPassword}
-                                edge="end"
-                              >
-                                {showPassword ? (
-                                  <VisibilityOff />
-                                ) : (
-                                  <Visibility />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid> */}
-
-                    {/* <Grid item xs={12}>
-                      <TextField
-                        required
-                        fullWidth
-                        name="password_i"
-                        label="סיסמה חדשה "
-                        type={showNewPassword ? "text" : "password"}
-                        id="newPassword"
-                        autoComplete="new-password"
-                        onChange={handleChange}
-                        error={formErrors.passwordConfirmation}
-                        InputLabelProps={{
-                          shrink: true, // This will make the label always appear above the TextField
-                        }}
-                        helperText={
-                          formErrors.passwordConfirmation
-                            ? "הסיסמה חייבת להכיל לפחות אות גדולה וספרות"
-                            : ""
-                        }
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleToggleNewShowPassword}
-                                edge="end"
-                              >
-                                {showNewPassword ? (
-                                  <VisibilityOff />
-                                ) : (
-                                  <Visibility />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid> */}
 
                     <Grid item xs={12} sm={4}>
                       <TextField
@@ -385,15 +288,25 @@ export default function AddInterns() {
                     <Grid item xs={12} sm={4}>
                       <TextField
                         fullWidth
-                        name="interns_year"
-                        id="interns_year"
+                        type="date"
+                        name="InternshipDate"
+                        id="InternshipDate"
                         label="שנת התמחות"
                         autoComplete="given-name"
-                        value={currentUser ? currentUser.interns_year : ""}
-                        // disabled
+                        value={formData.InternshipDate}
+                        onChange={handleChange}
+                        error={formErrors.InternshipDate}
+                        helperText={
+                          formErrors.InternshipDate
+                            ? "התאריך לא יכול להיות גדול מהתאריך הנוכחי"
+                            : ""
+                        }
                         InputLabelProps={{
                           style: { textAlign: "right", direction: "rtl" },
                           shrink: true,
+                        }}
+                        InputProps={{
+                          style: { textAlign: "right", direction: "rtl" },
                         }}
                       />
                     </Grid>
