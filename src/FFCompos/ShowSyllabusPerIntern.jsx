@@ -1,24 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import MenuLogo from "./MenuLogo";
-import { Autocomplete, TextField, Box, Typography } from "@mui/material";
-import { GetCountProceduresByIntern } from "./Server.jsx";
+import { Autocomplete, TextField, Box, Typography, CircularProgress } from "@mui/material";
+import { GetInterns, GetCountProceduresByIntern } from "./Server.jsx";
 import DetailedSyllabusTable from "./TableFullSyllabus.jsx";
-//---------------------------------------------------------------
 
 export default function ShowSyllabusPerIntern() {
-  const [data, setData] = useState([]); // נתונים המגיעים מהשרת
-  const [selectedInternId, setSelectedInternId] = useState(null); // Changed to null for better null-checking
-  const [selectedInternDetails, setSelectedInternDetails] = useState(null); // פרטי המתמחה הנבחר
-  const [currentUserId, setCurrentUserId] = useState(null); // פרטי המשתמש הנוכחי המחובר לאתר
+  const [data, setData] = useState([]); // Data from server
+  const [selectedInternId, setSelectedInternId] = useState(null);
+  const [selectedInternDetails, setSelectedInternDetails] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Fetch data from the server
     async function fetchData() {
-      const result = await GetCountProceduresByIntern();
-      setData(result);
+      try {
+        const result = await GetInterns();
+        setData(result);
+        console.log(result)
+      } catch (error) {
+        setError("Failed to fetch interns");
+      } finally {
+        setLoading(false);
+      }
     }
     fetchData();
   }, []);
+
+  const handleAutocompleteChange = (event, value) => {
+    if (value === null) {
+      setSelectedInternId(null);
+      setSelectedInternDetails(null);
+    } else {
+      const selectedIntern = data.find(
+        (intern) => `${intern.first_name} ${intern.last_name}` === value
+      );
+      if (selectedIntern) {
+        setSelectedInternId(selectedIntern.id);
+        setSelectedInternDetails(selectedIntern);
+      }
+    }
+  };
+
+  const options = useMemo(
+    () => data.map((option) => `${option.first_name} ${option.last_name}`),
+    [data]
+  );
 
   return (
     <>
@@ -35,29 +62,20 @@ export default function ShowSyllabusPerIntern() {
         <Typography variant="h5" gutterBottom fontWeight={600}>
           צפייה בסילבוס של מתמחה
         </Typography>
-        <Autocomplete
-          options={data.map(
-            (option) => `${option.firstName} ${option.lastName}`
-          )}
-          renderInput={(params) => (
-            <TextField {...params} label="בחר מתמחה" variant="outlined" />
-          )}
-          sx={{ width: 300, m: 2, direction: 'rtl' }}
-          onChange={(event, value) => {
-            if (value === null) {
-              setSelectedInternId(null);
-              setSelectedInternDetails(null);
-            } else {
-              const selectedIntern = data.find(
-                (intern) => `${intern.firstName} ${intern.lastName}` === value
-              );
-              if (selectedIntern) {
-                setSelectedInternId(selectedIntern.internId);
-                setSelectedInternDetails(selectedIntern);
-              }
-            }
-          }}
-        />
+        {loading ? (
+          <CircularProgress />
+        ) : error ? (
+          <Typography color="error">{error}</Typography>
+        ) : (
+          <Autocomplete
+            options={options}
+            renderInput={(params) => (
+              <TextField {...params} label="בחר מתמחה" variant="outlined" />
+            )}
+            sx={{ width: 300, m: 2, direction: "rtl" }}
+            onChange={handleAutocompleteChange}
+          />
+        )}
       </Box>
       {selectedInternDetails && (
         <>
