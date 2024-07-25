@@ -155,7 +155,7 @@ export default function DetailedSyllabusTable(props) {
             onClick={() =>
               row.procedure_Id
                 ? navigate(`/details/${row.procedure_Id}`, {
-                    state: { procedureId: row.procedure_Id },
+                    state: { procedureId: row.procedure_Id ,internID},
                   })
                 : null
             }
@@ -273,7 +273,7 @@ export default function DetailedSyllabusTable(props) {
                                 categoryRow.id
                                   ? navigate(`/details/${categoryRow.id}`, {
                                       state: {
-                                        procedureId: categoryRow.id,
+                                        procedureId: categoryRow.id,internID
                                       },
                                     })
                                   : null
