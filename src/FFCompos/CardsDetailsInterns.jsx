@@ -19,7 +19,6 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import FloatingChatButton from "./FloatingChatButton";
 import { GetAllProcedure, GetInternSurgeriesByProcedure } from "./Server.jsx";
@@ -35,7 +34,6 @@ export default function CardsDetailsInterns() {
   const [error, setError] = useState(""); // מצב להצגת הודעות שגיאה
   const location = useLocation(); // גישה לאובייקט המיקום
   const procedure_Id = location.state?.procedureId || 0; // שליפת מזהה הפרוצדורה ממצב המיקום או null אם לא קיים
-  const theme = useTheme(); // גישה לאובייקט העיצוב
   const [procedures, setProcedures] = useState([]); // מערך המחזיק את כל הפרוצדורות
   const [selectedProcedure, setSelectedProcedure] = useState(null); // מצביע על הפרוצדורה הנבחרת
   const { internID } = location.state || {};
