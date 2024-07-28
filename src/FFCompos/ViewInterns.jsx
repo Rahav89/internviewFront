@@ -10,7 +10,6 @@ import {
   Legend,
 } from "chart.js";
 import {
-  Grid,
   Box,
   TextField,
   InputAdornment,
@@ -19,15 +18,13 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Button,
-  Autocomplete,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuLogo from "./MenuLogo";
 import { GetCountProceduresByIntern } from "./Server.jsx";
 import DetailedSyllabusTable from "./TableFullSyllabus.jsx";
 import FloatingChatButton from "./FloatingChatButton.jsx";
-import { useNavigate } from "react-router-dom";
+
 
 ChartJS.register(
   CategoryScale,
@@ -46,7 +43,7 @@ export default function ViewInterns() {
   const [selectedInternDetails, setSelectedInternDetails] = useState(null); // פרטי המתמחה הנבחר
   const [currentUserId, setCurrentUserId] = useState(null); //פרטי המשתמש הנוכחי המחובר לאתר
 
-  const navigate = useNavigate();
+
 
   //טעינת הנתונים מהשרת
   useEffect(() => {
@@ -193,26 +190,7 @@ export default function ViewInterns() {
       >
         <Bar data={chartData} options={options} />
       </Box>
-      <Grid>
-        <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ m: 1 }}
-            onClick={() => navigate("/MatchingAlgo")}
-          >
-            שיבוץ מתמחים
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ m: 1 }}
-            onClick={() => navigate("/ShowSyllabusPerIntern")}
-          >
-            צפייה בסילבוס של מתמחה
-          </Button>
-        </Box>
-      </Grid>
+      
       {/* {selectedInternDetails && (
         <>
           <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>

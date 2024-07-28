@@ -1,79 +1,66 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
-import { Card, CardContent, CardActions } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import MenuLogo from "./MenuLogo";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { InputAdornment, IconButton } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/Visibility";
-import { Container, Box } from "@mui/material";
-import { updateIntern, GetInternByID } from "./Server.jsx";
-import FloatingChatButton from "./FloatingChatButton";
+import {
+  Button,
+  CssBaseline,
+  TextField,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  Container,
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl
+} from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-// --------------------------------------------------
+import MenuLogo from "./MenuLogo";
+import FloatingChatButton from "./FloatingChatButton";
+import Swal from "sweetalert2";
+
 export default function AddInterns() {
   const [currentUser, setCurrentUser] = useState(null);
-  // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email_i: "",
     internId: "",
     InternshipDate: "",
+    password: "",
+    confirmPassword: "",
+    rating: "",
+    isManager: false,
   });
 
-  //   useEffect(() => {
-  //     const internID = JSON.parse(sessionStorage.getItem("currentUserID"));
-  //     GetInternByID(internID) // Call GetInternByID to fetch intern data
-  //       .then((data) => {
-  //         setCurrentUser(data);
-  //         //console.log(data)
-  //         setFormData((prevData) => ({
-  //           ...prevData,
-  //           password_i: data.password_i,
-  //           first_name: data.first_name,
-  //           last_name: data.last_name,
-  //           email_i: data.email_I,
-  //           internId:data.internId,
-  //           InternshipDate: data.InternshipDate,
-  //         }));
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error in GetInternByID: ", error);
-  //       });
-  //   }, []); // Empty dependency array ensures this runs only once after the initial render
-
-  const navigate = useNavigate();
-
-  // Function to handle button click
-  const handleCancelClick = () => {
-    navigate("/MangerPage"); // Navigate to the intern page
-  };
-
-  // ניהול שגיאות בטופס
   const [formErrors, setFormErrors] = useState({
     first_name: false,
     last_name: false,
     email_i: false,
     internId: false,
     InternshipDate: false,
+    password: false,
+    confirmPassword: false,
+    rating: false,
   });
 
-  // טיפול בשינויים בשדות הטופס
+  const navigate = useNavigate();
+
+  const handleCancelClick = () => {
+    navigate("/MangerPage");
+  };
+
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, type, checked } = event.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
 
-    // אם מדובר בשדה האימייל, בצע ולידציה
     if (name === "email_i") {
       const isValidEmail = validateEmail(value);
       setFormErrors((prevErrors) => ({
@@ -99,14 +86,11 @@ export default function AddInterns() {
     }
   };
 
-  // ולידציה לטקסט בלבד
   const validateTextOnly = (value) => {
     return /^[a-zA-Zא-ת ]*$/.test(value) && value !== "";
   };
 
-  // פונקציה לבדיקת תקינות כתובת מייל
   function validateEmail(email) {
-    console.log(email);
     const regex = /^[a-zA-Z0-9.+_-]+@gmail\.com$/;
     return regex.test(email);
   }
@@ -122,6 +106,11 @@ export default function AddInterns() {
     return selectedDate <= currentDate;
   }
 
+  function validateRating(rating) {
+    const ratingNumber = Number(rating);
+    return ratingNumber >= 1 && ratingNumber <= 10;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const isFirstNameValid = validateTextOnly(formData.first_name);
@@ -129,28 +118,34 @@ export default function AddInterns() {
     const isEmailIValid = validateEmail(formData.email_i);
     const isIdValid = validateId(formData.internId);
     const isDateValid = validateDate(formData.InternshipDate);
+    const isPasswordValid = formData.password !== "";
+    const isConfirmPasswordValid =
+      formData.password === formData.confirmPassword;
+    const isRatingValid = formData.rating !== "";
 
-    console.log(isFirstNameValid, isLastNameValid, isEmailIValid);
     setFormErrors({
       first_name: !isFirstNameValid,
       last_name: !isLastNameValid,
       email_i: !isEmailIValid,
       internId: !isIdValid,
       InternshipDate: !isDateValid,
+      password: !isPasswordValid,
+      confirmPassword: !isConfirmPasswordValid,
+      rating: !isRatingValid,
     });
 
-    // אם כל הולידציות תקינות - שלח עדכון לשרת
     if (
       isFirstNameValid &&
       isLastNameValid &&
       isEmailIValid &&
       isIdValid &&
-      isDateValid
+      isDateValid &&
+      isPasswordValid &&
+      isConfirmPasswordValid &&
+      isRatingValid
     ) {
       // Perform the submit logic here
       console.log("All validations passed. Form can be submitted.");
-      // For example, call an API to submit the form data
-      // submitForm(formData);
     }
   };
 
@@ -218,9 +213,7 @@ export default function AddInterns() {
                             ? "תעודת זהות חייבת להכיל 9 ספרות"
                             : ""
                         }
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
+                        variant="standard"
                       />
                     </Grid>
 
@@ -237,9 +230,7 @@ export default function AddInterns() {
                         helperText={
                           formErrors.email_i ? "אנא הזן כתובת אימייל תקינה" : ""
                         }
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
+                        variant="standard"
                       />
                     </Grid>
 
@@ -257,10 +248,7 @@ export default function AddInterns() {
                         helperText={
                           formErrors.first_name ? "יכול להכיל רק אותיות" : ""
                         }
-                        InputLabelProps={{
-                          style: { textAlign: "right", direction: "rtl" },
-                          shrink: true,
-                        }}
+                        variant="standard"
                       />
                     </Grid>
 
@@ -278,10 +266,7 @@ export default function AddInterns() {
                         helperText={
                           formErrors.last_name ? "יכול להכיל רק אותיות." : ""
                         }
-                        InputLabelProps={{
-                          style: { textAlign: "right", direction: "rtl" },
-                          shrink: true,
-                        }}
+                        variant="standard"
                       />
                     </Grid>
 
@@ -302,13 +287,90 @@ export default function AddInterns() {
                             : ""
                         }
                         InputLabelProps={{
-                          style: { textAlign: "right", direction: "rtl" },
                           shrink: true,
                         }}
-                        InputProps={{
-                          style: { textAlign: "right", direction: "rtl" },
-                        }}
+                        variant="standard"
                       />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        type="password"
+                        name="password"
+                        id="password"
+                        label="סיסמה"
+                        autoComplete="current-password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        error={formErrors.password}
+                        helperText={
+                          formErrors.password ? "אנא הזן סיסמה תקינה" : ""
+                        }
+                        variant="standard"
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} dir="rtl">
+                      <TextField
+                        fullWidth
+                        type="password"
+                        name="confirmPassword"
+                        id="confirmPassword"
+                        label="חזור על הסיסמה"
+                        autoComplete="current-password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        error={formErrors.confirmPassword}
+                        helperText={
+                          formErrors.confirmPassword
+                            ? "הסיסמאות חייבות להיות זהות"
+                            : ""
+                        }
+                        variant="standard"
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth variant="standard">
+                          <InputLabel id="rating-label">דירוג מתמחה</InputLabel>
+                          <Select
+                            labelId="rating-label"
+                            id="rating"
+                            name="rating"
+                            value={formData.rating}
+                            onChange={handleChange}
+                            error={formErrors.rating}
+                          >
+                            {Array.from({ length: 10 }, (_, i) => (
+                              <MenuItem key={i + 1} value={i + 1}>
+                                {i + 1}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {formErrors.rating && (
+                            <Typography color="error" variant="caption">
+                              אנא הזן דירוג תקין בין 1 ל-10
+                            </Typography>
+                          )}
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={formData.isManager}
+                              onChange={handleChange}
+                              name="isManager"
+                              color="primary"
+                            />
+                          }
+                          label="האם מנהל"
+                          sx={{ ml: 3 }}
+                        />
+                      </Grid>
                     </Grid>
                   </Grid>
                   <CardActions>

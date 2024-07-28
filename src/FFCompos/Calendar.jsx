@@ -68,15 +68,15 @@ export default function Calendar() {
     return (
         <>
             <MenuLogo />
-            <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto', mt: 7 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
+            <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto', mt: 7, direction: 'rtl' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 ,direction: 'ltr' }}>
                     <Typography variant="h4" sx={{ textAlign: 'left', flexGrow: 1 }}>{currentMonth.format('MMMM YYYY')}</Typography>
-                    <Button onClick={handlePrevMonth}><KeyboardArrowLeftIcon /></Button>
+                    <Button onClick={handleNextMonth}><KeyboardArrowLeftIcon /></Button>
                     <Button onClick={handleToday}><TodayIcon /></Button> {/* Button to navigate to today */}
-                    <Button onClick={handleNextMonth}><KeyboardArrowRightIcon /></Button>
+                    <Button onClick={handlePrevMonth}><KeyboardArrowRightIcon /></Button>
                 </Box>
                 <Grid container spacing={1}>
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    {['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'].map(day => (
                         <Grid item xs={1.714} key={day} sx={{ textAlign: 'center', fontWeight: 'bold' }}>
                             {day}
                         </Grid>

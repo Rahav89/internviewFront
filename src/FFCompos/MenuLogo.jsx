@@ -98,16 +98,16 @@ export default function MenuLogo() {
   const filteredSettings = currentUser?.isManager
     ? isInternView
       ? settings.filter(
-          (setting) =>
-            setting.action !== "intern" && setting.action !== "addIntern"
-        )
+        (setting) =>
+          setting.action !== "intern" && setting.action !== "addIntern"
+      )
       : settings.filter((setting) => setting.action !== "manager")
     : settings.filter(
-        (setting) =>
-          setting.action !== "addIntern" &&
-          setting.action !== "intern" &&
-          setting.action !== "manager"
-      );
+      (setting) =>
+        setting.action !== "addIntern" &&
+        setting.action !== "intern" &&
+        setting.action !== "manager"
+    );
 
   return (
     <AppBar sx={{ marginBottom: 12 }}>
