@@ -22,8 +22,12 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import MenuLogo from "./MenuLogo";
 import FloatingChatButton from "./FloatingChatButton";
 import Swal from "sweetalert2";
+import { AddIntern } from './Server.jsx';
 
 export default function AddInterns() {
+
+  const navigate = useNavigate();
+
   const [currentUser, setCurrentUser] = useState(null);
   const [formData, setFormData] = useState({
     first_name: "",
@@ -48,8 +52,6 @@ export default function AddInterns() {
     rating: false,
   });
 
-  const navigate = useNavigate();
-
   const handleCancelClick = () => {
     navigate("/MangerPage");
   };
@@ -60,7 +62,7 @@ export default function AddInterns() {
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
     }));
-
+  
     if (name === "email_i") {
       const isValidEmail = validateEmail(value);
       setFormErrors((prevErrors) => ({
@@ -111,6 +113,14 @@ export default function AddInterns() {
     return ratingNumber >= 1 && ratingNumber <= 10;
   }
 
+  function validatePassword(pass) {
+    const uppercaseLetter = /[A-Z]/;
+    const digit = /[0-9]/;
+    return (
+      uppercaseLetter.test(pass) && digit.test(pass)
+    );
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const isFirstNameValid = validateTextOnly(formData.first_name);
@@ -118,7 +128,7 @@ export default function AddInterns() {
     const isEmailIValid = validateEmail(formData.email_i);
     const isIdValid = validateId(formData.internId);
     const isDateValid = validateDate(formData.InternshipDate);
-    const isPasswordValid = formData.password !== "";
+    const isPasswordValid = validatePassword(formData.password);
     const isConfirmPasswordValid =
       formData.password === formData.confirmPassword;
     const isRatingValid = formData.rating !== "";
@@ -144,8 +154,19 @@ export default function AddInterns() {
       isConfirmPasswordValid &&
       isRatingValid
     ) {
-      // Perform the submit logic here
-      console.log("All validations passed. Form can be submitted.");
+      AddIntern(formData).then((data) => {      
+        Swal.fire({
+          icon: 'success',
+          title: 'הוספת המתמחה הצליחה!',
+          text: 'המתמחה נוסף בהצלחה.',
+        })
+      }).catch((error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'הוספת המתמחה נכשלה',
+          text: 'תעודת זהות כבר קיימת במערכת.',
+        });
+      });
     }
   };
 
@@ -236,7 +257,6 @@ export default function AddInterns() {
 
                     <Grid item xs={12} sm={4}>
                       <TextField
-                        required
                         fullWidth
                         name="first_name"
                         id="first_name"
@@ -254,7 +274,6 @@ export default function AddInterns() {
 
                     <Grid item xs={12} sm={4}>
                       <TextField
-                        required
                         fullWidth
                         name="last_name"
                         id="last_name"
@@ -264,7 +283,7 @@ export default function AddInterns() {
                         onChange={handleChange}
                         error={formErrors.last_name}
                         helperText={
-                          formErrors.last_name ? "יכול להכיל רק אותיות." : ""
+                          formErrors.last_name ? "יכול להכיל רק אותיות" : ""
                         }
                         variant="standard"
                       />
@@ -305,7 +324,7 @@ export default function AddInterns() {
                         onChange={handleChange}
                         error={formErrors.password}
                         helperText={
-                          formErrors.password ? "אנא הזן סיסמה תקינה" : ""
+                          formErrors.password ? "הסיסמה חייבת להכיל לפחות אות גדולה וספרות" : ""
                         }
                         variant="standard"
                       />

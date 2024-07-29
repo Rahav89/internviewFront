@@ -312,7 +312,34 @@ export const GetAllInternSurgeries = (internID) => {
         });
 };
 
-
+// התחברות לאפליקציה 
+export const AddIntern = (intern) => {
+    const internObjectToAdd = {
+        Id: intern.internId,
+        Password_i:  intern.password,
+        First_name:  intern.first_name,
+        Last_name:  intern.last_name,
+        Interns_year:  intern.InternshipDate,
+        Interns_rating:  intern.rating,
+        isManager:  intern.isManager,
+        Email_i:  intern.email_i
+    };
+    return fetch(`${api}Interns/AddIntern`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify(internObjectToAdd)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => { throw error; });
+};
 
 
 
