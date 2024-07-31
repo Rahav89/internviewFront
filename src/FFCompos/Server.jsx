@@ -342,5 +342,30 @@ export const AddIntern = (intern) => {
 };
 
 
+//Update Algorithm Weights
+export const Update_Algorithm_Weights = (weights) => {
+    const weightObjectUpdate = {
+        Skills: weights.Skills,
+        YearWeight: weights.YearWeight,
+        YearDifficulty: weights.YearDifficulty,
+        SyllabusWeight: weights.SyllabusWeight
+    };
 
-
+    return fetch(`${api}Interns/updateAlgorithmWeights/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(weightObjectUpdate)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error("Error in Update_Algorithm_Weights: ", error);
+        throw error;
+    });
+}

@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Grid, Container, Button, TextField, Box, Typography } from "@mui/material";
+import {
+  Grid,
+  Container,
+  Button,
+  TextField,
+  Box,
+  Typography,
+} from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useNavigate } from "react-router-dom";
 import MenuLogo from "../FFCompos/MenuLogo";
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-
+import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
+import { Update_Algorithm_Weights } from "./Server.jsx";
+import Swal from 'sweetalert2';  
+///------------------------------------------------------
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -25,7 +34,7 @@ export default function MatchingAlgo() {
   const [year, setYear] = useState(25);
   const [skill, setSkill] = useState(25);
   const [syllabus, setSyllabus] = useState(25);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleNavigate = () => {
     navigate("/new-page"); // עדכן את הנתיב לדף החדש
@@ -38,10 +47,32 @@ export default function MatchingAlgo() {
   const handleSubmit = () => {
     const total = difficulty + year + skill + syllabus;
     if (total !== 100) {
-      setErrorMessage('הסכום הכולל של הערכים חייב להיות 100');
+      setErrorMessage("הסכום הכולל של הערכים חייב להיות 100");
     } else {
-      setErrorMessage('');
-      // Perform submission logic here
+      setErrorMessage("");
+      const weights = {
+        Skills: skill,
+        YearWeight: year,
+        YearDifficulty: difficulty,
+        SyllabusWeight: syllabus,
+      };
+
+      Update_Algorithm_Weights(weights)
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "!המשקלים עודכנו בהצלחה",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "שגיאה בעדכון המשקלים",
+            text: error.message,
+          });
+        });
     }
   };
 
@@ -79,7 +110,9 @@ export default function MatchingAlgo() {
             </Button>
             {showForm && (
               <Box mt={2} width="100%">
-                <Typography variant="h6" fontWeight={'bold'}>בחירת משקלים לשיבוץ</Typography>
+                <Typography variant="h6" fontWeight={"bold"}>
+                  בחירת משקלים לשיבוץ
+                </Typography>
                 <TextField
                   label="רמת קושי של הניתוח"
                   type="number"
