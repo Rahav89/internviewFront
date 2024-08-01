@@ -21,18 +21,25 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import SettingsIcon from "@mui/icons-material/Settings";
 import logoInternView from "/src/Image/InternViewW.png";
 import { GetInternByID } from "./Server.jsx";
-import AddBoxIcon from "@mui/icons-material/AddBox";
+// import AddBoxIcon from "@mui/icons-material/AddBox";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 
 const settings = [
-  { label: "\u00A0\u00A0\ניהול משתמש", icon: <SettingsIcon />, action: "profile" },
-  { label: "\u00A0\u00A0\ניהול מתמחים", icon: <AddBoxIcon />, action: "addIntern" },
-  { label: "צפייה כמתמחה", icon: <RemoveRedEyeIcon />, action: "intern" },
-  { label: "\u00A0\u00A0צפייה כמנהל", icon: <SupervisorAccountIcon />, action: "manager" },
   {
-    label:
-      "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות",
+    label: "\u00A0\u00A0ניהול משתמש",
+    icon: <SettingsIcon />,
+    action: "profile",
+  },
+  // { label: "\u00A0\u00A0\ניהול מתמחים", icon: <AddBoxIcon />, action: "addIntern" },
+  { label: "צפייה כמתמחה", icon: <RemoveRedEyeIcon />, action: "intern" },
+  {
+    label: "\u00A0\u00A0צפייה כמנהל",
+    icon: <SupervisorAccountIcon />,
+    action: "manager",
+  },
+  {
+    label: "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0התנתקות",
     icon: <ExitToAppIcon sx={{}} />,
     action: "logout",
   },
@@ -72,8 +79,8 @@ export default function MenuLogo() {
       navigate("/");
     } else if (action === "profile") {
       navigate("/profile");
-    } else if (action === "addIntern") {
-      navigate("/addIntern");
+      // } else if (action === "addIntern") {
+      //   navigate("/addIntern");
     } else if (action === "intern") {
       setIsInternView(true);
       navigate("/intern");
@@ -97,17 +104,24 @@ export default function MenuLogo() {
   };
   const filteredSettings = currentUser?.isManager
     ? isInternView
-      ? settings.filter(
-        (setting) =>
-          setting.action !== "intern" && setting.action !== "addIntern"
-      )
+      ? settings.filter((setting) => setting.action !== "intern")
       : settings.filter((setting) => setting.action !== "manager")
     : settings.filter(
-      (setting) =>
-        setting.action !== "addIntern" &&
-        setting.action !== "intern" &&
-        setting.action !== "manager"
-    );
+        (setting) => setting.action !== "intern" && setting.action !== "manager"
+      );
+  // const filteredSettings = currentUser?.isManager
+  // ? isInternView
+  //   ? settings.filter(
+  //     (setting) =>
+  //       setting.action !== "intern" && setting.action !== "addIntern"
+  //   )
+  //   : settings.filter((setting) => setting.action !== "manager")
+  // : settings.filter(
+  //   (setting) =>
+  //     setting.action !== "addIntern" &&
+  //     setting.action !== "intern" &&
+  //     setting.action !== "manager"
+  // );
 
   return (
     <AppBar sx={{ marginBottom: 12 }}>

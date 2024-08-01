@@ -28,6 +28,14 @@ export default function MangerPage() {
           >
             צפייה בסילבוס של מתמחה
           </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ m: 1 }}
+            onClick={() => navigate("/addIntern")}
+          >
+            ניהול מתמחים 
+          </Button>
         </Box>
       </Grid>
     </>
