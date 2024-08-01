@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Grid,
@@ -12,8 +12,9 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useNavigate } from "react-router-dom";
 import MenuLogo from "../FFCompos/MenuLogo";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
-import { Update_Algorithm_Weights } from "./Server.jsx";
-import Swal from 'sweetalert2';  
+import { Update_Algorithm_Weights, Get_Algorithm_Weights } from "./Server.jsx"; // Import your fetch function here
+import Swal from 'sweetalert2';
+
 ///------------------------------------------------------
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -30,11 +31,30 @@ const VisuallyHiddenInput = styled("input")({
 export default function MatchingAlgo() {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
-  const [difficulty, setDifficulty] = useState(25);
-  const [year, setYear] = useState(25);
-  const [skill, setSkill] = useState(25);
-  const [syllabus, setSyllabus] = useState(25);
+  const [difficulty, setDifficulty] = useState(0);
+  const [year, setYear] = useState(0);
+  const [skill, setSkill] = useState(0);
+  const [syllabus, setSyllabus] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    // Fetch weights from the server when the component mounts
+    Get_Algorithm_Weights()
+      .then((weights) => {
+        console.log(weights)
+        setDifficulty(weights.yearDifficulty || 25);
+        setYear(weights.yearWeight || 25);
+        setSkill(weights.skills || 25);
+        setSyllabus(weights.syllabusWeight || 25);
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "שגיאה בקבלת המשקלים",
+          text: error.message,
+        });
+      });
+  }, []); // Empty dependency array to run only once on component mount
 
   const handleNavigate = () => {
     navigate("/new-page"); // עדכן את הנתיב לדף החדש
