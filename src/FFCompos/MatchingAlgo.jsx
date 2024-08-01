@@ -31,10 +31,12 @@ const VisuallyHiddenInput = styled("input")({
 export default function MatchingAlgo() {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
-  const [difficulty, setDifficulty] = useState(0);
-  const [year, setYear] = useState(0);
-  const [skill, setSkill] = useState(0);
-  const [syllabus, setSyllabus] = useState(0);
+  const [weights, setWeights] = useState({
+    difficulty: 0,
+    year: 0,
+    skill: 0,
+    syllabus: 0,
+  });
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -42,10 +44,12 @@ export default function MatchingAlgo() {
     Get_Algorithm_Weights()
       .then((weights) => {
         console.log(weights)
-        setDifficulty(weights.yearDifficulty || 25);
-        setYear(weights.yearWeight || 25);
-        setSkill(weights.skills || 25);
-        setSyllabus(weights.syllabusWeight || 25);
+        setWeights({
+          difficulty: weights.yearDifficulty,
+          year: weights.yearWeight,
+          skill: weights.skills,
+          syllabus: weights.syllabusWeight,
+        });
       })
       .catch((error) => {
         Swal.fire({
@@ -65,19 +69,19 @@ export default function MatchingAlgo() {
   };
 
   const handleSubmit = () => {
-    const total = difficulty + year + skill + syllabus;
+    const total = weights.difficulty + weights.year + weights.skill + weights.syllabus;
     if (total !== 100) {
       setErrorMessage("הסכום הכולל של הערכים חייב להיות 100");
     } else {
       setErrorMessage("");
-      const weights = {
-        Skills: skill,
-        YearWeight: year,
-        YearDifficulty: difficulty,
-        SyllabusWeight: syllabus,
+      const updatedWeights = {
+        Skills: weights.skill,
+        YearWeight: weights.year,
+        YearDifficulty: weights.difficulty,
+        SyllabusWeight: weights.syllabus,
       };
 
-      Update_Algorithm_Weights(weights)
+      Update_Algorithm_Weights(updatedWeights)
         .then(() => {
           Swal.fire({
             icon: "success",
@@ -94,6 +98,13 @@ export default function MatchingAlgo() {
           });
         });
     }
+  };
+
+  const handleWeightChange = (field, value) => {
+    setWeights((prevWeights) => ({
+      ...prevWeights,
+      [field]: value,
+    }));
   };
 
   return (
@@ -139,8 +150,8 @@ export default function MatchingAlgo() {
                   inputProps={{ min: 0, max: 100 }}
                   fullWidth
                   margin="normal"
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(Number(e.target.value))}
+                  value={weights.difficulty}
+                  onChange={(e) => handleWeightChange("difficulty", Number(e.target.value))}
                 />
                 <TextField
                   label="שנת ההתמחות"
@@ -148,8 +159,8 @@ export default function MatchingAlgo() {
                   inputProps={{ min: 0, max: 100 }}
                   type="number"
                   margin="normal"
-                  value={year}
-                  onChange={(e) => setYear(Number(e.target.value))}
+                  value={weights.year}
+                  onChange={(e) => handleWeightChange("year", Number(e.target.value))}
                 />
                 <TextField
                   label="מיומנות של המתמחה"
@@ -157,8 +168,8 @@ export default function MatchingAlgo() {
                   inputProps={{ min: 0, max: 100 }}
                   fullWidth
                   margin="normal"
-                  value={skill}
-                  onChange={(e) => setSkill(Number(e.target.value))}
+                  value={weights.skill}
+                  onChange={(e) => handleWeightChange("skill", Number(e.target.value))}
                 />
                 <TextField
                   label="סילבוס פר ניתוח"
@@ -166,8 +177,8 @@ export default function MatchingAlgo() {
                   type="number"
                   inputProps={{ min: 0, max: 100 }}
                   margin="normal"
-                  value={syllabus}
-                  onChange={(e) => setSyllabus(Number(e.target.value))}
+                  value={weights.syllabus}
+                  onChange={(e) => handleWeightChange("syllabus", Number(e.target.value))}
                 />
                 {errorMessage && (
                   <Typography color="error">{errorMessage}</Typography>
