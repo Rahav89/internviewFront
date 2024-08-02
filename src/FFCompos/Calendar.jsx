@@ -135,7 +135,7 @@ export default function Calendar() {
                                 <React.Fragment key={index}>
                                     <ListItem>
                                         <ListItemAvatar>
-                                            <Avatar sx={{ bgcolor: 'pink' }}>
+                                            <Avatar sx={{ bgcolor: 'SkyBlue' }}>
                                                 <AssignmentIcon />
                                             </Avatar>
                                         </ListItemAvatar>

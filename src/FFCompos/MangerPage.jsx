@@ -36,6 +36,14 @@ export default function MangerPage() {
           >
             ניהול מתמחים 
           </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ m: 1 }}
+            onClick={() => navigate("/CalenderAllSurgeries")}
+          >
+            לוח ניתוחים
+          </Button>
         </Box>
       </Grid>
     </>
