@@ -28,7 +28,6 @@ import FloatingChatButton from "./FloatingChatButton";
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
-// Helper function to generate days for the calendar view
 const generateCalendar = (month) => {
   const startOfTheMonth = month.startOf("month").startOf("week");
   const endOfTheMonth = month.endOf("month").endOf("week");
@@ -49,25 +48,25 @@ export default function CalenderAllSurgeries() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
-  // Fetch surgeries data when the component mounts
   useEffect(() => {
     GetAllSurgeries()
       .then((data) => {
         console.log("Fetched surgeries data:", data); // Debugging log
         let allEvents = {};
         data.forEach((surgery) => {
-          if (surgery.surgery_date) {
-            const dateKey = surgery.surgery_date.slice(0, 10); // Extract date part
+          if (surgery.Surgery_date) {
+            // Ensure correct casing
+            const dateKey = surgery.Surgery_date.slice(0, 10); // Extract date part
             if (!allEvents[dateKey]) {
               allEvents[dateKey] = [];
             }
             allEvents[dateKey].push({
               ...surgery,
-              displayText: `ניתוח ב${surgery.hospital_name}`, // Display text for each surgery
+              displayText: `ניתוח ב${surgery.Hospital_name}`, // Correct casing
               isNewMatch: surgery.newMatch === 1,
             });
           } else {
-            console.warn("surgery_date is missing for surgery:", surgery);
+            console.warn("Surgery_date is missing for surgery:", surgery);
           }
         });
         setEvents(allEvents);
@@ -77,7 +76,6 @@ export default function CalenderAllSurgeries() {
       });
   }, []);
 
-  // Handle day click to show surgeries in a dialog
   const handleDayClick = (day) => {
     const formattedDay = day.format("YYYY-MM-DD");
     setSelectedDayEvents(events[formattedDay] || []);
@@ -89,7 +87,7 @@ export default function CalenderAllSurgeries() {
   const handlePrevMonth = () =>
     setCurrentMonth(currentMonth.subtract(1, "month"));
   const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
-  const handleToday = () => setCurrentMonth(dayjs()); // Reset to current month
+  const handleToday = () => setCurrentMonth(dayjs());
 
   return (
     <>
@@ -120,8 +118,7 @@ export default function CalenderAllSurgeries() {
           </Button>
           <Button onClick={handleToday}>
             <TodayIcon />
-          </Button>{" "}
-          {/* Button to navigate to today */}
+          </Button>
           <Button onClick={handlePrevMonth}>
             <KeyboardArrowRightIcon />
           </Button>
@@ -148,10 +145,10 @@ export default function CalenderAllSurgeries() {
                 height: 90,
                 border: "0.1px solid #ccc",
                 "&::-webkit-scrollbar": { display: "none" },
-                "&:hover": { overflowY: "auto" }, // Enable scrolling on hover
-                scrollBehavior: "smooth", // Smooth scrolling
-                overflowY: "auto", // Allow vertical scrolling
-                whiteSpace: "nowrap", // Keep text in one line
+                "&:hover": { overflowY: "auto" },
+                scrollBehavior: "smooth",
+                overflowY: "auto",
+                whiteSpace: "nowrap",
               }}
             >
               <Button
@@ -175,7 +172,7 @@ export default function CalenderAllSurgeries() {
                     position: "sticky",
                     top: 0,
                     backgroundColor: "white",
-                    zIndex: 1, // Ensure it stays above other elements
+                    zIndex: 1,
                     mr: 2,
                   }}
                 >
@@ -190,15 +187,15 @@ export default function CalenderAllSurgeries() {
                       variant="body2"
                       sx={{
                         color: "DarkBlue",
-                        mt: 0.2, // Margin above
-                        whiteSpace: "scroll", // No horizontal scrolling on text
-                        overflow: "hidden", // Hide overflow content
-                        textOverflow: "ellipsis", // Add ellipsis if text overflows
+                        mt: 0.2,
+                        whiteSpace: "scroll",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                         backgroundColor: event.isNewMatch
                           ? "Azure"
-                          : "transparent", // Different background for new events
-                        fontSize: "11px", // Small font size
-                        mr: "2px", // Small inner margin on each side
+                          : "transparent",
+                        fontSize: "11px",
+                        mr: "2px",
                       }}
                     >
                       {event.displayText}
@@ -234,23 +231,22 @@ export default function CalenderAllSurgeries() {
                               variant="body2"
                               color="text.primary"
                             >
-                              {`שעה: ${event.surgery_date.slice(
-                                11,
-                                16
-                              )}, מיקום: ${event.hospital_name}`}
+                              {`תאריך: ${dayjs(event.Surgery_date).format(
+                                "DD/MM/YYYY"
+                              )}, שעה: ${dayjs(event.Surgery_date).format(
+                                "HH:mm"
+                              )}, מיקום: ${event.Hospital_name}`}
                             </Typography>
                           </>
                         }
                         secondary={
                           <>
-                            {/* Additional details such as patient age */}
-                            גיל המטופל: {event.patient_age}
+                            גיל המטופל: {event.Patient_age}
                             <br />
-                            מספר תיק: {event.case_number}
+                            מספר תיק: {event.Case_number}
                             <br />
-                            רמת קושי: {event.difficulty_level}
+                            רמת קושי: {event.Difficulty_level}
                             <br />
-                            {/* Display procedure names if they exist */}
                             פרוצדורות:{" "}
                             {Array.isArray(event.procedureName)
                               ? event.procedureName.join(", ")
