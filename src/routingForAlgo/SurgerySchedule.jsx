@@ -52,17 +52,17 @@ export default function SurgerySchedule() {
   useEffect(() => {
     GetAllSurgeries()
       .then((data) => {
-        console.log("Fetched surgeries data:", data); // Debugging log
+        // console.log("Fetched surgeries data:", data);
         let allEvents = {};
         data.forEach((surgery) => {
           if (surgery.Surgery_date) {
-            const dateKey = surgery.Surgery_date.slice(0, 10); // Extract date part
+            const dateKey = surgery.Surgery_date.slice(0, 10);
             if (!allEvents[dateKey]) {
               allEvents[dateKey] = [];
             }
             allEvents[dateKey].push({
               ...surgery,
-              displayText: `ניתוח ב${surgery.Hospital_name}`, // Correct casing
+              displayText: `ניתוח ב${surgery.Hospital_name}`,
               isNewMatch: surgery.newMatch === 1,
             });
           } else {
@@ -158,13 +158,13 @@ export default function SurgerySchedule() {
           <Typography variant="h4" sx={{ textAlign: "left", flexGrow: 1 }}>
             {currentMonth.format("MMMM YYYY")}
           </Typography>
-          <Button onClick={handleNextMonth}>
+          <Button onClick={handleNextMonth} aria-label="Next Month">
             <KeyboardArrowLeftIcon />
           </Button>
-          <Button onClick={handleToday}>
+          <Button onClick={handleToday} aria-label="Today">
             <TodayIcon />
           </Button>
-          <Button onClick={handlePrevMonth}>
+          <Button onClick={handlePrevMonth} aria-label="Previous Month">
             <KeyboardArrowRightIcon />
           </Button>
         </Box>
@@ -210,20 +210,25 @@ export default function SurgerySchedule() {
               onMouseEnter={() => handleMouseEnter(day)}
               onTouchStart={() => handleTouchStart(day)}
               onTouchMove={handleTouchMove}
-              data-date={day.format("YYYY-MM-DD")} // Add this for touch handling
+              data-date={day.format("YYYY-MM-DD")}
             >
-              <Button
-                dir="rtl"
+              <Box
+                component="button"
                 sx={{
                   width: "100%",
                   height: "100%",
                   flexDirection: "column",
                   alignItems: "flex-start",
                   justifyContent: "flex-start",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  textAlign: "left",
                 }}
                 onClick={() => handleDayClick(day)}
-                tabIndex={0} // Ensure the button is focusable
-                aria-label={`Select date ${day.format("D MMMM YYYY")}`} // Add aria-label for better accessibility
+                tabIndex={0}
+                aria-label={`Select date ${day.format("D MMMM YYYY")}`}
               >
                 <Typography
                   variant="caption"
@@ -234,7 +239,6 @@ export default function SurgerySchedule() {
                       : "grey.500",
                     position: "sticky",
                     top: 0,
-                    // backgroundColor: "white",
                     zIndex: 1,
                     mr: 2,
                   }}
@@ -242,29 +246,27 @@ export default function SurgerySchedule() {
                   {day.format("D")}
                 </Typography>
 
-                {day &&
-                  events[day.format("YYYY-MM-DD")] &&
-                  events[day.format("YYYY-MM-DD")].map((event, i) => (
-                    <Typography
-                      key={i}
-                      variant="body2"
-                      sx={{
-                        color: "DarkBlue",
-                        mt: 0.2,
-                        whiteSpace: "scroll",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        backgroundColor: event.isNewMatch
-                          ? "Azure"
-                          : "transparent",
-                        fontSize: "11px",
-                        mr: "2px",
-                      }}
-                    >
-                      {event.displayText}
-                    </Typography>
-                  ))}
-              </Button>
+                {events[day.format("YYYY-MM-DD")]?.map((event, i) => (
+                  <Typography
+                    key={i}
+                    variant="body2"
+                    sx={{
+                      color: "DarkBlue",
+                      mt: 0.2,
+                      whiteSpace: "scroll",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      backgroundColor: event.isNewMatch
+                        ? "Azure"
+                        : "transparent",
+                      fontSize: "11px",
+                      mr: "2px",
+                    }}
+                  >
+                    {event.displayText}
+                  </Typography>
+                ))}
+              </Box>
             </Grid>
           ))}
         </Grid>
@@ -272,8 +274,9 @@ export default function SurgerySchedule() {
           dir="rtl"
           open={openDialog}
           onClose={() => setOpenDialog(false)}
+          aria-labelledby="dialog-title"
         >
-          <DialogTitle>ניתוחים</DialogTitle>
+          <DialogTitle id="dialog-title">ניתוחים</DialogTitle>
           <DialogContent>
             <List>
               {selectedDayEvents.length > 0 ? (
