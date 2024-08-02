@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { styled } from "@mui/material/styles";
 import { Grid, Container, Button } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useNavigate } from "react-router-dom";
 import MenuLogo from "../FFCompos/MenuLogo";
-import Swal from 'sweetalert2';
 
 // Create a styled component for visually hidden inputs
 const VisuallyHiddenInput = styled("input")({

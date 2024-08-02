@@ -51,7 +51,7 @@ export default function CalenderAllSurgeries() {
   useEffect(() => {
     GetAllSurgeries()
       .then((data) => {
-        console.log("Fetched surgeries data:", data); // Debugging log
+        // console.log("Fetched surgeries data:", data); // Debugging log
         let allEvents = {};
         data.forEach((surgery) => {
           if (surgery.Surgery_date) {
