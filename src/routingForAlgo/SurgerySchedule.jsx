@@ -203,7 +203,7 @@ export default function SurgerySchedule() {
                 backgroundColor: selectedDates.some((selectedDate) =>
                   selectedDate.isSame(day, "day")
                 )
-                  ? "LightBlue"
+                  ? "#85c1e9"
                   : "transparent",
               }}
               onMouseDown={() => handleMouseDown(day)}
@@ -228,13 +228,13 @@ export default function SurgerySchedule() {
                 <Typography
                   variant="caption"
                   sx={{
-                    fontSize: 10,
+                    fontSize: 12,
                     color: currentMonth.isSame(day, "month")
                       ? "text.primary"
                       : "grey.500",
                     position: "sticky",
                     top: 0,
-                    backgroundColor: "white",
+                    // backgroundColor: "white",
                     zIndex: 1,
                     mr: 2,
                   }}
@@ -281,7 +281,7 @@ export default function SurgerySchedule() {
                   <React.Fragment key={index}>
                     <ListItem>
                       <ListItemAvatar>
-                        <Avatar sx={{ bgcolor: "SkyBlue" }}>
+                        <Avatar sx={{ bgcolor: "#85c1e9" }}>
                           <AssignmentIcon />
                         </Avatar>
                       </ListItemAvatar>
@@ -322,7 +322,7 @@ export default function SurgerySchedule() {
                   </React.Fragment>
                 ))
               ) : (
-                <Typography>No events</Typography>
+                <Typography>אין ניתוחים</Typography>
               )}
             </List>
           </DialogContent>

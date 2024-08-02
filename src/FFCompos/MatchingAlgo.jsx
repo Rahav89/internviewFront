@@ -12,22 +12,22 @@ const navItemStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: { xs: "160px", sm: "200px" }, // Further increase width
-  height: { xs: "60px", sm: "70px" }, // Further increase height
-  borderRadius: "30px", // Increase the border radius for a softer look
+  width: { xs: "160px", sm: "200px" }, 
+  height: { xs: "60px", sm: "70px" },
+  borderRadius: "30px",
   borderStyle: "solid",
   borderWidth: "2px",
   borderColor: "#90caf9",
-  margin: "0 40px", // Further increased margin for more spacing
-  padding: "10px 20px", // Added padding for more space within the button
+  margin: "0 40px",
+  padding: "10px 20px",
   cursor: "pointer",
   textAlign: "center",
   lineHeight: "1",
   fontWeight: "bold",
-  fontSize: { xs: "14px", sm: "16px" }, // Larger font size for better readability
+  fontSize: { xs: "14px", sm: "16px" },
   transition: "background-color 0.3s, border-color 0.3s",
   flexDirection: "row",
-  gap: "15px", // Increased gap between icon and text
+  gap: "15px",
   color: "#000",
   backgroundColor: "transparent",
 };
@@ -39,7 +39,7 @@ const activeStyle = {
 };
 
 const lineStyle = {
-  width: "100px", // Further increased the width of the line for more separation
+  width: "100px",
   height: "2px",
   backgroundColor: "#90caf9",
 };
@@ -66,7 +66,8 @@ export default function MatchingAlgo() {
       <Container maxWidth="lg" sx={{ mt: 12, mb: 3 }}>
         <Grid container spacing={3} alignItems="center" justifyContent="center">
           <nav style={{ display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
-            <div
+            <Box
+              component="button" // Ensure this is focusable
               style={{
                 ...navItemStyle,
                 ...(selectedComponent === "addSurgery" ? activeStyle : {}),
@@ -75,9 +76,10 @@ export default function MatchingAlgo() {
             >
               <CloudUploadIcon />
               העלאת ניתוחים
-            </div>
+            </Box>
             <div style={lineStyle} />
-            <div
+            <Box
+              component="button" // Ensure this is focusable
               style={{
                 ...navItemStyle,
                 ...(selectedComponent === "weights" ? activeStyle : {}),
@@ -86,9 +88,10 @@ export default function MatchingAlgo() {
             >
               <PublishedWithChangesIcon />
               בחירת משקלים
-            </div>
+            </Box>
             <div style={lineStyle} />
-            <div
+            <Box
+              component="button" // Ensure this is focusable
               style={{
                 ...navItemStyle,
                 ...(selectedComponent === "schedule" ? activeStyle : {}),
@@ -97,7 +100,7 @@ export default function MatchingAlgo() {
             >
               <CalendarViewMonthIcon />
               לוח ניתוחים
-            </div>
+            </Box>
           </nav>
 
           <Grid item xs={12}>
