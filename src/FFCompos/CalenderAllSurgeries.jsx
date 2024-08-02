@@ -28,6 +28,7 @@ import FloatingChatButton from "./FloatingChatButton";
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
+// Helper function to generate days for the calendar view
 const generateCalendar = (month) => {
   const startOfTheMonth = month.startOf("month").startOf("week");
   const endOfTheMonth = month.endOf("month").endOf("week");
@@ -48,21 +49,21 @@ export default function CalenderAllSurgeries() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
+  // Fetch surgeries data when the component mounts
   useEffect(() => {
     GetAllSurgeries()
       .then((data) => {
-        console.log(data);
+        console.log("Fetched surgeries data:", data); // Debugging log
         let allEvents = {};
         data.forEach((surgery) => {
-          // Use surgery_date with correct casing
           if (surgery.surgery_date) {
-            const dateKey = surgery.surgery_date.slice(0, 10);
+            const dateKey = surgery.surgery_date.slice(0, 10); // Extract date part
             if (!allEvents[dateKey]) {
               allEvents[dateKey] = [];
             }
             allEvents[dateKey].push({
               ...surgery,
-              displayText: `ניתוח ב${surgery.hospital_name}`,
+              displayText: `ניתוח ב${surgery.hospital_name}`, // Display text for each surgery
               isNewMatch: surgery.newMatch === 1,
             });
           } else {
@@ -76,8 +77,10 @@ export default function CalenderAllSurgeries() {
       });
   }, []);
 
+  // Handle day click to show surgeries in a dialog
   const handleDayClick = (day) => {
-    setSelectedDayEvents(events[day.format("YYYY-MM-DD")] || []);
+    const formattedDay = day.format("YYYY-MM-DD");
+    setSelectedDayEvents(events[formattedDay] || []);
     setOpenDialog(true);
   };
 
@@ -86,7 +89,8 @@ export default function CalenderAllSurgeries() {
   const handlePrevMonth = () =>
     setCurrentMonth(currentMonth.subtract(1, "month"));
   const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
-  const handleToday = () => setCurrentMonth(dayjs()); // Function to set to current day
+  const handleToday = () => setCurrentMonth(dayjs()); // Reset to current month
+
   return (
     <>
       <MenuLogo />
@@ -144,10 +148,10 @@ export default function CalenderAllSurgeries() {
                 height: 90,
                 border: "0.1px solid #ccc",
                 "&::-webkit-scrollbar": { display: "none" },
-                "&:hover": { overflowY: "auto" }, // אפשר גלילה בעת מעבר העכבר
-                scrollBehavior: "smooth", // הוספת אנימציה חלקה לגלילה
-                overflowY: "auto", // מאפשר גלילה אופקית
-                whiteSpace: "nowrap", // שומר על טקסט בשורה אחת
+                "&:hover": { overflowY: "auto" }, // Enable scrolling on hover
+                scrollBehavior: "smooth", // Smooth scrolling
+                overflowY: "auto", // Allow vertical scrolling
+                whiteSpace: "nowrap", // Keep text in one line
               }}
             >
               <Button
@@ -171,7 +175,7 @@ export default function CalenderAllSurgeries() {
                     position: "sticky",
                     top: 0,
                     backgroundColor: "white",
-                    zIndex: 1, // מבטיח שזה נשאר מעל יתר האלמנטים
+                    zIndex: 1, // Ensure it stays above other elements
                     mr: 2,
                   }}
                 >
@@ -186,15 +190,15 @@ export default function CalenderAllSurgeries() {
                       variant="body2"
                       sx={{
                         color: "DarkBlue",
-                        mt: 0.2, // מרווח מעל
-                        whiteSpace: "scroll", // אין גלילה אופקית בטקסט
-                        overflow: "hidden", // מסתיר תוכן שלא מתאים לתא
-                        textOverflow: "ellipsis", // מוסיף נקודות קץ אם הטקסט חורג
+                        mt: 0.2, // Margin above
+                        whiteSpace: "scroll", // No horizontal scrolling on text
+                        overflow: "hidden", // Hide overflow content
+                        textOverflow: "ellipsis", // Add ellipsis if text overflows
                         backgroundColor: event.isNewMatch
                           ? "Azure"
-                          : "transparent", // רקע שונה לאירועים חדשים
-                        fontSize: "11px", // קטן גודל הגופן
-                        mr: "2px", // מרווח פנימי קטן לכל צד
+                          : "transparent", // Different background for new events
+                        fontSize: "11px", // Small font size
+                        mr: "2px", // Small inner margin on each side
                       }}
                     >
                       {event.displayText}
@@ -209,7 +213,7 @@ export default function CalenderAllSurgeries() {
           open={openDialog}
           onClose={() => setOpenDialog(false)}
         >
-          <DialogTitle>Events</DialogTitle>
+          <DialogTitle>ניתוחים</DialogTitle>
           <DialogContent>
             <List>
               {selectedDayEvents.length > 0 ? (
@@ -230,8 +234,10 @@ export default function CalenderAllSurgeries() {
                               variant="body2"
                               color="text.primary"
                             >
-                              {`שעה: ${event.surgery_date.slice(11,16)},
-                               מיקום: ${event.hospital_name}`}
+                              {`שעה: ${event.surgery_date.slice(
+                                11,
+                                16
+                              )}, מיקום: ${event.hospital_name}`}
                             </Typography>
                           </>
                         }
