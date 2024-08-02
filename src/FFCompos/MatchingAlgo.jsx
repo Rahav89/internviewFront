@@ -65,7 +65,7 @@ export default function MatchingAlgo() {
   return (
     <>
       <MenuLogo />
-      <Container maxWidth="lg" sx={{ mt: 12, mb: 3 }}>
+      <Container maxWidth="lg" sx={{ mt: 15, mb: 3 }}>
         <Grid container spacing={3} alignItems="center" justifyContent="center">
           <nav style={{ display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
             <div
@@ -87,7 +87,7 @@ export default function MatchingAlgo() {
               onClick={() => setSelectedComponent("weights")}
             >
               <PublishedWithChangesIcon />
-              בחירת משקלים
+              בחירת משקלים לשיבוץ
             </div>
             <div style={lineStyle} />
             <div
@@ -98,7 +98,7 @@ export default function MatchingAlgo() {
               onClick={() => setSelectedComponent("schedule")}
             >
               <CalendarViewMonthIcon />
-              לוח ניתוחים
+              לוח ניתוחים ושיבוץ
             </div>
           </nav>
 
