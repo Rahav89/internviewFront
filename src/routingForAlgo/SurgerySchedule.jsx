@@ -45,6 +45,9 @@ export default function SurgerySchedule() {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
+  const [selectedDates, setSelectedDates] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(null);
 
   useEffect(() => {
     GetAllSurgeries()
@@ -53,7 +56,6 @@ export default function SurgerySchedule() {
         let allEvents = {};
         data.forEach((surgery) => {
           if (surgery.Surgery_date) {
-            // Ensure correct casing
             const dateKey = surgery.Surgery_date.slice(0, 10); // Extract date part
             if (!allEvents[dateKey]) {
               allEvents[dateKey] = [];
@@ -80,6 +82,53 @@ export default function SurgerySchedule() {
     setOpenDialog(true);
   };
 
+  const handleMouseDown = (day) => {
+    setIsDragging(true);
+    setDragStart(day);
+    setSelectedDates([day]);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (selectedDates.length > 0) {
+      console.log(
+        "Selected dates:",
+        selectedDates.map((date) => date.format("YYYY-MM-DD"))
+      );
+    }
+  };
+
+  const handleMouseEnter = (day) => {
+    if (isDragging && dragStart) {
+      const start = dragStart.isBefore(day) ? dragStart : day;
+      const end = dragStart.isAfter(day) ? dragStart : day;
+      const newSelectedDates = [];
+      let date = start;
+      while (date.isSameOrBefore(end)) {
+        newSelectedDates.push(date);
+        date = date.add(1, "day");
+      }
+      setSelectedDates(newSelectedDates);
+    }
+  };
+
+  // Touch events for mobile devices
+  const handleTouchStart = (day) => {
+    handleMouseDown(day);
+  };
+
+  const handleTouchMove = (event) => {
+    const touch = event.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (element && element.dataset && element.dataset.date) {
+      handleMouseEnter(dayjs(element.dataset.date));
+    }
+  };
+
+  const handleTouchEnd = () => {
+    handleMouseUp();
+  };
+
   const days = generateCalendar(currentMonth);
 
   const handlePrevMonth = () =>
@@ -89,7 +138,6 @@ export default function SurgerySchedule() {
 
   return (
     <>
-      
       <Box
         sx={{
           width: "100%",
@@ -120,7 +168,13 @@ export default function SurgerySchedule() {
             <KeyboardArrowRightIcon />
           </Button>
         </Box>
-        <Grid container spacing={1}>
+        <Grid
+          container
+          spacing={1}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={() => setIsDragging(false)}
+          onTouchEnd={handleTouchEnd}
+        >
           {["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"].map(
             (day) => (
               <Grid
@@ -146,7 +200,17 @@ export default function SurgerySchedule() {
                 scrollBehavior: "smooth",
                 overflowY: "auto",
                 whiteSpace: "nowrap",
+                backgroundColor: selectedDates.some((selectedDate) =>
+                  selectedDate.isSame(day, "day")
+                )
+                  ? "LightBlue"
+                  : "transparent",
               }}
+              onMouseDown={() => handleMouseDown(day)}
+              onMouseEnter={() => handleMouseEnter(day)}
+              onTouchStart={() => handleTouchStart(day)}
+              onTouchMove={handleTouchMove}
+              data-date={day.format("YYYY-MM-DD")} // Add this for touch handling
             >
               <Button
                 dir="rtl"
@@ -158,6 +222,8 @@ export default function SurgerySchedule() {
                   justifyContent: "flex-start",
                 }}
                 onClick={() => handleDayClick(day)}
+                tabIndex={0} // Ensure the button is focusable
+                aria-label={`Select date ${day.format("D MMMM YYYY")}`} // Add aria-label for better accessibility
               >
                 <Typography
                   variant="caption"
@@ -265,5 +331,3 @@ export default function SurgerySchedule() {
     </>
   );
 }
-
-
