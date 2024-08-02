@@ -75,7 +75,7 @@ export default function MatchingAlgo() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              flexDirection: { xs: "column", md: "row" },
+              flexDirection: { xs: "column", sm: "row" },
               flexWrap: "wrap",
               gap: { xs: 2, md: 3 }, // Gap between items when in column mode
             }}
