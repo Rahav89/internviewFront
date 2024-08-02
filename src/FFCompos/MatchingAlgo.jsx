@@ -3,7 +3,9 @@ import { Container, Grid, Box } from "@mui/material";
 import MenuLogo from "../FFCompos/MenuLogo";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
+import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
+
+// Import your components
 import WeightsSelection from "../routingForAlgo/WeightsSelection";
 import AddSurgery from "../routingForAlgo/AddSurgeries";
 import SurgerySchedule from "../routingForAlgo/SurgerySchedule";
@@ -12,37 +14,40 @@ const navItemStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: { xs: "160px", sm: "200px" }, 
-  height: { xs: "60px", sm: "70px" },
-  borderRadius: "30px",
+  width: { xs: "150px", sm: "170px" }, // Increased width for more text space
+  height: { xs: "35px", sm: "35px" },
+  borderRadius: "30px", // Circular appearance
   borderStyle: "solid",
   borderWidth: "2px",
   borderColor: "#90caf9",
-  margin: "0 40px",
-  padding: "10px 20px",
+
+  padding: "5px 10px", // Reduced padding
   cursor: "pointer",
   textAlign: "center",
   lineHeight: "1",
   fontWeight: "bold",
-  fontSize: { xs: "14px", sm: "16px" },
+  fontSize: { xs: "13px", sm: "14px" },
   transition: "background-color 0.3s, border-color 0.3s",
   flexDirection: "row",
-  gap: "15px",
+  gap: "8px", // Space between icon and text
   color: "#000",
   backgroundColor: "transparent",
+  whiteSpace: "nowrap", // Ensure text doesn't wrap
 };
 
 const activeStyle = {
-  backgroundColor: "#bbdefb",
+  backgroundColor: "#85beed",
   color: "white",
   borderColor: "#1976d2",
 };
 
 const lineStyle = {
-  width: "100px",
+  width: "120px", // Increased width for longer lines
   height: "2px",
   backgroundColor: "#90caf9",
+  display: { xs: "none", md: "block" }, // Hide on screens smaller than 850px
 };
+
 
 export default function MatchingAlgo() {
   const [selectedComponent, setSelectedComponent] = useState("schedule");
@@ -64,11 +69,19 @@ export default function MatchingAlgo() {
     <>
       <MenuLogo />
       <Container maxWidth="lg" sx={{ mt: 12, mb: 3 }}>
-        <Grid container spacing={3} alignItems="center" justifyContent="center">
-          <nav style={{ display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
+        <Grid container spacing={2} alignItems="center" justifyContent="center">
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: { xs: "column", md: "row" },
+              flexWrap: "wrap",
+              gap: { xs: 2, md: 3 }, // Gap between items when in column mode
+            }}
+          >
             <Box
-              component="button" // Ensure this is focusable
-              style={{
+              sx={{
                 ...navItemStyle,
                 ...(selectedComponent === "addSurgery" ? activeStyle : {}),
               }}
@@ -77,31 +90,29 @@ export default function MatchingAlgo() {
               <CloudUploadIcon />
               העלאת ניתוחים
             </Box>
-            <div style={lineStyle} />
+            <Box sx={lineStyle} />
             <Box
-              component="button" // Ensure this is focusable
-              style={{
+              sx={{
                 ...navItemStyle,
                 ...(selectedComponent === "weights" ? activeStyle : {}),
               }}
               onClick={() => setSelectedComponent("weights")}
             >
               <PublishedWithChangesIcon />
-              בחירת משקלים
+              בחירת משקלים לשיבוץ
             </Box>
-            <div style={lineStyle} />
+            <Box sx={lineStyle} />
             <Box
-              component="button" // Ensure this is focusable
-              style={{
+              sx={{
                 ...navItemStyle,
                 ...(selectedComponent === "schedule" ? activeStyle : {}),
               }}
               onClick={() => setSelectedComponent("schedule")}
             >
               <CalendarViewMonthIcon />
-              לוח ניתוחים
+              לוח ניתוחים ושיבוץ
             </Box>
-          </nav>
+          </Box>
 
           <Grid item xs={12}>
             {renderSelectedComponent()}
