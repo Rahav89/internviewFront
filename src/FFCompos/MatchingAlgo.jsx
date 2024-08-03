@@ -5,6 +5,8 @@ import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
 import PeopleIcon from "@mui/icons-material/People"; // New icon for scheduling interns
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 // Import your components
 import WeightsSelection from "../routingForAlgo/WeightsSelection";
@@ -22,7 +24,6 @@ const navItemStyle = {
   borderStyle: "solid",
   borderWidth: "2px",
   borderColor: "#90caf9",
-
   padding: "5px 10px", // Reduced padding
   cursor: "pointer",
   textAlign: "center",
@@ -52,6 +53,8 @@ const lineStyle = {
 
 export default function MatchingAlgo() {
   const [selectedComponent, setSelectedComponent] = useState("schedule");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen size is small
 
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
@@ -66,6 +69,67 @@ export default function MatchingAlgo() {
       default:
         return null;
     }
+  };
+
+  // Function to render buttons based on screen size
+  const renderButtons = () => {
+    const buttonOrder = isMobile
+      ? ["schedule", "internScheduling", "weights", "addSurgery"]
+      : ["addSurgery", "weights", "internScheduling", "schedule"];
+
+    return buttonOrder.map((buttonType, index) => (
+      <React.Fragment key={buttonType}>
+        {buttonType === "addSurgery" && (
+          <Box
+            sx={{
+              ...navItemStyle,
+              ...(selectedComponent === "addSurgery" ? activeStyle : {}),
+            }}
+            onClick={() => setSelectedComponent("addSurgery")}
+          >
+            <CloudUploadIcon />
+            העלאת ניתוחים
+          </Box>
+        )}
+        {buttonType === "weights" && (
+          <Box
+            sx={{
+              ...navItemStyle,
+              ...(selectedComponent === "weights" ? activeStyle : {}),
+            }}
+            onClick={() => setSelectedComponent("weights")}
+          >
+            <PublishedWithChangesIcon />
+            בחירת משקלים לשיבוץ
+          </Box>
+        )}
+        {buttonType === "internScheduling" && (
+          <Box
+            sx={{
+              ...navItemStyle,
+              ...(selectedComponent === "internScheduling" ? activeStyle : {}),
+            }}
+            onClick={() => setSelectedComponent("internScheduling")}
+          >
+            <PeopleIcon />
+            שיבוץ מתמחים
+          </Box>
+        )}
+        {buttonType === "schedule" && (
+          <Box
+            sx={{
+              ...navItemStyle,
+              ...(selectedComponent === "schedule" ? activeStyle : {}),
+            }}
+            onClick={() => setSelectedComponent("schedule")}
+          >
+            <CalendarViewMonthIcon />
+            לוח ניתוחים ושיבוץ
+          </Box>
+        )}
+        {index < buttonOrder.length - 1 && <Box sx={lineStyle} />}
+      </React.Fragment>
+    ));
   };
 
   return (
@@ -83,51 +147,7 @@ export default function MatchingAlgo() {
               gap: { xs: 2, md: 3 }, // Gap between items when in column mode
             }}
           >
-            <Box
-              sx={{
-                ...navItemStyle,
-                ...(selectedComponent === "addSurgery" ? activeStyle : {}),
-              }}
-              onClick={() => setSelectedComponent("addSurgery")}
-            >
-              <CloudUploadIcon />
-              העלאת ניתוחים
-            </Box>
-            <Box sx={lineStyle} />
-            <Box
-              sx={{
-                ...navItemStyle,
-                ...(selectedComponent === "weights" ? activeStyle : {}),
-              }}
-              onClick={() => setSelectedComponent("weights")}
-            >
-              <PublishedWithChangesIcon />
-              בחירת משקלים לשיבוץ
-            </Box>{" "}
-            <Box sx={lineStyle} />
-            <Box
-              sx={{
-                ...navItemStyle,
-                ...(selectedComponent === "internScheduling"
-                  ? activeStyle
-                  : {}),
-              }}
-              onClick={() => setSelectedComponent("internScheduling")}
-            >
-              <PeopleIcon />
-              שיבוץ מתמחים
-            </Box>
-            <Box sx={lineStyle} />
-            <Box
-              sx={{
-                ...navItemStyle,
-                ...(selectedComponent === "schedule" ? activeStyle : {}),
-              }}
-              onClick={() => setSelectedComponent("schedule")}
-            >
-              <CalendarViewMonthIcon />
-              לוח ניתוחים ושיבוץ
-            </Box>
+            {renderButtons()}
           </Box>
 
           <Grid item xs={12}>
