@@ -4,11 +4,13 @@ import MenuLogo from "../FFCompos/MenuLogo";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
+import PeopleIcon from "@mui/icons-material/People"; // New icon for scheduling interns
 
 // Import your components
 import WeightsSelection from "../routingForAlgo/WeightsSelection";
 import AddSurgery from "../routingForAlgo/AddSurgeries";
 import SurgerySchedule from "../routingForAlgo/SurgerySchedule";
+import InternScheduling from "../routingForAlgo/InternScheduling"; // Import your new component
 
 const navItemStyle = {
   display: "flex",
@@ -42,12 +44,11 @@ const activeStyle = {
 };
 
 const lineStyle = {
-  width: "120px", // Increased width for longer lines
+  width: "80px", // Increased width for longer lines
   height: "2px",
   backgroundColor: "#90caf9",
   display: { xs: "none", md: "block" }, // Hide on screens smaller than 850px
 };
-
 
 export default function MatchingAlgo() {
   const [selectedComponent, setSelectedComponent] = useState("schedule");
@@ -60,6 +61,8 @@ export default function MatchingAlgo() {
         return <AddSurgery />;
       case "schedule":
         return <SurgerySchedule />;
+      case "internScheduling":
+        return <InternScheduling />; // Render the new component
       default:
         return null;
     }
@@ -100,6 +103,19 @@ export default function MatchingAlgo() {
             >
               <PublishedWithChangesIcon />
               בחירת משקלים לשיבוץ
+            </Box>{" "}
+            <Box sx={lineStyle} />
+            <Box
+              sx={{
+                ...navItemStyle,
+                ...(selectedComponent === "internScheduling"
+                  ? activeStyle
+                  : {}),
+              }}
+              onClick={() => setSelectedComponent("internScheduling")}
+            >
+              <PeopleIcon />
+              שיבוץ מתמחים
             </Box>
             <Box sx={lineStyle} />
             <Box

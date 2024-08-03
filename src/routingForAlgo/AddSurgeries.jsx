@@ -75,7 +75,7 @@ export default function AddSurgeries() {
           <Grid item>
             <Typography variant="h6" align="center">
               כאן ניתן להעלות ניתוחים בעזרת אקסל <br />
-              שים ❤️️ - על האקלס להיות בפורמט המתאים
+              שים ❤️️ - על האקסל להיות בפורמט המתאים
             </Typography>
             <Link
               href="/exelFormat.xlsx" // Ensure the file is in the public directory

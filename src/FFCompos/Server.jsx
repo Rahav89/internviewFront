@@ -5,6 +5,28 @@ const ruppinApi = "https://proj.ruppin.ac.il/cgroup14/test2/tar1/api/";
 // Set the API to use, in this case, the local host API
 export const api = localHost;
 
+// Function to get intern details 
+export const GetAllIntern = () => {
+  return fetch(`${api}Interns`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+      Accept: "application/json; charset=UTF-8",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in GetAllIntern: ", error);
+      throw error;
+    });
+};
+
+
 // Function to get intern details by their ID
 export const GetInternByID = (iternID) => {
   return fetch(`${api}Interns/GetInternByID/${iternID}`, {
