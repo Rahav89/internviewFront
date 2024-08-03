@@ -20,7 +20,7 @@ const navItemStyle = {
   justifyContent: "center",
   width: { xs: "150px", sm: "170px" }, // Increased width for more text space
   height: { xs: "35px", sm: "35px" },
-  borderRadius: "30px", // Circular appearance
+  borderRadius: "15px", // Circular appearance
   borderStyle: "solid",
   borderWidth: "2px",
   borderColor: "#90caf9",
