@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Grid, Container, Button, Typography, Link } from "@mui/material";
+import { Grid, Container, Button, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import MenuLogo from "../FFCompos/MenuLogo";
+import excelImage from "../Image/exelPhoto.png"; // Update the path accordingly
 
-// Create a styled component for visually hidden inputs
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -19,9 +18,16 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+function convertExcelTimeToReadableTime(excelTime) {
+  const totalMinutes = Math.round(excelTime * 24 * 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
 export default function AddSurgeries() {
-  const navigate = useNavigate();
-  const [dataObjects, setDataObjects] = useState([]);
+  const [surgeries, setSurgeries] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -31,34 +37,54 @@ export default function AddSurgeries() {
 
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
+      const workbook = XLSX.read(data, { type: "array" });
 
-      // Assuming the first sheet
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
 
-      // Convert the sheet to JSON
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-      // Map each row to an object, skipping the header row
-      const objects = jsonData.slice(1).map(row => ({
-        caseNumber: row[0],     
-        patientAge: row[1],     
-        surgeryDateTime: row[2], 
-        componentsUsed: row[3], 
-        hospital: row[4],      
-        productionCodes: row[5] 
+      let hasIncomplete = false;
+      const objects = jsonData.slice(1).filter((row) => {
+        // Check if the row is not completely empty
+        const hasData = row.some((cell) => cell !== undefined && cell !== null && cell !== "");
+        if (!hasData) return false; // Skip completely empty rows
+
+        // Check if the row has all necessary data
+        const isComplete = row[0] && row[1] && row[2] && row[3] && row[4] && row[5];
+        if (!isComplete) {
+          hasIncomplete = true;
+        }
+        return isComplete;
+      }).map((row) => ({
+        caseNumber: row[0],
+        patientAge: row[1],
+        surgeryDate: row[2],
+        surgeryTime: convertExcelTimeToReadableTime(row[3]),
+        Difficulty_level: row[4],
+        productionCodes: row[5],
       }));
 
-      setDataObjects(objects);
-      console.log(JSON.stringify(objects));
+      setOpenDialog(hasIncomplete);
+      setSurgeries(objects);
     };
 
     reader.readAsArrayBuffer(file);
   };
 
-  const handleNavigate = () => {
-    navigate("/new-page"); // Update the path to the new page
+  const handleDownload = (event) => {
+    event.preventDefault(); // Prevent the default link behavior
+    // Trigger the download
+    const link = document.createElement("a");
+    link.href = "/exelFormat.xlsx"; // Make sure this path is correct
+    link.download = "exelFormat.xlsx"; // Optional: specify a filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   return (
@@ -75,16 +101,22 @@ export default function AddSurgeries() {
           <Grid item>
             <Typography variant="h6" align="center">
               כאן ניתן להעלות ניתוחים בעזרת אקסל <br />
-              שים ❤️️ - על האקסל להיות בפורמט המתאים
+              שים ❤️️ - על האקסל להיות <b> בפורמט המתאים</b>
             </Typography>
-            <Link
-              href="/exelFormat.xlsx" // Ensure the file is in the public directory
-              download
-              underline="none"
-              sx={{ mt: 1, display: "block", textAlign: "center" }}
+            <img
+              src={excelImage}
+              alt="Excel Format"
+              style={{ cursor: "pointer", width: "100px" }}
+              onClick={handleDownload}
+            />
+            <Typography
+              variant="body1"
+              align="center"
+              sx={{ mt: -1.5, color: "green" }}
+              onClick={handleDownload}
             >
-              [<b>לחץ</b> על מנת לעבוד על אקסל בפורמט]
-            </Link>
+              לחץ על התמונה על מנת לעבוד <b> בפורמט</b>
+            </Typography>
           </Grid>
 
           <Grid item>
@@ -93,7 +125,7 @@ export default function AddSurgeries() {
               variant="contained"
               startIcon={<CloudUploadIcon />}
               sx={{
-                width: "300px", // Set fixed width
+                width: "300px",
                 backgroundColor: "white",
                 color: "#1976d2",
                 borderColor: "#1976d2",
@@ -106,7 +138,11 @@ export default function AddSurgeries() {
               }}
             >
               העלאת ניתוחים בקובץ אקסל
-              <VisuallyHiddenInput type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
+              <VisuallyHiddenInput
+                type="file"
+                accept=".xlsx, .xls"
+                onChange={handleFileUpload}
+              />
             </Button>
           </Grid>
 
@@ -115,15 +151,37 @@ export default function AddSurgeries() {
               נתונים שהועלו:
             </Typography>
             <ul>
-              {dataObjects.map((obj, index) => (
+              {surgeries.map((obj, index) => (
                 <li key={index}>
-                  <strong>מספר מקרה:</strong> {obj.caseNumber}, <strong>גיל מטופל:</strong> {obj.patientAge}, <strong>תאריך ושעת הניתוח:</strong> {obj.surgeryDateTime}, <strong>רמת מורכבות:</strong> {obj.componentsUsed}, <strong>בית חולים:</strong> {obj.hospital}, <strong>קודי הפרוצדורות:</strong> {obj.productionCodes}
+                  <strong>מספר מקרה:</strong> {obj.caseNumber},{" "}
+                  <strong>גיל מטופל:</strong> {obj.patientAge},{" "}
+                  <strong>תאריך הניתוח:</strong> {obj.surgeryDate},{" "}
+                  <strong>שעת הניתוח:</strong> {obj.surgeryTime},{" "}
+                  <strong>רמת מורכבות:</strong> {obj.Difficulty_level},{" "}
+                  <strong>קודי הפרוצדורות:</strong> {obj.productionCodes}
                 </li>
               ))}
             </ul>
           </Grid>
         </Grid>
       </Container>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Warning</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Some rows have missing data. Are you sure you want to upload the file?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

@@ -231,7 +231,7 @@ export default function CardsDetailsInterns() {
                   >
                     רמת קושי של הניתוח
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     align="right"
                     sx={{
                       fontWeight: "bold",
@@ -240,7 +240,7 @@ export default function CardsDetailsInterns() {
                     }}
                   >
                     שם בית חולים
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell
                     align="right"
                     sx={{
@@ -291,7 +291,7 @@ export default function CardsDetailsInterns() {
                       {row.Procedure_name}
                     </TableCell>
                     <TableCell align="right">{row.Difficulty_level}</TableCell>
-                    <TableCell align="right">{row.Hospital_name}</TableCell>
+                    {/* <TableCell align="right">{row.Hospital_name}</TableCell> */}
                     <TableCell align="right">
                       {new Date(row.Surgery_date).toLocaleDateString()}
                     </TableCell>

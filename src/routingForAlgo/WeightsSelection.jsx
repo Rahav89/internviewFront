@@ -79,37 +79,41 @@ export default function WeightsSelection() {
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <TextField
+          dir="rtl"
           label="רמת קושי של הניתוח"
           type="number"
           inputProps={{ min: 0, max: 100 }}
-          sx={{ width: '80%', maxWidth: '400px' }} // Set specific width
+          sx={{ width: '80%', maxWidth: '350px' }} // Set specific width
           margin="normal"
           value={weights.difficulty}
           onChange={(e) => handleWeightChange("difficulty", Number(e.target.value))}
         />
         <TextField
+          dir="rtl"
           label="שנת ההתמחות"
           type="number"
           inputProps={{ min: 0, max: 100 }}
-          sx={{ width: '80%', maxWidth: '400px' }} // Set specific width
+          sx={{ width: '80%', maxWidth: '350px' }} // Set specific width
           margin="normal"
           value={weights.year}
           onChange={(e) => handleWeightChange("year", Number(e.target.value))}
         />
         <TextField
+          dir="rtl"
           label="מיומנות של המתמחה"
           type="number"
           inputProps={{ min: 0, max: 100 }}
-          sx={{ width: '80%', maxWidth: '400px' }} // Set specific width
+          sx={{ width: '80%', maxWidth: '350px' }} // Set specific width
           margin="normal"
           value={weights.skill}
           onChange={(e) => handleWeightChange("skill", Number(e.target.value))}
         />
         <TextField
+          dir="rtl"
           label="סילבוס פר ניתוח"
           type="number"
           inputProps={{ min: 0, max: 100 }}
-          sx={{ width: '80%', maxWidth: '400px' }} // Set specific width
+          sx={{ width: '80%', maxWidth: '350px' }} // Set specific width
           margin="normal"
           value={weights.syllabus}
           onChange={(e) => handleWeightChange("syllabus", Number(e.target.value))}
