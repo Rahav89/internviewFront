@@ -12,7 +12,7 @@ import 'firebase/database';
 const firebaseConfig = {
   apiKey: "AIzaSyAjQ0598ET6NOuxS-iNghaQK_YcNdIgFmo",
   authDomain: "internview-2490e.firebaseapp.com",
-  databaseURL: "https://internview-2490e-default-rtdb.firebaseio.com",
+  databaseURL: "https://internview-2490e-default-rtdb.firebaseio.com/",
   projectId: "internview-2490e",
   storageBucket: "internview-2490e.appspot.com",
   messagingSenderId: "498153242822",
