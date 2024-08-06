@@ -17,9 +17,11 @@ import InternScheduling from "../routingForAlgo/InternScheduling"; // Import you
 export default function MatchingAlgo({ defaultComponent }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  
+
   // Use the default component from props or fallback to "schedule"
-  const [selectedComponent, setSelectedComponent] = useState(defaultComponent || "schedule");
+  const [selectedComponent, setSelectedComponent] = useState(
+    defaultComponent || "schedule"
+  );
 
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
@@ -48,7 +50,7 @@ export default function MatchingAlgo({ defaultComponent }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            flexDirection: "column",
+            flexDirection: "row", // Changed from "column" to "row"
             width: { xs: "150px", sm: "170px" },
             height: { xs: "35px", sm: "35px" },
             borderRadius: "15px",
@@ -62,10 +64,12 @@ export default function MatchingAlgo({ defaultComponent }) {
             fontWeight: "bold",
             fontSize: { xs: "13px", sm: "14px" },
             transition: "background-color 0.3s, border-color 0.3s",
-            gap: "8px",
+            gap: "8px", // Ensure appropriate spacing between the icon and label
             color: "#000",
-            backgroundColor: selectedComponent === buttonType ? "#85beed" : "transparent",
-            borderColor: selectedComponent === buttonType ? "#1976d2" : "#90caf9",
+            backgroundColor:
+              selectedComponent === buttonType ? "#85beed" : "transparent",
+            borderColor:
+              selectedComponent === buttonType ? "#1976d2" : "#90caf9",
             whiteSpace: "nowrap",
           }}
           onClick={() => setSelectedComponent(buttonType)}
@@ -73,11 +77,14 @@ export default function MatchingAlgo({ defaultComponent }) {
           {getIconForButton(buttonType)}
           {getLabelForButton(buttonType)}
         </Box>
-        {index < buttonOrder.length - 1 && <Box sx={{ width: "80px", height: "2px", backgroundColor: "#90caf9" }} />}
+        {index < buttonOrder.length - 1 && (
+          <Box
+            sx={{ width: "80px", height: "2px", backgroundColor: "#90caf9" }}
+          />
+        )}
       </React.Fragment>
     ));
   };
-
   const getIconForButton = (buttonType) => {
     switch (buttonType) {
       case "addSurgery":
