@@ -371,6 +371,7 @@ export const AddIntern = (intern) => {
     body: JSON.stringify(internObjectToAdd),
   })
     .then((response) => {
+     
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -437,6 +438,7 @@ export const Get_Algorithm_Weights = () => {
 
 // Function to get all surgeries
 export const GetAllSurgeries = () => {
+  
   return fetch(`${api}Surgeries/GetAllSurgeries`, {
     method: "GET",
     headers: {
@@ -453,4 +455,27 @@ export const GetAllSurgeries = () => {
       console.error("Error in GetAllSurgeries: ", error);
       throw error;
     });
+};
+
+//function to ADD surgery
+export const InsertSurgery = (Surgery) => {
+  return fetch(`${api}Surgeries/AddSurgery`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(Surgery),   
+  })
+    .then((response) => {
+      console.log(Surgery)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in InsertSurgery: ", error);
+      throw error;
+    });
+  
 };
