@@ -29,7 +29,6 @@ export default function CardsDetailsInterns() {
   const [filteredData, setFilteredData] = useState([]); // נתונים מסוננים בהתבסס על קריטריוני חיפוש
   const [searchDate, setSearchDate] = useState(""); // מצב לחיפוש לפי תאריך ניתוח
   const [selectedRole, setSelectedRole] = useState("all"); // מצב לסינון לפי תפקיד נבחר
-  const [searchHospital, setSearchHospital] = useState(""); // מצב לחיפוש לפי שם בית חולים
   const [loading, setLoading] = useState(false); // מצב לאינדיקציה של טעינה
   const [error, setError] = useState(""); // מצב להצגת הודעות שגיאה
   const location = useLocation(); // גישה לאובייקט המיקום
@@ -39,11 +38,11 @@ export default function CardsDetailsInterns() {
   const { internID } = location.state || {};
   const internId =
     internID ?? JSON.parse(sessionStorage.getItem("currentUserID")) ?? 0; // שליפת מזהה המתמחה מאחסון הסשן
+
   // הוק לשליפת כל שמות הפרוצדורות
   useEffect(() => {
     GetAllProcedure()
       .then((data) => {
-        // console.log(data); // הדפסת הנתונים לצורך דיבאגינג
         setProcedures(data); // שמירת הנתונים במערך הפרוצדורות
       })
       .catch((error) => {
@@ -97,11 +96,10 @@ export default function CardsDetailsInterns() {
         (selectedRole === "all" || item.Intern_role === selectedRole) &&
         (searchDate === "" ||
           new Date(item.Surgery_date).toLocaleDateString() ===
-            new Date(searchDate).toLocaleDateString()) &&
-        (searchHospital === "" || item.Hospital_name.includes(searchHospital))
+            new Date(searchDate).toLocaleDateString())
     );
     setFilteredData(filtered);
-  }, [searchDate, selectedRole, searchHospital, data]);
+  }, [searchDate, selectedRole, data]);
 
   // פונקציה שמעדכנת את הפרוצדורה הנבחרת
   const handleProcedureChange = (event, newValue) => {
@@ -116,11 +114,6 @@ export default function CardsDetailsInterns() {
   // פונקציה לעדכון חיפוש לפי תפקיד בניתוח
   const handleRoleChange = (event) => {
     setSelectedRole(event.target.value);
-  };
-
-  // פונקציה לעדכון חיפוש לפי שם בית חולים
-  const handleHospitalSearchChange = (event) => {
-    setSearchHospital(event.target.value);
   };
 
   return (
@@ -173,16 +166,9 @@ export default function CardsDetailsInterns() {
           onChange={handleSearchChange}
           label="חפש תאריך ניתוח"
           InputLabelProps={{ shrink: true }}
-          sx={{ width: "33%" }}
+          sx={{ width: "49%" }} // Adjusted width
         />
-        <TextField
-          value={searchHospital}
-          onChange={handleHospitalSearchChange}
-          label="חפש לפי שם בית חולים"
-          InputLabelProps={{ shrink: true }}
-          sx={{ width: "33%", marginLeft: "3%" }}
-        />
-        <FormControl sx={{ width: "33%", marginLeft: "3%" }}>
+        <FormControl sx={{ width: "49%" }}> {/* Adjusted width and removed marginLeft */}
           <InputLabel id="role-select-label">תפקיד בניתוח</InputLabel>
           <Select
             labelId="role-select-label"
@@ -231,16 +217,6 @@ export default function CardsDetailsInterns() {
                   >
                     רמת קושי של הניתוח
                   </TableCell>
-                  {/* <TableCell
-                    align="right"
-                    sx={{
-                      fontWeight: "bold",
-                      color: "white",
-                      fontSize: "16px",
-                    }}
-                  >
-                    שם בית חולים
-                  </TableCell> */}
                   <TableCell
                     align="right"
                     sx={{
@@ -266,7 +242,7 @@ export default function CardsDetailsInterns() {
               <TableBody>
                 {filteredData.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} align="center">
+                    <TableCell colSpan={4} align="center">
                       אין נתונים זמינים להצגה.
                     </TableCell>
                   </TableRow>
@@ -291,7 +267,6 @@ export default function CardsDetailsInterns() {
                       {row.Procedure_name}
                     </TableCell>
                     <TableCell align="right">{row.Difficulty_level}</TableCell>
-                    {/* <TableCell align="right">{row.Hospital_name}</TableCell> */}
                     <TableCell align="right">
                       {new Date(row.Surgery_date).toLocaleDateString()}
                     </TableCell>

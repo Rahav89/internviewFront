@@ -61,11 +61,11 @@ export default function MangerPage() {
             sx={{ m: 1, minWidth: "150px" }}
             startIcon={<GroupAddIcon />}
           >
-            ניהול מתמחים
+            הוספת מתמחים
           </Button>
           <Button
             component={Link}
-            to="/InternScheduling" // Navigate to InternScheduling which now uses MatchingAlgo
+            to="/InternScheduling" 
             variant="contained"
             color="primary"
             sx={{ m: 1, minWidth: "150px" }}

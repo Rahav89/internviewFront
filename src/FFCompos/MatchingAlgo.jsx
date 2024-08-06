@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Grid, Box } from "@mui/material";
+import { Container, Grid, Box, Button } from "@mui/material";
 import MenuLogo from "../FFCompos/MenuLogo";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -7,61 +7,20 @@ import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
 import PeopleIcon from "@mui/icons-material/People";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-// import { useLocation } from "react-router-dom";
 
 // Import your components
 import WeightsSelection from "../routingForAlgo/WeightsSelection";
 import AddSurgery from "../routingForAlgo/AddSurgeries";
 import SurgerySchedule from "../routingForAlgo/SurgerySchedule";
-import InternScheduling from "../routingForAlgo/InternScheduling";
+import InternScheduling from "../routingForAlgo/InternScheduling"; // Import your new component
 
-const navItemStyle = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: { xs: "150px", sm: "170px" },
-  height: { xs: "35px", sm: "35px" },
-  borderRadius: "15px",
-  borderStyle: "solid",
-  borderWidth: "2px",
-  borderColor: "#90caf9",
-  padding: "5px 10px",
-  cursor: "pointer",
-  textAlign: "center",
-  lineHeight: "1",
-  fontWeight: "bold",
-  fontSize: { xs: "13px", sm: "14px" },
-  transition: "background-color 0.3s, border-color 0.3s",
-  flexDirection: "row",
-  gap: "8px",
-  color: "#000",
-  backgroundColor: "transparent",
-  whiteSpace: "nowrap",
-};
-
-const activeStyle = {
-  backgroundColor: "#85beed",
-  color: "white",
-  borderColor: "#1976d2",
-};
-
-const lineStyle = {
-  width: "80px",
-  height: "2px",
-  backgroundColor: "#90caf9",
-  display: { xs: "none", md: "block" },
-};
-
-export default function MatchingAlgo() {
-  const [selectedComponent, setSelectedComponent] = useState("schedule");
+export default function MatchingAlgo({ defaultComponent }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  // const location = useLocation();
+  
+  // Use the default component from props or fallback to "schedule"
+  const [selectedComponent, setSelectedComponent] = useState(defaultComponent || "schedule");
 
-  // Access the props passed from MangerPage
-  // const { message, data } = location.state || {};
-
-  // Render the selected component based on user choice
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case "weights":
@@ -77,7 +36,6 @@ export default function MatchingAlgo() {
     }
   };
 
-  // Render buttons for navigation between components
   const renderButtons = () => {
     const buttonOrder = isMobile
       ? ["schedule", "internScheduling", "weights", "addSurgery"]
@@ -87,20 +45,39 @@ export default function MatchingAlgo() {
       <React.Fragment key={buttonType}>
         <Box
           sx={{
-            ...navItemStyle,
-            ...(selectedComponent === buttonType ? activeStyle : {}),
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            width: { xs: "150px", sm: "170px" },
+            height: { xs: "35px", sm: "35px" },
+            borderRadius: "15px",
+            borderStyle: "solid",
+            borderWidth: "2px",
+            borderColor: "#90caf9",
+            padding: "5px 10px",
+            cursor: "pointer",
+            textAlign: "center",
+            lineHeight: "1",
+            fontWeight: "bold",
+            fontSize: { xs: "13px", sm: "14px" },
+            transition: "background-color 0.3s, border-color 0.3s",
+            gap: "8px",
+            color: "#000",
+            backgroundColor: selectedComponent === buttonType ? "#85beed" : "transparent",
+            borderColor: selectedComponent === buttonType ? "#1976d2" : "#90caf9",
+            whiteSpace: "nowrap",
           }}
           onClick={() => setSelectedComponent(buttonType)}
         >
           {getIconForButton(buttonType)}
           {getLabelForButton(buttonType)}
         </Box>
-        {index < buttonOrder.length - 1 && <Box sx={lineStyle} />}
+        {index < buttonOrder.length - 1 && <Box sx={{ width: "80px", height: "2px", backgroundColor: "#90caf9" }} />}
       </React.Fragment>
     ));
   };
 
-  // Return appropriate icon for each button type
   const getIconForButton = (buttonType) => {
     switch (buttonType) {
       case "addSurgery":
@@ -116,7 +93,6 @@ export default function MatchingAlgo() {
     }
   };
 
-  // Return appropriate label for each button type
   const getLabelForButton = (buttonType) => {
     switch (buttonType) {
       case "addSurgery":
@@ -124,7 +100,7 @@ export default function MatchingAlgo() {
       case "weights":
         return "בחירת משקלים לשיבוץ";
       case "internScheduling":
-        return "שיבוץ מתמחים";
+        return "שיבוץ תורנויות";
       case "schedule":
         return "לוח ניתוחים ושיבוץ";
       default:
