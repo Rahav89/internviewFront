@@ -52,7 +52,6 @@ export default function SurgerySchedule() {
   useEffect(() => {
     GetAllSurgeries()
       .then((data) => {
-        // console.log("Fetched surgeries data:", data);
         let allEvents = {};
         data.forEach((surgery) => {
           if (surgery.Surgery_date) {
@@ -218,16 +217,14 @@ export default function SurgerySchedule() {
               sx={{
                 height: 90,
                 border: "0.1px solid #ccc",
-                "&::-webkit-scrollbar": { display: "none" },
-                "&:hover": { overflowY: "auto" },
-                scrollBehavior: "smooth",
-                overflowY: "auto",
-                whiteSpace: "nowrap",
                 backgroundColor: selectedDates.some((selectedDate) =>
                   selectedDate.isSame(day, "day")
                 )
                   ? "#85c1e9"
                   : "transparent",
+                "&:hover": {
+                  overflowY: "auto",
+                },
               }}
               onMouseDown={() => handleMouseDown(day)}
               onMouseEnter={() => handleMouseEnter(day)}
@@ -236,7 +233,8 @@ export default function SurgerySchedule() {
               data-date={day.format("YYYY-MM-DD")}
             >
               <Box
-                component="button"
+                component="div"
+                role="button"
                 sx={{
                   width: "100%",
                   height: "100%",
@@ -244,7 +242,6 @@ export default function SurgerySchedule() {
                   alignItems: "flex-start",
                   justifyContent: "flex-start",
                   background: "none",
-                  border: "none",
                   padding: 0,
                   cursor: "pointer",
                   textAlign: "left",
@@ -276,7 +273,7 @@ export default function SurgerySchedule() {
                     sx={{
                       color: "DarkBlue",
                       mt: 0.2,
-                      whiteSpace: "scroll",
+                      whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       backgroundColor: event.isNewMatch

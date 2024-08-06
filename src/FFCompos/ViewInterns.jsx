@@ -141,7 +141,7 @@ export default function ViewInterns() {
   return (
     <>
       <MenuLogo />
-      <h3 style={{ marginTop: "5%" }}>רשימת המתמחים</h3>
+      <h3 style={{ marginTop: "10%" }}>רשימת המתמחים</h3>
       <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
         <FormControl sx={{ width: 300, m: 1 }}>
           <InputLabel>מיון</InputLabel>
