@@ -27,15 +27,15 @@ export default function InternScheduling() {
 
   // State to store the list of interns
   const [interns, setInterns] = useState([]);
-  // State to manage assignments of interns to shifts (morning and afternoon) for each day
+  // State to manage assignments of interns to a shift for each day
   const [assignments, setAssignments] = useState({
-    Sunday: { morning: [], afternoon: [] },
-    Monday: { morning: [], afternoon: [] },
-    Tuesday: { morning: [], afternoon: [] },
-    Wednesday: { morning: [], afternoon: [] },
-    Thursday: { morning: [], afternoon: [] },
-    Friday: { morning: [], afternoon: [] },
-    Saturday: { morning: [], afternoon: [] },
+    Sunday: [],
+    Monday: [],
+    Tuesday: [],
+    Wednesday: [],
+    Thursday: [],
+    Friday: [],
+    Saturday: [],
   });
 
   // State to store confirmed assignments after user confirmation
@@ -102,61 +102,14 @@ export default function InternScheduling() {
     calculateWeekDates(selectedDate);
   };
 
-  // Handle changes in selection of interns for a specific day and shift
-  const handleSelectChange = (day, period, event) => {
+  // Handle changes in selection of interns for a specific day
+  const handleSelectChange = (day, event) => {
     const selectedInterns = event.target.value.slice(0, 2); // Allow a maximum of 2 interns
 
-    // Check for invalid assignments (any shift on the previous day)
-    const dayIndex = Object.keys(assignments).indexOf(day);
-    if (dayIndex > 0) {
-      const previousDay = Object.keys(assignments)[dayIndex - 1];
-      const previousDayInterns = [
-        ...assignments[previousDay].morning,
-        ...assignments[previousDay].afternoon,
-      ];
-
-      // Filter out interns who are selected for any shift the day before
-      const validInterns = selectedInterns.filter(
-        (internId) => !previousDayInterns.includes(internId)
-      );
-
-      if (validInterns.length !== selectedInterns.length) {
-        Swal.fire(
-          "הגבלה",
-          "מתמחה שהיה בתורנות יום לפני לא יכול לעבוד למחרת.",
-          "error"
-        );
-        return; // Prevent state update if validation fails
-      }
-    }
-
-    // Special check for Sunday following Saturday
-    if (day === "Sunday") {
-      const saturdayInterns = [
-        ...assignments["Saturday"].morning,
-        ...assignments["Saturday"].afternoon,
-      ];
-
-      const validInterns = selectedInterns.filter(
-        (internId) => !saturdayInterns.includes(internId)
-      );
-
-      if (validInterns.length !== selectedInterns.length) {
-        Swal.fire(
-          "הגבלה",
-          "מתמחה שעבד בשבת לא יכול לעבוד ביום ראשון.",
-          "error"
-        );
-        return; // Prevent state update if validation fails
-      }
-    }
-
+    // Simply set the selected interns, no restriction needed
     setAssignments((prevAssignments) => ({
       ...prevAssignments,
-      [day]: {
-        ...prevAssignments[day],
-        [period]: selectedInterns,
-      },
+      [day]: selectedInterns,
     }));
   };
 
@@ -180,13 +133,13 @@ export default function InternScheduling() {
   // Clear all assignments and optionally clear confirmed assignments
   const clearAssignments = () => {
     setAssignments({
-      Sunday: { morning: [], afternoon: [] },
-      Monday: { morning: [], afternoon: [] },
-      Tuesday: { morning: [], afternoon: [] },
-      Wednesday: { morning: [], afternoon: [] },
-      Thursday: { morning: [], afternoon: [] },
-      Friday: { morning: [], afternoon: [] },
-      Saturday: { morning: [], afternoon: [] },
+      Sunday: [],
+      Monday: [],
+      Tuesday: [],
+      Wednesday: [],
+      Thursday: [],
+      Friday: [],
+      Saturday: [],
     });
     setWeekDates({
       Sunday: "",
@@ -226,8 +179,7 @@ export default function InternScheduling() {
       date.setDate(currentWeek.getDate() + index);
       schedule[day] = {
         date: date.toLocaleDateString("he-IL"),
-        morning: confirmedAssignments?.[day]?.morning || [], // Show confirmed assignments
-        afternoon: confirmedAssignments?.[day]?.afternoon || [],
+        interns: confirmedAssignments?.[day] || [], // Show confirmed assignments
       };
     });
     return schedule;
@@ -274,7 +226,7 @@ export default function InternScheduling() {
                 <TableCell
                   sx={{ width: "14%", textAlign: "center", fontSize: 16 }}
                 >
-                  זמן/יום
+                  יום
                 </TableCell>
                 {Object.keys(assignments).map((day) => (
                   <TableCell
@@ -292,64 +244,58 @@ export default function InternScheduling() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {["morning", "afternoon"].map((period) => (
-                <TableRow key={period}>
+              <TableRow>
+                <TableCell
+                  component="th"
+                  scope="row"
+                  sx={{ textAlign: "center", fontSize: 16 }}
+                >
+                  משמרת
+                </TableCell>
+                {Object.keys(assignments).map((day) => (
                   <TableCell
-                    component="th"
-                    scope="row"
+                    key={day}
                     sx={{ textAlign: "center", fontSize: 16 }}
                   >
-                    {period === "morning" ? "בוקר" : 'אחה"צ'}
-                  </TableCell>
-                  {Object.keys(assignments).map((day) => (
-                    <TableCell
-                      key={`${day}-${period}`}
-                      sx={{ textAlign: "center", fontSize: 16 }}
-                    >
-                      <Select
-                        multiple
-                        value={assignments[day][period]}
-                        onChange={(event) =>
-                          handleSelectChange(day, period, event)
-                        }
-                        renderValue={(selected) =>
-                          selected
-                            .map(
-                              (id) =>
-                                interns.find((intern) => intern.id === id)
-                                  ?.first_name
-                            )
-                            .join(", ")
-                        }
-                        fullWidth
-                        displayEmpty
-                        sx={{
-                          textAlign: "right",
-                          fontSize: 16,
-                          backgroundColor:
-                            period === "morning" ? "#e3f2fd" : "#ffe3bf ",
-                        }}
-                        MenuProps={{
-                          PaperProps: {
-                            // Remove aria-hidden if it's being added dynamically
-                            "aria-hidden": false, // ensure this is properly managed
-                            style: {
-                              maxHeight: 48 * 4.5 + 8,
-                              width: "250px",
-                            },
+                    <Select
+                      multiple
+                      value={assignments[day]}
+                      onChange={(event) => handleSelectChange(day, event)}
+                      renderValue={(selected) =>
+                        selected
+                          .map(
+                            (id) =>
+                              interns.find((intern) => intern.id === id)
+                                ?.first_name
+                          )
+                          .join(", ")
+                      }
+                      fullWidth
+                      displayEmpty
+                      sx={{
+                        textAlign: "right",
+                        fontSize: 16,
+                        backgroundColor: "#e3f2fd",
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          "aria-hidden": false,
+                          style: {
+                            maxHeight: 48 * 4.5 + 8,
+                            width: "250px",
                           },
-                        }}
-                      >
-                        {interns.map((intern) => (
-                          <MenuItem key={intern.id} value={intern.id}>
-                            {intern.first_name} {intern.last_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                        },
+                      }}
+                    >
+                      {interns.map((intern) => (
+                        <MenuItem key={intern.id} value={intern.id}>
+                          {intern.first_name} {intern.last_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </TableCell>
+                ))}
+              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
@@ -370,51 +316,46 @@ export default function InternScheduling() {
                       : ""}
                   </Typography>
                 </Typography>
-                {["morning", "afternoon"].map((period) => (
-                  <Box key={`${day}-${period}`} sx={{ mb: 1 }}>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      {period === "morning" ? "בוקר" : 'אחה"צ'}
-                    </Typography>
-                    <Select
-                      multiple
-                      value={assignments[day][period]}
-                      onChange={(event) =>
-                        handleSelectChange(day, period, event)
-                      }
-                      renderValue={(selected) =>
-                        selected
-                          .map(
-                            (id) =>
-                              interns.find((intern) => intern.id === id)
-                                ?.first_name
-                          )
-                          .join(", ")
-                      }
-                      fullWidth
-                      displayEmpty
-                      sx={{
-                        textAlign: "right",
-                        fontSize: 16,
-                        backgroundColor:
-                          period === "morning" ? "#e3f2fd" : "#ffe3bf ", // Background color
-                      }}
-                      MenuProps={{
-                        PaperProps: {
-                          style: {
-                            maxHeight: 48 * 4.5 + 8,
-                            width: "250px",
-                          },
+                <Box sx={{ mb: 1 }}>
+                  <Typography variant="body2" sx={{ mb: 1 }}>
+                    משמרת
+                  </Typography>
+                  <Select
+                    multiple
+                    value={assignments[day]}
+                    onChange={(event) => handleSelectChange(day, event)}
+                    renderValue={(selected) =>
+                      selected
+                        .map(
+                          (id) =>
+                            interns.find((intern) => intern.id === id)
+                              ?.first_name
+                        )
+                        .join(", ")
+                    }
+                    fullWidth
+                    displayEmpty
+                    sx={{
+                      textAlign: "right",
+                      fontSize: 16,
+                      backgroundColor: "#e3f2fd",
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          maxHeight: 48 * 4.5 + 8,
+                          width: "250px",
                         },
-                      }}
-                    >
-                      {interns.map((intern) => (
-                        <MenuItem key={intern.id} value={intern.id}>
-                          {intern.first_name} {intern.last_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </Box>
-                ))}
+                      },
+                    }}
+                  >
+                    {interns.map((intern) => (
+                      <MenuItem key={intern.id} value={intern.id}>
+                        {intern.first_name} {intern.last_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Box>
               </CardContent>
             </Card>
           ))}
@@ -487,7 +428,7 @@ export default function InternScheduling() {
                         whiteSpace: isMobile ? "nowrap" : "normal",
                       }}
                     >
-                      זמן/יום
+                      יום
                     </TableCell>
                     {Object.keys(daysInHebrew).map((day) => (
                       <TableCell
@@ -507,49 +448,45 @@ export default function InternScheduling() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {["morning", "afternoon"].map((period) => (
-                    <TableRow key={period}>
+                  <TableRow>
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      sx={{
+                        textAlign: "center",
+                        fontSize: 16,
+                        whiteSpace: isMobile ? "nowrap" : "normal",
+                      }}
+                    >
+                      משמרת
+                    </TableCell>
+                    {Object.keys(daysInHebrew).map((day) => (
                       <TableCell
-                        component="th"
-                        scope="row"
+                        key={day}
                         sx={{
                           textAlign: "center",
                           fontSize: 16,
                           whiteSpace: isMobile ? "nowrap" : "normal",
                         }}
                       >
-                        {period === "morning" ? "בוקר" : 'אחה"צ'}
+                        {isCurrentWeekConfirmed() &&
+                          generateWeeklySchedule(currentWeekOffset)[day].interns.map((internId) => {
+                            const intern = interns.find(
+                              (intern) => intern.id === internId
+                            );
+                            return (
+                              <Typography
+                                key={internId}
+                                variant="body2"
+                                sx={{ mb: 1 }}
+                              >
+                                {intern?.first_name} {intern?.last_name}
+                              </Typography>
+                            );
+                          })}
                       </TableCell>
-                      {Object.keys(daysInHebrew).map((day) => (
-                        <TableCell
-                          key={`${day}-${period}`}
-                          sx={{
-                            textAlign: "center",
-                            fontSize: 16,
-                            whiteSpace: isMobile ? "nowrap" : "normal",
-                          }}
-                        >
-                          {isCurrentWeekConfirmed() &&
-                            generateWeeklySchedule(currentWeekOffset)[day][
-                              period
-                            ].map((internId) => {
-                              const intern = interns.find(
-                                (intern) => intern.id === internId
-                              );
-                              return (
-                                <Typography
-                                  key={internId}
-                                  variant="body2"
-                                  sx={{ mb: 1 }}
-                                >
-                                  {intern?.first_name} {intern?.last_name}
-                                </Typography>
-                              );
-                            })}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
+                    ))}
+                  </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
