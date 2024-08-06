@@ -201,6 +201,9 @@ export default function InternScheduling() {
     );
   };
 
+  // Check if a start date for the week is selected
+  const isWeekDateSelected = Object.values(weekDates).every((date) => date);
+
   return (
     <Box sx={{ mt: 4, direction: "rtl", px: isMobile ? 1 : 4 }}>
       <Typography variant={isMobile ? "h6" : "h5"} gutterBottom>
@@ -376,6 +379,7 @@ export default function InternScheduling() {
           color="primary"
           onClick={confirmAssignments}
           sx={{ fontSize: isMobile ? 12 : 14 }}
+          disabled={!isWeekDateSelected} // Disable button if no date is selected
         >
           אישור שיבוץ
         </Button>

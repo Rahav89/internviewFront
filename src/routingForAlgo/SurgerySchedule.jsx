@@ -102,13 +102,17 @@ export default function SurgerySchedule() {
     if (isDragging && dragStart) {
       const start = dragStart.isBefore(day) ? dragStart : day;
       const end = dragStart.isAfter(day) ? dragStart : day;
-      const newSelectedDates = [];
-      let date = start;
-      while (date.isSameOrBefore(end)) {
-        newSelectedDates.push(date);
-        date = date.add(1, "day");
+
+      // Ensure selection does not exceed 7 days
+      if (end.diff(start, "day") < 7) {
+        const newSelectedDates = [];
+        let date = start;
+        while (date.isSameOrBefore(end)) {
+          newSelectedDates.push(date);
+          date = date.add(1, "day");
+        }
+        setSelectedDates(newSelectedDates);
       }
-      setSelectedDates(newSelectedDates);
     }
   };
 
@@ -149,17 +153,21 @@ export default function SurgerySchedule() {
         <Typography sx={{ textAlign: "right", flexGrow: 1, fontSize: 17 }}>
           לפניך לוח שנה המציג את כלל הניתוחים במערך הכירורגיה.
           <br />
-          כדי לחשב שיבוץ מתמחים לניתוחים, בחר שבוע רלוונטי על ידי לחיצה וגרירה בלוח השנה    
-          ,ולאחר מכן לחץ על ←
+          כדי לחשב שיבוץ מתמחים לניתוחים, בחר שבוע רלוונטי על ידי לחיצה וגרירה
+          בלוח השנה ,ולאחר מכן לחץ על ←
           <Button
             variant="outlined"
             color="secondary"
-            sx={{ fontSize: 12, mr: 0.7,  padding: 0.5 , mt: { xs: 0.5, sm: -0.5 }}}
+            sx={{
+              fontSize: 12,
+              mr: 0.7,
+              padding: 0.5,
+              mt: { xs: 0.5, sm: -0.5 },
+            }}
           >
             חשב אלגוריתם שיבוץ
           </Button>
         </Typography>
-
 
         <Box
           sx={{
@@ -170,7 +178,6 @@ export default function SurgerySchedule() {
             direction: "ltr",
           }}
         >
-
           <Typography variant="h4" sx={{ textAlign: "left", flexGrow: 1 }}>
             {currentMonth.format("MMMM YYYY")}
           </Typography>
