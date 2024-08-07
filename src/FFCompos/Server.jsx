@@ -391,7 +391,7 @@ export const Update_Algorithm_Weights = (weights) => {
     SyllabusWeight: weights.SyllabusWeight,
   };
 
-  return fetch(`${api}Interns/updateAlgorithmWeights/`, {
+  return fetch(`${api}Algorithm/updateAlgorithmWeights/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -412,7 +412,7 @@ export const Update_Algorithm_Weights = (weights) => {
 
 // Function to get algorithm weights
 export const Get_Algorithm_Weights = () => {
-  return fetch(`${api}Interns/Get_All_Algorithm_Weights`, {
+  return fetch(`${api}Algorithm/Get_All_Algorithm_Weights`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
@@ -468,6 +468,49 @@ export const InsertSurgery = (Surgery) => {
   })
     .then((response) => {
       console.log(Surgery)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in InsertSurgery: ", error);
+      throw error;
+    });
+  
+};
+
+//function to ADD Intern Duty Schedule
+export const AddInternDutySchedule = (Scheduling) => {
+  return fetch(`${api}Interns/AddInternDutySchedule`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(Scheduling),   
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in InsertSurgery: ", error);
+      throw error;
+    });
+  
+};
+
+//function to get all Intern Duty Schedule
+export const GetAllInternsDutySchedule = () => {
+  return fetch(`${api}Interns/GetAllInternsDutySchedule`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },  
+  })
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

@@ -73,7 +73,7 @@ export default function WeightsSelection() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="md" sx={{ mt: 3, mb: 2 }}>
       <Typography variant="h6" fontWeight={"bold"} gutterBottom>
         בחירת משקלים לשיבוץ
       </Typography>

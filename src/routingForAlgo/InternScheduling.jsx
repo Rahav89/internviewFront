@@ -18,10 +18,11 @@ import {
   TextField,
 } from "@mui/material";
 import Swal from "sweetalert2";
-import { GetAllIntern } from "../FFCompos/Server"; // Ensure this import points to your data-fetching logic
+import { GetAllIntern, GetAllInternsDutySchedule } from "../FFCompos/Server";
 import { useTheme } from "@mui/material/styles";
 import MenuLogo from "../FFCompos/MenuLogo";
 import { useLocation } from "react-router-dom";
+import { AddInternDutySchedule } from "../FFCompos/Server.jsx";
 
 // Constants for initial state
 const initialAssignments = {
@@ -66,6 +67,7 @@ export default function InternScheduling() {
   const [weekDates, setWeekDates] = useState(initialWeekDates);
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [showSchedule, setShowSchedule] = useState(false);
+  const [scheduledData, setScheduledData] = useState([]);
 
   useEffect(() => {
     // Fetch all interns using the GetAllIntern function
@@ -76,10 +78,20 @@ export default function InternScheduling() {
       .catch((error) => {
         console.error("Error in GetAllIntern: ", error);
       });
+
+    // Fetch scheduled data using the GetAllInternsDutySchedule function
+    GetAllInternsDutySchedule()
+      .then((data) => {
+        setScheduledData(data);
+      })
+      .catch((error) => {
+        console.error("Error in GetAllInternsDutySchedule: ", error);
+      });
   }, []);
 
   // Calculate the week dates starting from the selected date
   const calculateWeekDates = (selectedDate) => {
+    if (isNaN(selectedDate)) return; // Guard clause for invalid date
     const startOfWeek = new Date(selectedDate);
     startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay());
     const newWeekDates = {};
@@ -117,8 +129,28 @@ export default function InternScheduling() {
       confirmButtonText: "כן, אשר",
     }).then((result) => {
       if (result.isConfirmed) {
-        setConfirmedAssignments(assignments);
-        Swal.fire("!אושר", ".השיבוץ אושר בהצלחה", "success");
+        // Prepare and send assignments to the server
+        const schedulingData = [];
+        Object.keys(assignments).forEach((day) => {
+          assignments[day].forEach((internId) => {
+            if (weekDates[day]) {
+              schedulingData.push({
+                DutyDate: weekDates[day].toISOString().split('T')[0] + "T00:00", // Ensure date is valid
+                Intern_id: internId,
+              });
+            }
+          });
+        });
+        // Make API call for each scheduling entry
+        Promise.all(schedulingData.map((schedule) => AddInternDutySchedule(schedule)))
+          .then(() => {
+            setConfirmedAssignments(assignments);
+            Swal.fire("!אושר", ".השיבוץ אושר בהצלחה", "success");
+          })
+          .catch((error) => {
+            console.error("Error in AddInternDutySchedule: ", error);
+            Swal.fire("שגיאה", ".לא הצלחנו לאשר את השיבוץ", "error");
+          });
       }
     });
   };
@@ -140,39 +172,37 @@ export default function InternScheduling() {
     setShowSchedule((prev) => !prev);
   };
 
-  // Generate the dynamic weekly schedule
-  const generateWeeklySchedule = useMemo(() => {
+  // Generate the dynamic weekly schedule from server data
+  const generateWeeklyScheduleFromServer = useMemo(() => {
     const schedule = {};
     const currentWeek = new Date(weekDates.Sunday);
+    if (isNaN(currentWeek)) return schedule; // Guard against invalid dates
     currentWeek.setDate(currentWeek.getDate() + currentWeekOffset * 7);
+
+    // Map intern IDs to intern details
+    const internMap = interns.reduce((map, intern) => {
+      map[intern.id] = `${intern.first_name} ${intern.last_name}`;
+      return map;
+    }, {});
 
     Object.keys(daysInHebrew).forEach((day, index) => {
       const date = new Date(currentWeek);
       date.setDate(currentWeek.getDate() + index);
+      if (isNaN(date)) return; // Guard clause for invalid date
+      const formattedDate = date.toISOString().split('T')[0]; // Format date to 'YYYY-MM-DD'
+
+      // Filter scheduled data for the current day
+      const internsForDay = scheduledData
+        .filter(schedule => schedule.dutyDate.startsWith(formattedDate))
+        .map(schedule => internMap[schedule.intern_id] || "Unknown");
+
       schedule[day] = {
         date: date.toLocaleDateString("he-IL"),
-        interns: confirmedAssignments?.[day] || [],
+        interns: internsForDay,
       };
     });
     return schedule;
-  }, [confirmedAssignments, currentWeekOffset, weekDates]);
-
-  // Function to check if the current week is the confirmed week
-  const isCurrentWeekConfirmed = useMemo(() => {
-    if (!confirmedAssignments || !weekDates.Sunday) return false;
-    const currentConfirmedWeek = new Date(weekDates.Sunday);
-    currentConfirmedWeek.setDate(
-      currentConfirmedWeek.getDate() + currentWeekOffset * 7
-    );
-    const confirmedWeekStartDate = new Date(
-      Object.values(weekDates)[0]
-    ).toLocaleDateString("he-IL");
-
-    return (
-      confirmedWeekStartDate ===
-      currentConfirmedWeek.toLocaleDateString("he-IL")
-    );
-  }, [confirmedAssignments, currentWeekOffset, weekDates]);
+  }, [scheduledData, interns, currentWeekOffset, weekDates]);
 
   // Check if a start date for the week is selected
   const isWeekDateSelected = Object.values(weekDates).every((date) => date);
@@ -180,14 +210,10 @@ export default function InternScheduling() {
   return (
     <>
       <MenuLogo />
-      <Box sx={{ mt: 10, direction: "rtl", px: isMobile ? 1 : 4 }}>
-        <Typography
-          variant={isMobile ? "h6" : "h5"}
-          gutterBottom
-          sx={{ fontWeight: "bold" }}
-        >
-          שיבוץ תורנויות
-        </Typography>
+      <Box sx={{ mt: 3 , mb: 2, direction: "rtl", px: isMobile ? 1 : 4 }}>
+          <Typography variant="h6" fontWeight={"bold"} gutterBottom>
+        שיבוץ תורנויות
+      </Typography>
         <Box sx={{ mb: 2 }}>
           <TextField
             type="date"
@@ -205,8 +231,8 @@ export default function InternScheduling() {
             <Table sx={{ tableLayout: "fixed", width: "100%", direction: "rtl" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: "14%", textAlign: "center", fontSize: 16 }}>
-                    יום
+                  <TableCell sx={{ width: "9%", textAlign: "center", fontSize: 16 }}>
+              
                   </TableCell>
                   {Object.keys(assignments).map((day) => (
                     <TableCell key={day} sx={{ width: "14%", textAlign: "center", fontSize: 16 }}>
@@ -221,7 +247,7 @@ export default function InternScheduling() {
               <TableBody>
                 <TableRow>
                   <TableCell component="th" scope="row" sx={{ textAlign: "center", fontSize: 16 }}>
-                    משמרת
+                  תורנים
                   </TableCell>
                   {Object.keys(assignments).map((day) => (
                     <TableCell key={day} sx={{ textAlign: "center", fontSize: 16 }}>
@@ -277,7 +303,7 @@ export default function InternScheduling() {
                   </Typography>
                   <Box sx={{ mb: 1 }}>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                      משמרת
+                      תורנים
                     </Typography>
                     <Select
                       multiple
@@ -354,9 +380,9 @@ export default function InternScheduling() {
         </Box>
 
         {showSchedule && (
-          <Box sx={{ mt: 2, direction: "rtl" }}>
+          <Box sx={{ direction: "rtl" }}>
             <Typography variant={isMobile ? "h6" : "h5"} gutterBottom>
-              לוח תורנויות לשבוע
+              לוח תורנויות לשבוע הנבחר
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
               <Button variant="outlined" onClick={() => changeWeek(-1)}>
@@ -384,7 +410,7 @@ export default function InternScheduling() {
                           whiteSpace: isMobile ? "nowrap" : "normal",
                         }}
                       >
-                        יום
+                        
                       </TableCell>
                       {Object.keys(daysInHebrew).map((day) => (
                         <TableCell
@@ -397,7 +423,7 @@ export default function InternScheduling() {
                         >
                           {daysInHebrew[day]}
                           <Typography variant="body2" sx={{ mt: 1 }}>
-                            {generateWeeklySchedule[day].date}
+                            {generateWeeklyScheduleFromServer[day]?.date || ""}
                           </Typography>
                         </TableCell>
                       ))}
@@ -414,7 +440,7 @@ export default function InternScheduling() {
                           whiteSpace: isMobile ? "nowrap" : "normal",
                         }}
                       >
-                        משמרת
+                        תורנים
                       </TableCell>
                       {Object.keys(daysInHebrew).map((day) => (
                         <TableCell
@@ -425,17 +451,11 @@ export default function InternScheduling() {
                             whiteSpace: isMobile ? "nowrap" : "normal",
                           }}
                         >
-                          {isCurrentWeekConfirmed &&
-                            generateWeeklySchedule[day].interns.map((internId) => {
-                              const intern = interns.find(
-                                (intern) => intern.id === internId
-                              );
-                              return (
-                                <Typography key={internId} variant="body2" sx={{ mb: 1 }}>
-                                  {intern?.first_name} {intern?.last_name}
-                                </Typography>
-                              );
-                            })}
+                          {generateWeeklyScheduleFromServer[day]?.interns.map((internName, index) => (
+                            <Typography key={index} variant="body2" sx={{ mb: 1 }}>
+                              {internName}
+                            </Typography>
+                          ))}
                         </TableCell>
                       ))}
                     </TableRow>

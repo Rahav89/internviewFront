@@ -55,7 +55,7 @@ export default function MatchingAlgo({ defaultComponent }) {
             justifyContent: "center",
             flexDirection: "row",
             width: { xs: "45%", sm: "170px" }, // Adjust width for small screens
-            height: { xs: "45px", sm: "35px" },
+            height: { xs: "45px", sm: "45px" },
             borderRadius: "15px",
             borderStyle: "solid",
             borderWidth: "2px",
