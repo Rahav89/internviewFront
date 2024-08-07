@@ -14,6 +14,14 @@ import {
   Select,
   InputLabel,
   FormControl,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Box,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
@@ -276,7 +284,7 @@ export default function AddSurgeries() {
         if (response === -1) {
           errorMsg = `קיים ניתוח חופף בזמנים בתאריך ${newSurgery.surgeryDate}`;
         } else if (response === -2) {
-          errorMsg = "תעודת זהות כבר קיימת במערכת.";
+          errorMsg = "תאריך זה כבר קיים במערכת";
         }
 
         Swal.fire({
@@ -383,27 +391,32 @@ export default function AddSurgeries() {
                   <Typography variant="h6" align="center">
                     :ניתוחים שהועלו מקובץ האקסל
                   </Typography>
-                  <ul
-                    style={{
-                      direction: "rtl",
-                      textAlign: "right",
-                      paddingInlineStart: "0",
-                    }}
-                  >
-                    {surgeries.map((obj, index) => (
-                      <li
-                        key={index}
-                        style={{ listStyle: "none", marginBottom: "10px" }}
-                      >
-                        <strong>מספר מקרה:</strong> {obj.caseNumber},{" "}
-                        <strong>גיל מטופל:</strong> {obj.patientAge},{" "}
-                        <strong>תאריך הניתוח:</strong> {obj.surgeryDate},{" "}
-                        <strong>שעת הניתוח:</strong> {obj.surgeryTime},{" "}
-                        <strong>רמת מורכבות:</strong> {obj.difficultyLevel},{" "}
-                        <strong>קודי הפרוצדורות:</strong> {obj.productionCodes}
-                      </li>
-                    ))}
-                  </ul>
+                  <TableContainer component={Paper} sx={{ mt: 2 }}>
+                  <Table sx={{ direction: "rtl"}}>
+                      <TableHead>
+                        <TableRow sx={{ backgroundColor: "rgb(25 118 210)" ,color:'white',textAlign:'center'}}>
+                          <TableCell align="right" sx={{ color: 'white' }}>מספר מקרה</TableCell>
+                          <TableCell align="right" sx={{ color: 'white' }}>גיל מטופל</TableCell>
+                          <TableCell align="right" sx={{ color: 'white' }}>תאריך הניתוח</TableCell>
+                          <TableCell align="right" sx={{ color: 'white' }}>שעת הניתוח</TableCell>
+                          <TableCell align="right" sx={{ color: 'white' }}>רמת מורכבות</TableCell>
+                          <TableCell align="right" sx={{ color: 'white' }}>קודי הפרוצדורות</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {surgeries.map((obj, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{obj.caseNumber}</TableCell>
+                            <TableCell>{obj.patientAge}</TableCell>
+                            <TableCell>{obj.surgeryDate}</TableCell>
+                            <TableCell>{obj.surgeryTime}</TableCell>
+                            <TableCell>{obj.difficultyLevel}</TableCell>
+                            <TableCell>{obj.productionCodes}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </>
               ) : (
                 <Typography variant="h6" align="center">
@@ -521,7 +534,7 @@ export default function AddSurgeries() {
             >
               {procedures.map((procedure) => (
                 <MenuItem
-                  key={procedure.procedure_Id}
+                  key={procedure.procedure_Id}A
                   value={procedure.procedure_Id}
                 >
                   {procedure.procedure_Id}
