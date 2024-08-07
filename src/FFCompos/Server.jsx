@@ -482,7 +482,7 @@ export const InsertSurgery = (Surgery) => {
 
 //function to ADD Intern Duty Schedule
 export const AddInternDutySchedule = (Scheduling) => {
-  return fetch(`${api}Interns/AddInternDutySchedule`, {
+  return fetch(`${api}InternsShiftsSchedule/AddInternDutySchedule`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -499,16 +499,37 @@ export const AddInternDutySchedule = (Scheduling) => {
       console.error("Error in InsertSurgery: ", error);
       throw error;
     });
-  
 };
 
 //function to get all Intern Duty Schedule
 export const GetAllInternsDutySchedule = () => {
-  return fetch(`${api}Interns/GetAllInternsDutySchedule`, {
+  return fetch(`${api}InternsShiftsSchedule/GetAllInternsDutySchedule`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },  
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in InsertSurgery: ", error);
+      throw error;
+    });
+  
+};
+
+//function to get all Intern Duty Schedule
+export const RemoveInternDutySchedule = (obj) => {
+  return fetch(`${api}InternsShiftsSchedule/DeleteInternDutySchedule`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },  
+    body: JSON.stringify(obj),   
   })
     .then((response) => {
       if (!response.ok) {

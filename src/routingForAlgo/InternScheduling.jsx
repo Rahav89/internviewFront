@@ -16,13 +16,19 @@ import {
   CardContent,
   useMediaQuery,
   TextField,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
 import { GetAllIntern, GetAllInternsDutySchedule } from "../FFCompos/Server";
 import { useTheme } from "@mui/material/styles";
 import MenuLogo from "../FFCompos/MenuLogo";
 import { useLocation } from "react-router-dom";
-import { AddInternDutySchedule } from "../FFCompos/Server.jsx";
+import { AddInternDutySchedule, RemoveInternDutySchedule } from "../FFCompos/Server.jsx"; // Assuming RemoveInternDutySchedule is defined
 
 // Constants for initial state
 const initialAssignments = {
@@ -68,6 +74,9 @@ export default function InternScheduling() {
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [showSchedule, setShowSchedule] = useState(false);
   const [scheduledData, setScheduledData] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedDay, setSelectedDay] = useState("");
+  const [selectedInternsForDay, setSelectedInternsForDay] = useState([]);
 
   useEffect(() => {
     // Fetch all interns using the GetAllIntern function
@@ -141,16 +150,44 @@ export default function InternScheduling() {
             }
           });
         });
+
+        // Track successful and problematic assignments
+        const successfulAssignments = [];
         // Make API call for each scheduling entry
-        Promise.all(schedulingData.map((schedule) => AddInternDutySchedule(schedule)))
-          .then(() => {
-            setConfirmedAssignments(assignments);
-            Swal.fire("!אושר", ".השיבוץ אושר בהצלחה", "success");
-          })
-          .catch((error) => {
-            console.error("Error in AddInternDutySchedule: ", error);
-            Swal.fire("שגיאה", ".לא הצלחנו לאשר את השיבוץ", "error");
-          });
+        Promise.all(schedulingData.map((schedule) =>
+          AddInternDutySchedule(schedule)
+            .then((response) => {
+              if (response === 1) {
+                successfulAssignments.push(schedule);
+                Swal.fire("!אושר", ".השיבוץ אושר בהצלחה", "success");
+                setScheduledData((prevData) => [
+                  ...prevData,
+                  ...successfulAssignments.map((schedule) => ({
+                    dutyDate: schedule.DutyDate,
+                    intern_id: schedule.Intern_id,
+                  })),
+                ]);
+              } else {
+                if (response === -1) {
+                  Swal.fire({
+                    icon: "warning",
+                    title: "...הפעולה בוצעה בהצלחה :) אבל",
+                    html: "אחד מהשיבוצים שבחרת כבר קיימים במערכת ועל כן לא התווספו",
+                  });
+                } else if (response === -2) {
+                  Swal.fire({
+                    icon: "warning",
+                    title: "...הפעולה בוצעה בהצלחה :) אבל",
+                    html: "לאחד או יותר מהשיבוצים שבחרת יש כבר 2 מתמחים תורנים",
+                  });;
+                }
+              }
+            })
+            .catch((error) => {
+              console.error("Error in AddInternDutySchedule: ", error);
+              Swal.fire("שגיאה", ".לא הצלחנו לאשר את השיבוץ", "error");
+            })
+        ))
       }
     });
   };
@@ -170,6 +207,42 @@ export default function InternScheduling() {
   // Toggle the visibility of the schedule table
   const toggleScheduleVisibility = () => {
     setShowSchedule((prev) => !prev);
+  };
+
+  // Open the dialog to show assigned interns with delete option
+  const openInternsDialog = (day) => {
+    const internsForDay = generateWeeklyScheduleFromServer[day]?.interns || [];
+    setSelectedDay(day);
+    setSelectedInternsForDay(internsForDay);
+    setOpenDialog(true);
+  };
+
+  // Handle intern removal
+  const handleRemoveIntern = (internId) => {
+    // Make API call to remove intern
+    const dutyDate = weekDates[selectedDay]?.toISOString().split('T')[0] + "T00:00";
+    RemoveInternDutySchedule({ DutyDate: dutyDate, Intern_id: internId })
+      .then((response) => {
+        if (response) {
+          // Successfully removed, update state
+          setScheduledData((prevData) =>
+            prevData.filter(
+              (schedule) =>
+                !(schedule.dutyDate.startsWith(dutyDate) && schedule.intern_id === internId)
+            )
+          );
+          setSelectedInternsForDay((prevInterns) =>
+            prevInterns.filter((intern) => intern.id !== internId)
+          );
+          Swal.fire("הוסר בהצלחה", ".השיבוץ הוסר בהצלחה", "success");
+        } else {
+          Swal.fire("שגיאה", ".לא הצלחנו להסיר את השיבוץ", "error");
+        }
+      })
+      .catch((error) => {
+        console.error("Error in RemoveInternDutySchedule: ", error);
+        Swal.fire("שגיאה", ".לא הצלחנו להסיר את השיבוץ", "error");
+      });
   };
 
   // Generate the dynamic weekly schedule from server data
@@ -194,7 +267,10 @@ export default function InternScheduling() {
       // Filter scheduled data for the current day
       const internsForDay = scheduledData
         .filter(schedule => schedule.dutyDate.startsWith(formattedDate))
-        .map(schedule => internMap[schedule.intern_id] || "Unknown");
+        .map(schedule => ({
+          id: schedule.intern_id,
+          name: internMap[schedule.intern_id] || "Unknown",
+        }));
 
       schedule[day] = {
         date: date.toLocaleDateString("he-IL"),
@@ -206,14 +282,18 @@ export default function InternScheduling() {
 
   // Check if a start date for the week is selected
   const isWeekDateSelected = Object.values(weekDates).every((date) => date);
+  // Check if any assignments are made
+  const isAnyAssignmentMade = Object.values(assignments).some(
+    (dayAssignments) => dayAssignments.length > 0
+  );
 
   return (
     <>
       <MenuLogo />
-      <Box sx={{ mt: 3 , mb: 2, direction: "rtl", px: isMobile ? 1 : 4 }}>
-          <Typography variant="h6" fontWeight={"bold"} gutterBottom>
-        שיבוץ תורנויות
-      </Typography>
+      <Box sx={{ mt: 3, mb: 2, direction: "rtl", px: isMobile ? 1 : 4 }}>
+        <Typography variant="h6" fontWeight={"bold"} gutterBottom>
+          שיבוץ תורנויות
+        </Typography>
         <Box sx={{ mb: 2 }}>
           <TextField
             type="date"
@@ -232,7 +312,7 @@ export default function InternScheduling() {
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ width: "9%", textAlign: "center", fontSize: 16 }}>
-              
+
                   </TableCell>
                   {Object.keys(assignments).map((day) => (
                     <TableCell key={day} sx={{ width: "14%", textAlign: "center", fontSize: 16 }}>
@@ -247,7 +327,7 @@ export default function InternScheduling() {
               <TableBody>
                 <TableRow>
                   <TableCell component="th" scope="row" sx={{ textAlign: "center", fontSize: 16 }}>
-                  תורנים
+                    תורנים
                   </TableCell>
                   {Object.keys(assignments).map((day) => (
                     <TableCell key={day} sx={{ textAlign: "center", fontSize: 16 }}>
@@ -357,7 +437,7 @@ export default function InternScheduling() {
             color="primary"
             onClick={confirmAssignments}
             sx={{ fontSize: isMobile ? 12 : 14 }}
-            disabled={!isWeekDateSelected} // Disable button if no date is selected
+            disabled={!isWeekDateSelected || !isAnyAssignmentMade} // Disable button if no date is selected
           >
             אישור שיבוץ
           </Button>
@@ -410,7 +490,7 @@ export default function InternScheduling() {
                           whiteSpace: isMobile ? "nowrap" : "normal",
                         }}
                       >
-                        
+
                       </TableCell>
                       {Object.keys(daysInHebrew).map((day) => (
                         <TableCell
@@ -450,10 +530,11 @@ export default function InternScheduling() {
                             fontSize: 16,
                             whiteSpace: isMobile ? "nowrap" : "normal",
                           }}
+                          onClick={() => openInternsDialog(day)} // Open dialog on cell click
                         >
-                          {generateWeeklyScheduleFromServer[day]?.interns.map((internName, index) => (
+                          {generateWeeklyScheduleFromServer[day]?.interns.map((intern, index) => (
                             <Typography key={index} variant="body2" sx={{ mb: 1 }}>
-                              {internName}
+                              {intern.name}
                             </Typography>
                           ))}
                         </TableCell>
@@ -466,6 +547,30 @@ export default function InternScheduling() {
           </Box>
         )}
       </Box>
+
+      <Dialog open={openDialog} dir="rtl" onClose={() => setOpenDialog(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>מתמחים ששובצו</DialogTitle>
+        <DialogContent>
+          {selectedInternsForDay.map((intern, index) => (
+            <Box key={index} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+              <Typography variant="body2" sx={{ mr: 1 }}>
+                {intern.name}
+              </Typography>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => handleRemoveIntern(intern.id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>סגור</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

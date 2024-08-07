@@ -212,15 +212,15 @@ export default function AddSurgeries() {
             let errorMsg = "";
 
             if (response === -1) {
-              errorMsg = `קיים ניתוח חופף בזמנים בתאריך הניתן`;
+              errorMsg = `- הוספת ניתוח אחד או יותר נכשלה <br> קיים ניתוח חופף בזמנים בתאריך ניתן`;
             } else if (response === -2) {
-              errorMsg = "קיימים כבר 2 ניתוחים בתאריך הניתן";
+              errorMsg = "- הוספת ניתוח אחד או יותר נכשלה <br> קיימים כבר 2 ניתוחים בתאריך ניתן";
             }
 
             Swal.fire({
               icon: "warning",
-              title: "הוספת ניתוח אחד או יותר נכשלה",
-              text: errorMsg,
+              title: "...הפעולה בוצעה בהצלחה :) אבל",
+              html: errorMsg,
             });
           }
         } catch (error) {
@@ -430,24 +430,25 @@ export default function AddSurgeries() {
 
       <Dialog
         open={openDialog}
+        dir="rtl"
         onClose={handleCloseDialog}
         aria-labelledby="dialog-title"
         aria-describedby="dialog-description"
       >
-        <DialogTitle id="dialog-title">Confirmation</DialogTitle>
+       
         <DialogContent>
           <DialogContentText id="dialog-description">
             {hasIncomplete
-              ? "Some rows have missing data. Are you sure you want to upload the file?"
-              : "Are you sure you want to upload the selected data?"}
+              ? "בחלק מהשורות חסרים נתונים. האם אתה בטוח שברצונך להעלות את הקובץ?"
+              : "האם אתה בטוח שברצונך להעלות את הקובץ?"}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Cancel
-          </Button>
+        <DialogActions>          
           <Button onClick={handleContinueDialog} color="primary">
-            Continue
+            אישור
+          </Button>
+          <Button onClick={handleCloseDialog} color="secondary">
+            ביטול
           </Button>
         </DialogActions>
       </Dialog>
