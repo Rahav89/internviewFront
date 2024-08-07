@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Grid,
@@ -12,23 +11,27 @@ import {
   DialogTitle,
   TextField,
   MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import * as XLSX from "xlsx";
 import MenuLogo from "../FFCompos/MenuLogo";
 import excelImage from "../Image/exelPhoto.png";
 import { styled } from "@mui/material/styles";
-import { InsertSurgery } from "../FFCompos/Server.jsx";
+import { InsertSurgery, GetAllProcedure } from "../FFCompos/Server.jsx";
 import Swal from "sweetalert2";
 
 const VisuallyHiddenInput = styled("input")({
   position: "absolute",
-  left: "-9999px", // Move off-screen
-  width: "1px", // Minimize visible area
+  left: "-9999px",
+  width: "1px",
   height: "1px",
   overflow: "hidden",
-  opacity: 0, // Make transparent
-  pointerEvents: "none", // Disable pointer events
+  opacity: 0,
+  pointerEvents: "none",
 });
 
 function convertExcelTimeToReadableTime(excelTime) {
@@ -40,12 +43,11 @@ function convertExcelTimeToReadableTime(excelTime) {
     .padStart(2, "0")}`;
 }
 
-// Function to convert Excel date serial number to JavaScript date string
 function convertExcelDateToJSDate(excelDate) {
   if (typeof excelDate === "string" && excelDate.includes(".")) {
     const parts = excelDate.split(".");
     if (parts.length !== 3) {
-      return excelDate; // Return as is if not in the expected format
+      return excelDate;
     }
     const day = parts[0];
     const month = parts[1];
@@ -60,23 +62,39 @@ function convertExcelDateToJSDate(excelDate) {
 }
 
 export default function AddSurgeries() {
-  const [loadedSurgeries, setLoadedSurgeries] = useState([]); // Temporary storage before confirmation
-  const [surgeries, setSurgeries] = useState([]); // Store confirmed surgeries
+  const [loadedSurgeries, setLoadedSurgeries] = useState([]);
+  const [surgeries, setSurgeries] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [openSingleForm, setOpenSingleForm] = useState(false);
   const [hasIncomplete, setHasIncomplete] = useState(false);
-  const [isConfirmed, setIsConfirmed] = useState(false); // New state for confirmation
+  const [isConfirmed, setIsConfirmed] = useState(false);
   const [newSurgery, setNewSurgery] = useState({
     caseNumber: "",
     patientAge: "",
     surgeryDate: "",
     surgeryTime: "",
     difficultyLevel: "",
-    productionCodes: "",
+    productionCodes: [],
   });
+  const [procedures, setProcedures] = useState([]);
 
-  const location = useLocation();
-  const { state } = location;
+  useEffect(() => {
+    GetAllProcedure()
+      .then((data) => {
+        setProcedures(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching procedures: ", error);
+      });
+  }, []);
+
+  const handleSingleFormChange = (event) => {
+    const { name, value } = event.target;
+    setNewSurgery((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -96,31 +114,43 @@ export default function AddSurgeries() {
       let incomplete = false;
       const objects = jsonData
         .slice(1)
-        .filter((row) => {
+        .filter((row, index) => {
+          if (!Array.isArray(row)) {
+            console.error(`Row ${index + 1} is not an array:`, row);
+            return false;
+          }
+
           const hasData = row.some(
             (cell) => cell !== undefined && cell !== null && cell !== ""
           );
           if (!hasData) return false;
 
           const isComplete =
-            row[0] && row[1] && row[2] && row[3] && row[4] && row[5];
+            row.length >= 6 &&
+            row[0] &&
+            row[1] &&
+            row[2] &&
+            row[3] &&
+            row[4] &&
+            row[5];
           if (!isComplete) {
             incomplete = true;
+            console.warn(`Incomplete data on row ${index + 1}:`, row);
           }
           return isComplete;
         })
         .map((row) => ({
           caseNumber: row[0],
           patientAge: row[1],
-          surgeryDate: convertExcelDateToJSDate(row[2]), // Convert Excel date serial to JS date string
+          surgeryDate: convertExcelDateToJSDate(row[2]),
           surgeryTime: convertExcelTimeToReadableTime(row[3]),
           difficultyLevel: row[4],
           productionCodes: row[5],
         }));
 
       setHasIncomplete(incomplete);
-      setLoadedSurgeries(objects); // Load surgeries into temporary storage
-      setOpenDialog(true); // Open dialog regardless of completion
+      setLoadedSurgeries(objects);
+      setOpenDialog(true);
     };
 
     reader.readAsArrayBuffer(file);
@@ -143,15 +173,24 @@ export default function AddSurgeries() {
   const handleContinueDialog = async () => {
     let successfulSurgeries = [];
 
-    // Use Promise.all to wait for all async operations to complete
     await Promise.all(
       loadedSurgeries.map(async (surgery) => {
         try {
+          if (new Date(surgery.surgeryDate) < new Date()) {
+            Swal.fire({
+              icon: "error",
+              title: "תאריך לא תקין",
+              text: "לא ניתן לקבוע תאריך ניתוח לפני התאריך הנוכחי.",
+            });
+            return;
+          }
+
           const response = await InsertSurgery({
             surgery_id: 0,
             case_number: surgery.caseNumber,
             patient_age: surgery.patientAge,
-            surgery_date: surgery.surgeryDate + "T" + surgery.surgeryTime + ":00",
+            surgery_date:
+              surgery.surgeryDate + "T" + surgery.surgeryTime + ":00",
             difficulty_level: surgery.difficultyLevel,
             production_codes: surgery.productionCodes,
             hospital_name: "",
@@ -160,7 +199,7 @@ export default function AddSurgeries() {
           console.log("Surgery inserted:", response);
 
           if (response !== -1 && response !== -2) {
-            successfulSurgeries.push(surgery); // Add successful surgeries
+            successfulSurgeries.push(surgery);
           } else {
             let errorMsg = "";
 
@@ -182,9 +221,9 @@ export default function AddSurgeries() {
       })
     );
 
-    setSurgeries(successfulSurgeries); // Update state with successful surgeries
+    setSurgeries(successfulSurgeries);
     setOpenDialog(false);
-    setIsConfirmed(true); // Set confirmation state to true
+    setIsConfirmed(true);
   };
 
   const handleOpenSingleForm = () => {
@@ -199,32 +238,38 @@ export default function AddSurgeries() {
       surgeryDate: "",
       surgeryTime: "",
       difficultyLevel: "",
-      productionCodes: "",
+      productionCodes: [],
     });
-  };
-
-  const handleSingleFormChange = (e) => {
-    const { name, value } = e.target;
-    setNewSurgery((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSingleFormSubmit = async () => {
     try {
+      // Validate the surgery date
+      if (new Date(newSurgery.surgeryDate) < new Date()) {
+        Swal.fire({
+          icon: "error",
+          title: "תאריך לא תקין",
+          text: "לא ניתן לקבוע תאריך ניתוח לפני התאריך הנוכחי.",
+        });
+        return;
+      }
+
       const response = await InsertSurgery({
         surgery_id: 0,
         case_number: newSurgery.caseNumber,
         patient_age: newSurgery.patientAge,
-        surgery_date: newSurgery.surgeryDate + "T" + newSurgery.surgeryTime + ":00",
+        surgery_date:
+          newSurgery.surgeryDate + "T" + newSurgery.surgeryTime + ":00",
         difficulty_level: newSurgery.difficultyLevel,
-        production_codes: newSurgery.productionCodes,
-        hospital_name: "",
+        production_codes: newSurgery.productionCodes.join(", "),
+        hospital_name: "הלל יפה",
       });
 
       console.log("Single surgery inserted:", response);
 
       if (response !== -1 && response !== -2) {
-        setSurgeries([newSurgery]); // Only add successful surgery
-        setIsConfirmed(true); // Set confirmation state to true when single form is submitted
+        setSurgeries([newSurgery]);
+        setIsConfirmed(true);
       } else {
         let errorMsg = "";
 
@@ -260,9 +305,22 @@ export default function AddSurgeries() {
         >
           <Grid item>
             <Button
+              component="label"
               variant="contained"
-              color="primary"
               onClick={handleOpenSingleForm}
+              startIcon={<ContentPasteIcon />}
+              sx={{
+                width: "300px",
+                backgroundColor: "white",
+                color: "#1976d2",
+                borderColor: "#1976d2",
+                borderWidth: 2,
+                borderStyle: "solid",
+                "&:hover": {
+                  backgroundColor: "#f0f0f0",
+                  borderColor: "darkblue",
+                },
+              }}
             >
               העלאת ניתוח בודד
             </Button>
@@ -313,7 +371,7 @@ export default function AddSurgeries() {
                 accept=".xlsx, .xls"
                 onChange={handleFileUpload}
                 aria-label="Upload Excel file"
-                tabIndex="-1" // Make sure this is not focusable
+                tabIndex="-1"
               />
             </Button>
           </Grid>
@@ -354,7 +412,6 @@ export default function AddSurgeries() {
               )}
             </Grid>
           )}
-
         </Grid>
       </Container>
 
@@ -363,10 +420,7 @@ export default function AddSurgeries() {
         onClose={handleCloseDialog}
         aria-labelledby="dialog-title"
         aria-describedby="dialog-description"
-        aria-hidden={!openDialog} // Use conditional logic
-        disableEnforceFocus // If necessary
       >
-
         <DialogTitle id="dialog-title">Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText id="dialog-description">
@@ -395,6 +449,9 @@ export default function AddSurgeries() {
             fullWidth
             value={newSurgery.caseNumber}
             onChange={handleSingleFormChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
           <TextField
             margin="dense"
@@ -404,6 +461,9 @@ export default function AddSurgeries() {
             fullWidth
             value={newSurgery.patientAge}
             onChange={handleSingleFormChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
           <TextField
             margin="dense"
@@ -444,21 +504,38 @@ export default function AddSurgeries() {
               </MenuItem>
             ))}
           </TextField>
-          <TextField
-            margin="dense"
-            label="קודי הפרוצדורות"
-            name="productionCodes"
-            fullWidth
-            value={newSurgery.productionCodes}
-            onChange={handleSingleFormChange}
-          />
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="procedure-code-label">קודי הפרוצדורות</InputLabel>
+            <Select
+              labelId="procedure-code-label"
+              name="productionCodes"
+              value={newSurgery.productionCodes}
+              onChange={(event) =>
+                setNewSurgery((prevState) => ({
+                  ...prevState,
+                  productionCodes: event.target.value,
+                }))
+              }
+              label="קודי הפרוצדורות"
+              multiple
+            >
+              {procedures.map((procedure) => (
+                <MenuItem
+                  key={procedure.procedure_Id}
+                  value={procedure.procedure_Id}
+                >
+                  {procedure.procedure_Id}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseSingleForm} color="primary">
-            Cancel
+            ביטול
           </Button>
           <Button onClick={handleSingleFormSubmit} color="primary">
-            Add Surgery
+            הוספת ניתוח
           </Button>
         </DialogActions>
       </Dialog>

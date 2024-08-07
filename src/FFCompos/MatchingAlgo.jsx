@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Grid, Box, Button } from "@mui/material";
+import { Container, Grid, Box } from "@mui/material";
 import MenuLogo from "../FFCompos/MenuLogo";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -39,9 +39,12 @@ export default function MatchingAlgo({ defaultComponent }) {
   };
 
   const renderButtons = () => {
-    const buttonOrder = isMobile
-      ? ["schedule", "internScheduling", "weights", "addSurgery"]
-      : ["addSurgery", "weights", "internScheduling", "schedule"];
+    const buttonOrder = [
+      "addSurgery",
+      "weights",
+      "internScheduling",
+      "schedule",
+    ];
 
     return buttonOrder.map((buttonType, index) => (
       <React.Fragment key={buttonType}>
@@ -50,9 +53,9 @@ export default function MatchingAlgo({ defaultComponent }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            flexDirection: "row", // Changed from "column" to "row"
-            width: { xs: "150px", sm: "170px" },
-            height: { xs: "35px", sm: "35px" },
+            flexDirection: "row",
+            width: { xs: "45%", sm: "170px" }, // Adjust width for small screens
+            height: { xs: "45px", sm: "35px" },
             borderRadius: "15px",
             borderStyle: "solid",
             borderWidth: "2px",
@@ -64,20 +67,22 @@ export default function MatchingAlgo({ defaultComponent }) {
             fontWeight: "bold",
             fontSize: { xs: "13px", sm: "14px" },
             transition: "background-color 0.3s, border-color 0.3s",
-            gap: "8px", // Ensure appropriate spacing between the icon and label
+            gap: "8px",
             color: "#000",
             backgroundColor:
               selectedComponent === buttonType ? "#85beed" : "transparent",
             borderColor:
               selectedComponent === buttonType ? "#1976d2" : "#90caf9",
             whiteSpace: "nowrap",
+            boxSizing: "border-box",
+            margin: isMobile ? "5px" : "0", // Add margin to separate buttons on mobile
           }}
           onClick={() => setSelectedComponent(buttonType)}
         >
           {getIconForButton(buttonType)}
           {getLabelForButton(buttonType)}
         </Box>
-        {index < buttonOrder.length - 1 && (
+        {!isMobile && index < buttonOrder.length - 1 && (
           <Box
             sx={{ width: "80px", height: "2px", backgroundColor: "#90caf9" }}
           />
@@ -85,6 +90,7 @@ export default function MatchingAlgo({ defaultComponent }) {
       </React.Fragment>
     ));
   };
+
   const getIconForButton = (buttonType) => {
     switch (buttonType) {
       case "addSurgery":
@@ -125,9 +131,9 @@ export default function MatchingAlgo({ defaultComponent }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              flexDirection: { xs: "column", sm: "row" },
-              flexWrap: "wrap",
-              gap: { xs: 2, md: 3 },
+              flexDirection: { xs: "row", sm: "row" },
+              flexWrap: "wrap", // Enable wrapping
+              gap: { xs: 2, md: 3 }, // Define gap for spacing
             }}
           >
             {renderButtons()}
