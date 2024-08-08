@@ -543,3 +543,26 @@ export const RemoveInternDutySchedule = (obj) => {
     });
   
 };
+
+
+
+//function Delete Surgery From Surgeries Schedule
+export const DeleteSurgeryFromSurgeriesSchedule = (surgery_id) => {
+  return fetch(`${api}Surgeries/DeleteSurgeryFromSurgeriesSchedule/${surgery_id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },  
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in DeleteSurgeryFromSurgeriesSchedule: ", error);
+      throw error;
+    });
+  
+};

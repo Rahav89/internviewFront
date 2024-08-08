@@ -7,13 +7,19 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
+  TextField,
   List,
   ListItem,
   ListItemText,
   ListItemAvatar,
   Avatar,
   Divider,
+  FormControl,
+  InputLabel,
+  Chip,
 } from "@mui/material";
+import { Autocomplete } from "@mui/material";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
@@ -21,7 +27,12 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import TodayIcon from "@mui/icons-material/Today";
-import { GetAllSurgeries } from "../FFCompos/Server.jsx";
+import Swal from "sweetalert2";
+import {
+  GetAllSurgeries,
+  GetAllProcedure,
+  DeleteSurgeryFromSurgeriesSchedule,
+} from "../FFCompos/Server.jsx";
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
@@ -42,12 +53,25 @@ const generateCalendar = (month) => {
 
 export default function SurgerySchedule() {
   const [events, setEvents] = useState({});
+  const [procedures, setProcedures] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [openDialog, setOpenDialog] = useState(false);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDates, setSelectedDates] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(null);
+
+  const [newSurgery, setNewSurgery] = useState({
+    Surgery_date: "",
+    Hospital_name: "הלל יפה",
+    Patient_age: "",
+    Case_number: "",
+    Difficulty_level: "1",
+    procedureName: [],
+  });
 
   useEffect(() => {
     GetAllSurgeries()
@@ -72,6 +96,14 @@ export default function SurgerySchedule() {
       })
       .catch((error) => {
         console.error("Error in GetAllSurgeries: ", error);
+      });
+
+    GetAllProcedure()
+      .then((data) => {
+        setProcedures(data);
+      })
+      .catch((error) => {
+        console.error("Error in GetAllProcedure: ", error);
       });
   }, []);
 
@@ -132,12 +164,106 @@ export default function SurgerySchedule() {
     handleMouseUp();
   };
 
-  const days = generateCalendar(currentMonth);
-
   const handlePrevMonth = () =>
     setCurrentMonth(currentMonth.subtract(1, "month"));
   const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
   const handleToday = () => setCurrentMonth(dayjs());
+
+  const handleOpenAddDialog = (event) => {
+    setNewSurgery({
+      Surgery_date: dayjs(event.Surgery_date).format("YYYY-MM-DDTHH:mm"),
+      Hospital_name: event.Hospital_name,
+      Patient_age: event.Patient_age,
+      Case_number: event.Case_number,
+      Difficulty_level: event.Difficulty_level,
+      procedureName: event.procedureName,
+    });
+    setSelectedEvent(event);
+    setOpenAddDialog(true);
+  };
+
+  const handleCloseAddDialog = () => {
+    setOpenAddDialog(false);
+  };
+
+  const handleUpdateSurgery = () => {
+    Swal.fire({
+      title: "האם אתה בטוח?",
+      text: "האם אתה בטוח שברצונך לעדכן ניתוח זה?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "כן, עדכן",
+      cancelButtonText: "בטל",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Logic to update the surgery
+        const dateKey = newSurgery.Surgery_date.slice(0, 10);
+        let updatedEvents = { ...events };
+
+        // Remove the old event
+        const oldDateKey = dayjs(selectedEvent.Surgery_date).format(
+          "YYYY-MM-DD"
+        );
+        updatedEvents[oldDateKey] = updatedEvents[oldDateKey].filter(
+          (event) => event.Case_number !== selectedEvent.Case_number
+        );
+        if (updatedEvents[oldDateKey].length === 0) {
+          delete updatedEvents[oldDateKey];
+        }
+
+        // Add the updated event
+        if (!updatedEvents[dateKey]) {
+          updatedEvents[dateKey] = [];
+        }
+        updatedEvents[dateKey].push({
+          ...newSurgery,
+          displayText: `ניתוח ב${newSurgery.Hospital_name}`,
+          isNewMatch: false,
+        });
+
+        setEvents(updatedEvents);
+        setSelectedEvent(null);
+        handleCloseAddDialog();
+        Swal.fire("עודכן!", "הניתוח עודכן בהצלחה.", "success");
+      }
+    });
+  };
+
+  const handleOpenRemoveDialog = (event) => {
+    setSelectedEvent(event);
+    setOpenRemoveDialog(true);
+  };
+
+  const handleCloseRemoveDialog = () => {
+    setOpenRemoveDialog(false);
+    setSelectedEvent(null);
+  };
+
+  const handleRemoveSurgery = () => {
+    // Logic to remove the selected surgery
+    DeleteSurgeryFromSurgeriesSchedule(selectedEvent.Surgery_id).then(
+      (data) => {
+        const dateKey = selectedEvent.Surgery_date.slice(0, 10);
+        const updatedEvents = events[dateKey].filter(
+          (event) => event.Surgery_id !== selectedEvent.Surgery_id
+        );
+        if (updatedEvents.length === 0) {
+          delete events[dateKey];
+        } else {
+          events[dateKey] = updatedEvents;
+        }
+        setEvents({ ...events });
+        setSelectedDayEvents(updatedEvents);
+        handleCloseRemoveDialog();
+        if (data == 1) Swal.fire("נמחק!", "הניתוח נמחק בהצלחה.", "success");
+        else Swal.fire("הניתוח לא קיים", "", "error");
+      }
+    );
+  };
+
+  const days = generateCalendar(currentMonth);
 
   return (
     <>
@@ -198,11 +324,11 @@ export default function SurgerySchedule() {
           onTouchEnd={handleTouchEnd}
         >
           {["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"].map(
-            (day) => (
+            (day, index) => (
               <Grid
                 item
                 xs={1.714}
-                key={day}
+                key={index}
                 sx={{ textAlign: "center", fontWeight: "bold" }}
               >
                 {day}
@@ -213,7 +339,7 @@ export default function SurgerySchedule() {
             <Grid
               item
               xs={1.714}
-              key={index}
+              key={day.toString()}
               sx={{
                 height: 90,
                 border: "0.1px solid #ccc",
@@ -266,9 +392,9 @@ export default function SurgerySchedule() {
                   {day.format("D")}
                 </Typography>
 
-                {events[day.format("YYYY-MM-DD")]?.map((event, i) => (
+                {events[day.format("YYYY-MM-DD")]?.map((event) => (
                   <Typography
-                    key={i}
+                    key={event.Case_number}
                     variant="body2"
                     sx={{
                       color: "DarkBlue",
@@ -300,8 +426,8 @@ export default function SurgerySchedule() {
           <DialogContent>
             <List>
               {selectedDayEvents.length > 0 ? (
-                selectedDayEvents.map((event, index) => (
-                  <React.Fragment key={index}>
+                selectedDayEvents.map((event) => (
+                  <React.Fragment key={event.Case_number}>
                     <ListItem>
                       <ListItemAvatar>
                         <Avatar sx={{ bgcolor: "#85c1e9" }}>
@@ -340,6 +466,18 @@ export default function SurgerySchedule() {
                           </>
                         }
                       />
+                      <Button
+                        onClick={() => handleOpenAddDialog(event)}
+                        color="primary"
+                      >
+                        עדכן
+                      </Button>
+                      <Button
+                        onClick={() => handleOpenRemoveDialog(event)}
+                        color="error"
+                      >
+                        מחק
+                      </Button>
                     </ListItem>
                     <Divider variant="inset" component="li" />
                   </React.Fragment>
@@ -349,6 +487,168 @@ export default function SurgerySchedule() {
               )}
             </List>
           </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)} color="secondary">
+              סגור
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          dir="rtl"
+          open={openAddDialog}
+          onClose={handleCloseAddDialog}
+          aria-labelledby="add-dialog-title"
+        >
+          <DialogTitle id="add-dialog-title">עדכן ניתוח</DialogTitle>
+          <DialogContent dividers>
+            <TextField
+              margin="dense"
+              label="תאריך"
+              type="datetime-local"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={newSurgery.Surgery_date}
+              onChange={(e) =>
+                setNewSurgery({ ...newSurgery, Surgery_date: e.target.value })
+              }
+            />
+            <TextField
+              margin="dense"
+              label="מיקום"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={newSurgery.Hospital_name}
+              onChange={(e) =>
+                setNewSurgery({ ...newSurgery, Hospital_name: e.target.value })
+              }
+            />
+            <TextField
+              margin="dense"
+              label="גיל המטופל"
+              type="number"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={newSurgery.Patient_age}
+              onChange={(e) =>
+                setNewSurgery({ ...newSurgery, Patient_age: e.target.value })
+              }
+            />
+            <TextField
+              margin="dense"
+              label="מספר תיק"
+              type="number"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={newSurgery.Case_number}
+              onChange={(e) =>
+                setNewSurgery({ ...newSurgery, Case_number: e.target.value })
+              }
+            />
+            <TextField
+              margin="dense"
+              label="רמת קושי"
+              type="number"
+              fullWidth
+              InputProps={{ inputProps: { min: 1, max: 3 } }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={newSurgery.Difficulty_level}
+              onChange={(e) =>
+                setNewSurgery({
+                  ...newSurgery,
+                  Difficulty_level: e.target.value,
+                })
+              }
+            />
+            <FormControl fullWidth margin="dense">
+              <Autocomplete
+                multiple
+                id="procedure-name-autocomplete"
+                options={procedures}
+                getOptionLabel={(option) => option.procedureName}
+                defaultValue={[]}
+                value={newSurgery.procedureName.map(
+                  (name) =>
+                    procedures.find(
+                      (procedure) => procedure.procedureName === name
+                    ) || {
+                      procedureName: name,
+                    }
+                )}
+                onChange={(event, newValue) => {
+                  setNewSurgery({
+                    ...newSurgery,
+                    procedureName: newValue.map(
+                      (option) => option.procedureName
+                    ),
+                  });
+                }}
+                renderTags={(tagValue, getTagProps) =>
+                  tagValue.map((option, index) => {
+                    const tagProps = getTagProps({ index });
+                    return (
+                      <Chip
+                        key={option.procedureName}
+                        label={option.procedureName}
+                        {...Object.keys(tagProps).reduce((acc, prop) => {
+                          if (prop !== "key") acc[prop] = tagProps[prop];
+                          return acc;
+                        }, {})}
+                      />
+                    );
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    margin="dense"
+                    label="פרוצדורות"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                )}
+              />
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleUpdateSurgery} color="primary">
+              אשר
+            </Button>
+            <Button onClick={handleCloseAddDialog} color="secondary">
+              בטל
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          dir="rtl"
+          open={openRemoveDialog}
+          onClose={handleCloseRemoveDialog}
+          aria-labelledby="remove-dialog-title"
+        >
+          <DialogTitle id="remove-dialog-title">מחיקת ניתוח</DialogTitle>
+          <DialogContent dividers>
+            <Typography>האם אתה בטוח שברצונך למחוק את הניתוח הזה?</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleRemoveSurgery} color="primary">
+              כן
+            </Button>
+            <Button onClick={handleCloseRemoveDialog} color="secondary">
+              לא
+            </Button>
+          </DialogActions>
         </Dialog>
       </Box>
     </>
