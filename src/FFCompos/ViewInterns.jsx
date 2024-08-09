@@ -184,7 +184,7 @@ export default function ViewInterns() {
           overflowY: "auto",
           display: "flex",
           justifyContent: "center",
-          mb: 4,
+          mb: 2,
           mx: "auto",
         }}
       >
