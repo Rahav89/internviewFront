@@ -512,7 +512,6 @@ export const AddProcedureInSurgery = (surgery_id , procedure_Id) => {
     },  
   })
     .then((response) => {
-      console.log(Surgery)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

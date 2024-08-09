@@ -29,7 +29,7 @@ import * as XLSX from "xlsx";
 import MenuLogo from "../FFCompos/MenuLogo";
 import excelImage from "../Image/exelPhoto.png";
 import { styled } from "@mui/material/styles";
-import { InsertSurgery, GetAllProcedure } from "../FFCompos/Server.jsx";
+import { InsertSurgery, GetAllProcedure, AddProcedureInSurgery } from "../FFCompos/Server.jsx";
 import Swal from "sweetalert2";
 
 const VisuallyHiddenInput = styled("input")({
@@ -84,6 +84,14 @@ export default function AddSurgeries() {
     difficultyLevel: "",
     productionCodes: [],
   });
+  const [errors, setErrors] = useState({
+    caseNumber: false,
+    patientAge: false,
+    surgeryDate: false,
+    surgeryTime: false,
+    difficultyLevel: false,
+    productionCodes: false,
+  });
   const [procedures, setProcedures] = useState([]);
 
   useEffect(() => {
@@ -98,11 +106,28 @@ export default function AddSurgeries() {
 
   const handleSingleFormChange = (event) => {
     const { name, value } = event.target;
+
+    let validatedValue = value;
+
+    if (name === "patientAge") {
+      if (value < 0) {
+        validatedValue = 0;
+      } else if (value > 120) {
+        validatedValue = 120;
+      }
+    }
+
     setNewSurgery((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: validatedValue,
+    }));
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: !validatedValue,
     }));
   };
+
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -120,6 +145,7 @@ export default function AddSurgeries() {
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
       let incomplete = false;
+      let invalid = false;
       const objects = jsonData
         .slice(1)
         .filter((row, index) => {
@@ -133,6 +159,7 @@ export default function AddSurgeries() {
           );
           if (!hasData) return false;
 
+          // Check if all required fields are complete
           const isComplete =
             row.length >= 6 &&
             row[0] &&
@@ -144,17 +171,67 @@ export default function AddSurgeries() {
           if (!isComplete) {
             incomplete = true;
             console.warn(`Incomplete data on row ${index + 1}:`, row);
+            return false;
           }
-          return isComplete;
+
+          // Validate the data
+          const caseNumber = row[0];
+          const patientAge = parseInt(row[1]);
+          const surgeryDateRaw = row[2];
+          const surgeryTimeRaw = row[3];
+          const difficultyLevel = parseInt(row[4]);
+
+          const productionCodes = String(row[5]).split(",").map(code => code.trim());
+
+          const isCaseNumberValid = /^[0-9]+$/.test(caseNumber);
+          const isPatientAgeValid = patientAge >= 0 && patientAge <= 120;
+
+          // Convert and check the date and time
+          const surgeryDate = convertExcelDateToJSDate(surgeryDateRaw);
+          const surgeryTime = convertExcelTimeToReadableTime(surgeryTimeRaw);
+          const isSurgeryDateValid = !isNaN(new Date(surgeryDate).getTime());
+          const isSurgeryTimeValid = /^([01]\d|2[0-3]):([0-5]\d)$/.test(surgeryTime);
+
+          const isDifficultyLevelValid = difficultyLevel >= 1 && difficultyLevel <= 5;
+          const areProductionCodesValid = productionCodes.every(code => /^[0-9]+$/.test(code));
+
+          if (
+            !isCaseNumberValid ||
+            !isPatientAgeValid ||
+            !isSurgeryDateValid ||
+            !isSurgeryTimeValid ||
+            !isDifficultyLevelValid ||
+            !areProductionCodesValid
+          ) {
+            console.log(isCaseNumberValid, "isCaseNumberValid")
+            console.log(isPatientAgeValid, "isPatientAgeValid")
+            console.log(isSurgeryDateValid, "isSurgeryDateValid")
+            console.log(isSurgeryTimeValid, "isSurgeryTimeValid")
+            console.log(isDifficultyLevelValid, "isDifficultyLevelValid")
+            console.log(areProductionCodesValid, "areProductionCodesValid")
+            invalid = true;
+            console.warn(`Invalid data on row ${index + 1}:`, row);
+            return false;
+          }
+
+          return true;
         })
         .map((row) => ({
           caseNumber: row[0],
-          patientAge: row[1],
+          patientAge: parseInt(row[1]),
           surgeryDate: convertExcelDateToJSDate(row[2]),
           surgeryTime: convertExcelTimeToReadableTime(row[3]),
-          difficultyLevel: row[4],
-          productionCodes: row[5],
+          difficultyLevel: parseInt(row[4]),
+          productionCodes: String(row[5]).split(",").map(code => code.trim()),
         }));
+
+      if (invalid) {
+        Swal.fire({
+          icon: "error",
+          title: "שגיאה בנתונים",
+          text: "חלק מהשורות מכילות נתונים שאינם בפורמט הנכון ולכן לא יועלו למערכת.",
+        });
+      }
 
       setHasIncomplete(incomplete);
       setLoadedSurgeries(objects);
@@ -163,6 +240,7 @@ export default function AddSurgeries() {
 
     reader.readAsArrayBuffer(file);
   };
+
 
   const handleDownload = (event) => {
     event.preventDefault();
@@ -184,15 +262,6 @@ export default function AddSurgeries() {
     await Promise.all(
       loadedSurgeries.map(async (surgery) => {
         try {
-          if (new Date(surgery.surgeryDate) < new Date()) {
-            Swal.fire({
-              icon: "error",
-              title: "תאריך לא תקין",
-              text: "לא ניתן לקבוע תאריך ניתוח לפני התאריך הנוכחי.",
-            });
-            return;
-          }
-
           const response = await InsertSurgery({
             surgery_id: 0,
             case_number: surgery.caseNumber,
@@ -200,13 +269,20 @@ export default function AddSurgeries() {
             surgery_date:
               surgery.surgeryDate + "T" + surgery.surgeryTime + ":00",
             difficulty_level: surgery.difficultyLevel,
-            production_codes: surgery.productionCodes,
+            production_codes: surgery.productionCodes.join(", "),  // שילוב קודי הפרוצדורות למחרוזת
             hospital_name: "",
           });
 
           console.log("Surgery inserted:", response);
 
           if (response !== -1 && response !== -2) {
+            // Add procedures to the surgery
+            await Promise.all(
+              surgery.productionCodes.map(async (procedure_Id) => {
+                await AddProcedureInSurgery(response, procedure_Id);
+              })
+            );
+
             successfulSurgeries.push(surgery);
           } else {
             let errorMsg = "";
@@ -248,19 +324,35 @@ export default function AddSurgeries() {
       difficultyLevel: "",
       productionCodes: [],
     });
+    setErrors({
+      caseNumber: false,
+      patientAge: false,
+      surgeryDate: false,
+      surgeryTime: false,
+      difficultyLevel: false,
+      productionCodes: false,
+    });
   };
 
+
   const handleSingleFormSubmit = async () => {
+    const newErrors = {
+      caseNumber: !newSurgery.caseNumber,
+      patientAge: !newSurgery.patientAge,
+      surgeryDate: !newSurgery.surgeryDate,
+      surgeryTime: !newSurgery.surgeryTime,
+      difficultyLevel: !newSurgery.difficultyLevel,
+      productionCodes: newSurgery.productionCodes.length === 0,
+    };
+
+    setErrors(newErrors);
+
+    // אם יש שדות ריקים, יש להפסיק את השליחה
+    if (Object.values(newErrors).some((error) => error)) {
+      return;
+    }
+
     try {
-      // Validate the surgery date
-      if (new Date(newSurgery.surgeryDate) < new Date()) {
-        Swal.fire({
-          icon: "error",
-          title: "תאריך לא תקין",
-          text: "לא ניתן לקבוע תאריך ניתוח לפני התאריך הנוכחי.",
-        });
-        return;
-      }
 
       const response = await InsertSurgery({
         surgery_id: 0,
@@ -276,6 +368,13 @@ export default function AddSurgeries() {
       console.log("Single surgery inserted:", response);
 
       if (response !== -1 && response !== -2) {
+        // Add procedures to the surgery
+        await Promise.all(
+          newSurgery.productionCodes.map(async (procedure_Id) => {
+            await AddProcedureInSurgery(response, procedure_Id);
+          })
+        );
+
         setSurgeries([newSurgery]);
         setIsConfirmed(true);
       } else {
@@ -392,9 +491,9 @@ export default function AddSurgeries() {
                     :ניתוחים שהועלו מקובץ האקסל
                   </Typography>
                   <TableContainer component={Paper} sx={{ mt: 2 }}>
-                  <Table sx={{ direction: "rtl"}}>
+                    <Table sx={{ direction: "rtl" }}>
                       <TableHead>
-                        <TableRow sx={{ backgroundColor: "rgb(25 118 210)" ,color:'white',textAlign:'center'}}>
+                        <TableRow sx={{ backgroundColor: "rgb(25 118 210)", color: 'white', textAlign: 'center' }}>
                           <TableCell align="right" sx={{ color: 'white' }}>מספר מקרה</TableCell>
                           <TableCell align="right" sx={{ color: 'white' }}>גיל מטופל</TableCell>
                           <TableCell align="right" sx={{ color: 'white' }}>תאריך הניתוח</TableCell>
@@ -411,7 +510,7 @@ export default function AddSurgeries() {
                             <TableCell>{obj.surgeryDate}</TableCell>
                             <TableCell>{obj.surgeryTime}</TableCell>
                             <TableCell>{obj.difficultyLevel}</TableCell>
-                            <TableCell>{obj.productionCodes}</TableCell>
+                            <TableCell>{obj.productionCodes.join(", ")}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -435,7 +534,7 @@ export default function AddSurgeries() {
         aria-labelledby="dialog-title"
         aria-describedby="dialog-description"
       >
-       
+
         <DialogContent>
           <DialogContentText id="dialog-description">
             {hasIncomplete
@@ -443,7 +542,7 @@ export default function AddSurgeries() {
               : "האם אתה בטוח שברצונך להעלות את הקובץ?"}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>          
+        <DialogActions>
           <Button onClick={handleContinueDialog} color="primary">
             אישור
           </Button>
@@ -460,9 +559,12 @@ export default function AddSurgeries() {
             margin="dense"
             label="מספר מקרה"
             name="caseNumber"
+            type="number"
             fullWidth
             value={newSurgery.caseNumber}
             onChange={handleSingleFormChange}
+            error={errors.caseNumber}
+            helperText={errors.caseNumber ? "שדה חובה" : ""}
             InputLabelProps={{
               shrink: true,
             }}
@@ -475,10 +577,18 @@ export default function AddSurgeries() {
             fullWidth
             value={newSurgery.patientAge}
             onChange={handleSingleFormChange}
+            error={errors.patientAge}
+            helperText={errors.patientAge ? "שדה חובה" : ""}
             InputLabelProps={{
               shrink: true,
             }}
+            inputProps={{
+              min: 0,
+              max: 120,
+              step: 1,
+            }}
           />
+
           <TextField
             margin="dense"
             label="תאריך הניתוח"
@@ -487,6 +597,8 @@ export default function AddSurgeries() {
             fullWidth
             value={newSurgery.surgeryDate}
             onChange={handleSingleFormChange}
+            error={errors.surgeryDate}
+            helperText={errors.surgeryDate ? "שדה חובה" : ""}
             InputLabelProps={{
               shrink: true,
             }}
@@ -499,6 +611,8 @@ export default function AddSurgeries() {
             fullWidth
             value={newSurgery.surgeryTime}
             onChange={handleSingleFormChange}
+            error={errors.surgeryTime}
+            helperText={errors.surgeryTime ? "שדה חובה" : ""}
             InputLabelProps={{
               shrink: true,
             }}
@@ -511,6 +625,8 @@ export default function AddSurgeries() {
             fullWidth
             value={newSurgery.difficultyLevel}
             onChange={handleSingleFormChange}
+            error={errors.difficultyLevel}
+            helperText={errors.difficultyLevel ? "שדה חובה" : ""}
           >
             {[1, 2, 3, 4, 5].map((level) => (
               <MenuItem key={level} value={level}>
@@ -518,7 +634,7 @@ export default function AddSurgeries() {
               </MenuItem>
             ))}
           </TextField>
-          <FormControl fullWidth margin="dense">
+          <FormControl fullWidth margin="dense" error={errors.productionCodes}>
             <InputLabel id="procedure-code-label">קודי הפרוצדורות</InputLabel>
             <Select
               labelId="procedure-code-label"
@@ -535,13 +651,14 @@ export default function AddSurgeries() {
             >
               {procedures.map((procedure) => (
                 <MenuItem
-                  key={procedure.procedure_Id}A
+                  key={procedure.procedure_Id}
                   value={procedure.procedure_Id}
                 >
                   {procedure.procedure_Id}
                 </MenuItem>
               ))}
             </Select>
+            {errors.productionCodes && <Typography color="error">שדה חובה</Typography>}
           </FormControl>
         </DialogContent>
         <DialogActions>
