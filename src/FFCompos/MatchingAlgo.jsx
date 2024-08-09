@@ -10,9 +10,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 // Import your components
 import WeightsSelection from "../routingForAlgo/WeightsSelection";
-import AddSurgery from "../routingForAlgo/AddSurgeries";
 import SurgerySchedule from "../routingForAlgo/SurgerySchedule";
-import InternScheduling from "../routingForAlgo/InternScheduling"; // Import your new component
+import InternScheduling from "../routingForAlgo/InternScheduling";
+import WeeklySchedule from "../routingForAlgo/weeklySchedule"; // Import your new component
 
 export default function MatchingAlgo({ defaultComponent }) {
   const theme = useTheme();
@@ -27,8 +27,8 @@ export default function MatchingAlgo({ defaultComponent }) {
     switch (selectedComponent) {
       case "weights":
         return <WeightsSelection />;
-      case "addSurgery":
-        return <AddSurgery />;
+      case "weeklySchedule":
+        return <WeeklySchedule />;
       case "schedule":
         return <SurgerySchedule />;
       case "internScheduling":
@@ -40,7 +40,7 @@ export default function MatchingAlgo({ defaultComponent }) {
 
   const renderButtons = () => {
     const buttonOrder = [
-      "addSurgery",
+      "weeklySchedule",
       "weights",
       "internScheduling",
       "schedule",
@@ -93,8 +93,8 @@ export default function MatchingAlgo({ defaultComponent }) {
 
   const getIconForButton = (buttonType) => {
     switch (buttonType) {
-      case "addSurgery":
-        return <CloudUploadIcon />;
+      case "weeklySchedule":
+        return <CloudUploadIcon />; // Replace with an appropriate icon
       case "weights":
         return <PublishedWithChangesIcon />;
       case "internScheduling":
@@ -108,8 +108,8 @@ export default function MatchingAlgo({ defaultComponent }) {
 
   const getLabelForButton = (buttonType) => {
     switch (buttonType) {
-      case "addSurgery":
-        return "העלאת ניתוחים";
+      case "weeklySchedule":
+        return "לו״ז שבועי";
       case "weights":
         return "בחירת משקלים לשיבוץ";
       case "internScheduling":

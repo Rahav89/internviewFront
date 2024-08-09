@@ -40,7 +40,7 @@ export default function MangerPage() {
     {
       title: "שיבוצים לניתוחים שבועיים",
       icon: <CalendarMonthIcon fontSize="large" color="primary" />,
-      link: "",
+      link: "/WeeklySchedule",
     },
   ];
 
@@ -80,7 +80,7 @@ export default function MangerPage() {
                       textDecoration: "none", // הסרת הקו התחתון מהטקסט בלינק
                       color: "inherit", // שימוש בצבע הטקסט ברירת המחדל
                       width: "100%", // התאמה למלוא הרוחב של ה-Grid item
-                      maxWidth: "250px", // הגבלת הרוחב המקסימלי לכרטיס
+                      maxWidth: "170px", // הגבלת הרוחב המקסימלי לכרטיס
                     }}
                   >
                     {action.icon} {/* הצגת האייקון של הפעולה */}

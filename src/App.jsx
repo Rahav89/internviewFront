@@ -19,10 +19,11 @@ import ShowSyllabusPerIntern from "./FFCompos/ShowSyllabusPerIntern";
 import CalenderAllSurgeries from "./FFCompos/CalenderAllSurgeries";
 
 // Import new components
-import AddSurgeries from "./routingForAlgo/AddSurgeries";
 import InternScheduling from "./routingForAlgo/InternScheduling";
+import AddSurgeries from "./FFCompos/AddSurgeries";
 import SurgerySchedule from "./routingForAlgo/SurgerySchedule";
 import WeightsSelection from "./routingForAlgo/WeightsSelection";
+import WeeklySchedule from "./routingForAlgo/weeklySchedule"; // Import the new weeklySchedule component
 
 const theme = createTheme({
   typography: {
@@ -36,6 +37,7 @@ function App() {
     document.body.style.backgroundColor = theme.palette.background.default;
     document.body.style.color = "black";
   }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -57,10 +59,11 @@ function App() {
 
           {/* New routes for routingForAlgo components */}
           <Route path="/InternScheduling" element={<MatchingAlgo defaultComponent="internScheduling" />} />
-          <Route path="/AddSurgeries" element={<MatchingAlgo defaultComponent="addSurgery" />} />
-          {/* <Route path="/AddSurgeries" element={<AddSurgeries />} /> */}
+          {<Route path="/AddSurgeries" element={<AddSurgeries />} /> }
           <Route path="/SurgerySchedule" element={<SurgerySchedule />} />
           <Route path="/WeightsSelection" element={<WeightsSelection />} />
+          {/* Add the new weeklySchedule route */}
+          <Route path="/WeeklySchedule" element={<MatchingAlgo defaultComponent="weeklySchedule" />} />
         </Routes>
       </Router>
     </ThemeProvider>
