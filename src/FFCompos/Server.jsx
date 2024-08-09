@@ -436,6 +436,28 @@ export const Get_Algorithm_Weights = () => {
     });
 };
 
+// Function to get all surgeries With Procedures
+export const GetAllSurgeriesWithProcedures = () => {
+  
+  return fetch(`${api}Surgeries/GetAllSurgeriesWithProcedures`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in GetAllSurgeriesWithProcedures: ", error);
+      throw error;
+    });
+};
+
+
 // Function to get all surgeries
 export const GetAllSurgeries = () => {
   
@@ -456,6 +478,7 @@ export const GetAllSurgeries = () => {
       throw error;
     });
 };
+
 
 //function to ADD surgery
 export const InsertSurgery = (Surgery) => {
@@ -565,4 +588,35 @@ export const DeleteSurgeryFromSurgeriesSchedule = (surgery_id) => {
       throw error;
     });
   
+};
+
+
+// Function to update Surgeries details
+export const UpdateSurgeries = (Surgery_id, formData) => {
+  const SurgeryObjectUpdate = {
+    Surgery_id: Surgery_id,
+    Patient_age: formData.Patient_age,
+    Difficulty_level: formData.Difficulty_level,
+    Case_number: formData.Case_number,
+    Surgery_date: formData.Surgery_date,
+    Hospital_name: formData.Hospital_name || "הלל יפה",
+  };
+
+  return fetch(`${api}Surgeries/UpdateSurgeries/${Surgery_id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(SurgeryObjectUpdate),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in UpdateSurgeries: ", error);
+      throw error;
+    });
 };

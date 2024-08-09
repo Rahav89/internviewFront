@@ -29,9 +29,10 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import TodayIcon from "@mui/icons-material/Today";
 import Swal from "sweetalert2";
 import {
-  GetAllSurgeries,
+  GetAllSurgeriesWithProcedures,
   GetAllProcedure,
   DeleteSurgeryFromSurgeriesSchedule,
+  UpdateSurgeries,
 } from "../FFCompos/Server.jsx";
 
 dayjs.extend(isSameOrBefore);
@@ -69,13 +70,14 @@ export default function SurgerySchedule() {
     Hospital_name: "הלל יפה",
     Patient_age: "",
     Case_number: "",
-    Difficulty_level: "1",
+    Difficulty_level: "",
     procedureName: [],
   });
 
   useEffect(() => {
-    GetAllSurgeries()
+    GetAllSurgeriesWithProcedures()
       .then((data) => {
+        //console.log(data);
         let allEvents = {};
         data.forEach((surgery) => {
           if (surgery.Surgery_date) {
@@ -95,7 +97,7 @@ export default function SurgerySchedule() {
         setEvents(allEvents);
       })
       .catch((error) => {
-        console.error("Error in GetAllSurgeries: ", error);
+        console.error("Error in GetAllSurgeriesWithProcedures: ", error);
       });
 
     GetAllProcedure()
@@ -199,34 +201,44 @@ export default function SurgerySchedule() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Logic to update the surgery
-        const dateKey = newSurgery.Surgery_date.slice(0, 10);
-        let updatedEvents = { ...events };
+        console.log(selectedEvent.Surgery_id);
+        
+        // UpdateSurgeries(selectedEvent.Surgery_id, newSurgery)
+        //   .then(() => {
+        //     //console.log(events);
 
-        // Remove the old event
-        const oldDateKey = dayjs(selectedEvent.Surgery_date).format(
-          "YYYY-MM-DD"
-        );
-        updatedEvents[oldDateKey] = updatedEvents[oldDateKey].filter(
-          (event) => event.Case_number !== selectedEvent.Case_number
-        );
-        if (updatedEvents[oldDateKey].length === 0) {
-          delete updatedEvents[oldDateKey];
-        }
+        //     const dateKey = newSurgery.Surgery_date.slice(0, 10);
+        //     let updatedEvents = { ...events };
+        //     // Remove the old event
+        //     const oldDateKey = dayjs(selectedEvent.Surgery_date).format(
+        //       "YYYY-MM-DD"
+        //     );
+        //     updatedEvents[oldDateKey] = updatedEvents[oldDateKey].filter(
+        //       (event) => event.Surgery_id !== selectedEvent.Surgery_id
+        //     );
+        //     if (updatedEvents[oldDateKey].length === 0) {
+        //       delete updatedEvents[oldDateKey];
+        //     }
 
-        // Add the updated event
-        if (!updatedEvents[dateKey]) {
-          updatedEvents[dateKey] = [];
-        }
-        updatedEvents[dateKey].push({
-          ...newSurgery,
-          displayText: `ניתוח ב${newSurgery.Hospital_name}`,
-          isNewMatch: false,
-        });
+        //     // Add the updated event
+        //     if (!updatedEvents[dateKey]) {
+        //       updatedEvents[dateKey] = [];
+        //     }
+        //     updatedEvents[dateKey].push({
+        //       ...newSurgery,
+        //       displayText: `ניתוח ב${newSurgery.Hospital_name}`,
+        //       isNewMatch: false,
+        //     });
 
-        setEvents(updatedEvents);
-        setSelectedEvent(null);
-        handleCloseAddDialog();
-        Swal.fire("עודכן!", "הניתוח עודכן בהצלחה.", "success");
+        //     setEvents(updatedEvents);
+        //     setSelectedDayEvents(updatedEvents[dateKey])
+        //     // setSelectedEvent(null);
+        //     handleCloseAddDialog();
+        //     Swal.fire("עודכן!", "הניתוח עודכן בהצלחה.", "success");
+        //   })
+        //   .catch((error) => {
+        //     Swal.fire("שגיאה", "אירעה שגיאה בעת עדכון הניתוח.", "error");
+        //   });
       }
     });
   };
