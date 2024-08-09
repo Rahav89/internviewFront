@@ -503,6 +503,29 @@ export const InsertSurgery = (Surgery) => {
   
 };
 
+//function to ADD surgery
+export const AddProcedureInSurgery = (surgery_id , procedure_Id) => {
+  return fetch(`${api}Surgeries/AddProcedureInSurgery/${surgery_id}/${procedure_Id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },  
+  })
+    .then((response) => {
+      console.log(Surgery)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in InsertSurgery: ", error);
+      throw error;
+    });
+  
+};
+
+
 //function to ADD Intern Duty Schedule
 export const AddInternDutySchedule = (Scheduling) => {
   return fetch(`${api}InternsShiftsSchedule/AddInternDutySchedule`, {
