@@ -173,6 +173,7 @@ export default function SurgerySchedule() {
 
   const handleOpenAddDialog = (event) => {
     setNewSurgery({
+      Surgery_id: event.Surgery_id,
       Surgery_date: dayjs(event.Surgery_date).format("YYYY-MM-DDTHH:mm"),
       Hospital_name: event.Hospital_name,
       Patient_age: event.Patient_age,
@@ -201,44 +202,41 @@ export default function SurgerySchedule() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Logic to update the surgery
-        console.log(selectedEvent.Surgery_id);
-        
-        // UpdateSurgeries(selectedEvent.Surgery_id, newSurgery)
-        //   .then(() => {
-        //     //console.log(events);
+        UpdateSurgeries(selectedEvent.Surgery_id, newSurgery)
+          .then(() => {
+            //console.log(events);
 
-        //     const dateKey = newSurgery.Surgery_date.slice(0, 10);
-        //     let updatedEvents = { ...events };
-        //     // Remove the old event
-        //     const oldDateKey = dayjs(selectedEvent.Surgery_date).format(
-        //       "YYYY-MM-DD"
-        //     );
-        //     updatedEvents[oldDateKey] = updatedEvents[oldDateKey].filter(
-        //       (event) => event.Surgery_id !== selectedEvent.Surgery_id
-        //     );
-        //     if (updatedEvents[oldDateKey].length === 0) {
-        //       delete updatedEvents[oldDateKey];
-        //     }
+            const dateKey = newSurgery.Surgery_date.slice(0, 10);
+            let updatedEvents = { ...events };
+            // Remove the old event
+            const oldDateKey = dayjs(selectedEvent.Surgery_date).format(
+              "YYYY-MM-DD"
+            );
+            updatedEvents[oldDateKey] = updatedEvents[oldDateKey].filter(
+              (event) => event.Surgery_id !== selectedEvent.Surgery_id
+            );
+            if (updatedEvents[oldDateKey].length === 0) {
+              delete updatedEvents[oldDateKey];
+            }
 
-        //     // Add the updated event
-        //     if (!updatedEvents[dateKey]) {
-        //       updatedEvents[dateKey] = [];
-        //     }
-        //     updatedEvents[dateKey].push({
-        //       ...newSurgery,
-        //       displayText: `ניתוח ב${newSurgery.Hospital_name}`,
-        //       isNewMatch: false,
-        //     });
+            // Add the updated event
+            if (!updatedEvents[dateKey]) {
+              updatedEvents[dateKey] = [];
+            }
+            updatedEvents[dateKey].push({
+              ...newSurgery,
+              displayText: `ניתוח ב${newSurgery.Hospital_name}`,
+              isNewMatch: false,
+            });
 
-        //     setEvents(updatedEvents);
-        //     setSelectedDayEvents(updatedEvents[dateKey])
-        //     // setSelectedEvent(null);
-        //     handleCloseAddDialog();
-        //     Swal.fire("עודכן!", "הניתוח עודכן בהצלחה.", "success");
-        //   })
-        //   .catch((error) => {
-        //     Swal.fire("שגיאה", "אירעה שגיאה בעת עדכון הניתוח.", "error");
-        //   });
+            setEvents(updatedEvents);
+            setSelectedDayEvents(updatedEvents[dateKey]);
+            handleCloseAddDialog();
+            Swal.fire("עודכן!", "הניתוח עודכן בהצלחה.", "success");
+          })
+          .catch((error) => {
+            Swal.fire("שגיאה", "אירעה שגיאה בעת עדכון הניתוח.", "error");
+          });
       }
     });
   };
