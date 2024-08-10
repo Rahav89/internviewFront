@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Container,
-  Grid,
   Button,
   Typography,
   Dialog,
@@ -42,6 +41,7 @@ const VisuallyHiddenInput = styled("input")({
   pointerEvents: "none",
 });
 
+// Helper functions to convert Excel data
 function convertExcelTimeToReadableTime(excelTime) {
   const totalMinutes = Math.round(excelTime * 24 * 60);
   const hours = Math.floor(totalMinutes / 60);
@@ -127,7 +127,6 @@ export default function AddSurgeries() {
       [name]: !validatedValue,
     }));
   };
-
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -241,7 +240,6 @@ export default function AddSurgeries() {
     reader.readAsArrayBuffer(file);
   };
 
-
   const handleDownload = (event) => {
     event.preventDefault();
     const link = document.createElement("a");
@@ -334,7 +332,6 @@ export default function AddSurgeries() {
     });
   };
 
-
   const handleSingleFormSubmit = async () => {
     const newErrors = {
       caseNumber: !newSurgery.caseNumber,
@@ -401,17 +398,10 @@ export default function AddSurgeries() {
 
   return (
     <>
-    
       <MenuLogo />
       <Container maxWidth="lg" sx={{ mt: 12, mb: 3 }}>
-        <Grid
-          container
-          spacing={3}
-          alignItems="center"
-          justifyContent="center"
-          direction="column"
-        >
-          <Grid item>
+        <Box spacing={3} alignItems="center" justifyContent="center" direction="column">
+          <Box >
             <Button
               component="label"
               variant="contained"
@@ -432,9 +422,9 @@ export default function AddSurgeries() {
             >
               העלאת ניתוח בודד
             </Button>
-          </Grid>
+          </Box>
 
-          <Grid item>
+          <Box >
             <Typography variant="h6" align="center">
               ניתן להעלות גם ניתוחים בעזרת אקסל <br />
               שים ❤️️ - על האקסל להיות <b> בפורמט המתאים</b>
@@ -448,20 +438,21 @@ export default function AddSurgeries() {
             <Typography
               variant="body1"
               align="center"
-              sx={{ mt: -1.5, color: "green" }}
+              sx={{ mt: 1, color: "green" }}
               onClick={handleDownload}
             >
               לחץ על התמונה על מנת לעבוד <b> בפורמט</b>
             </Typography>
-          </Grid>
+          </Box>
 
-          <Grid item>
+          <Box >
             <Button
               component="label"
               variant="contained"
               startIcon={<CloudUploadIcon />}
               sx={{
                 width: "300px",
+                m:1,
                 backgroundColor: "white",
                 color: "#1976d2",
                 borderColor: "#1976d2",
@@ -482,13 +473,13 @@ export default function AddSurgeries() {
                 tabIndex="-1"
               />
             </Button>
-          </Grid>
+          </Box>
 
           {isConfirmed && (
-            <Grid item>
+            <Box >
               {surgeries.length > 0 ? (
                 <>
-                  <Typography variant="h6" align="center">
+                  <Typography variant="h6" align="center" fontWeight={'bold'}>
                     :ניתוחים שהועלו מקובץ האקסל
                   </Typography>
                   <TableContainer component={Paper} sx={{ mt: 2 }}>
@@ -523,9 +514,9 @@ export default function AddSurgeries() {
                   לא הועלה אף ניתוח למערכת
                 </Typography>
               )}
-            </Grid>
+            </Box>
           )}
-        </Grid>
+        </Box>
       </Container>
 
       <Dialog
@@ -535,7 +526,6 @@ export default function AddSurgeries() {
         aria-labelledby="dialog-title"
         aria-describedby="dialog-description"
       >
-
         <DialogContent>
           <DialogContentText id="dialog-description">
             {hasIncomplete

@@ -59,7 +59,7 @@ export default function MangerPage() {
               action,
               index /* מיפוי על כל פעולה במערך כדי ליצור כפתור עם פרטים מותאמים */
             ) => (
-              <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
+              <Grid item xs={6} sm={4} md={4} lg={2} key={index}>
                 <Box display="flex" justifyContent="center">
                   <Paper
                     component={Link}
