@@ -64,6 +64,7 @@ function App() {
           <Route path="/WeightsSelection" element={<WeightsSelection />} />
           {/* Add the new weeklySchedule route */}
           <Route path="/WeeklySchedule" element={<MatchingAlgo defaultComponent="weeklySchedule" />} />
+          <Route path="/weights" element={<MatchingAlgo defaultComponent="weights" />} />
         </Routes>
       </Router>
     </ThemeProvider>

@@ -46,7 +46,7 @@ export default function MangerPage() {
 
   return (
     <>
-      <MenuLogo /> {/* רכיב שמציג את הלוגו או תפריט המנהל */}
+      <MenuLogo role="manager" /> {/* רכיב שמציג את הלוגו או תפריט המנהל */}
       <ViewInterns /> {/* רכיב להצגת מתמחים */}
       <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
         <Grid

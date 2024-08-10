@@ -155,8 +155,8 @@ export default function DetailedSyllabusTable(props) {
             onClick={() =>
               row.procedure_Id
                 ? navigate(`/details/${row.procedure_Id}`, {
-                    state: { procedureId: row.procedure_Id ,internID},
-                  })
+                  state: { procedureId: row.procedure_Id, internID },
+                })
                 : null
             }
           >
@@ -272,10 +272,10 @@ export default function DetailedSyllabusTable(props) {
                               onClick={() =>
                                 categoryRow.id
                                   ? navigate(`/details/${categoryRow.id}`, {
-                                      state: {
-                                        procedureId: categoryRow.id,internID
-                                      },
-                                    })
+                                    state: {
+                                      procedureId: categoryRow.id, internID
+                                    },
+                                  })
                                   : null
                               }
                             >
@@ -379,14 +379,7 @@ export default function DetailedSyllabusTable(props) {
 
   return (
     <>
-      <MenuLogo />
-      {/* <Grid item xs={12}>
-        <Box display="flex" justifyContent="center">
-          <Typography variant="h5" fontWeight="600" mt={10} mb={-4}>
-          צפייה בסילבוס המלא
-          </Typography>
-        </Box>
-      </Grid> */}
+      <MenuLogo role="intern" />
       <Grid container spacing={2}>
         <Box display="flex" justifyContent="center">
           <Grid item xs={11} alignItems="center">

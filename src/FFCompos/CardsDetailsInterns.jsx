@@ -118,7 +118,7 @@ export default function CardsDetailsInterns() {
 
   return (
     <>
-      <MenuLogo />
+         <MenuLogo role="intern" />
       <Typography
         variant="h6"
         sx={{ marginTop: 8, textAlign: "center", fontWeight: "bold" }}

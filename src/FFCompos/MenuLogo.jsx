@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -21,9 +21,9 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import SettingsIcon from "@mui/icons-material/Settings";
 import logoInternView from "/src/Image/InternViewW.png";
 import { GetInternByID } from "./Server.jsx";
-// import AddBoxIcon from "@mui/icons-material/AddBox";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import HamburgerMenu from "./HamburgerMenu"; // Import the Hamburger Menu component
 
 const settings = [
   {
@@ -31,7 +31,6 @@ const settings = [
     icon: <SettingsIcon />,
     action: "profile",
   },
-  // { label: "\u00A0\u00A0\ניהול מתמחים", icon: <AddBoxIcon />, action: "addIntern" },
   { label: "צפייה כמתמחה", icon: <RemoveRedEyeIcon />, action: "intern" },
   {
     label: "\u00A0\u00A0צפייה כמנהל",
@@ -45,14 +44,11 @@ const settings = [
   },
 ];
 
-export default function MenuLogo() {
+export default function MenuLogo({ role }) { // Use role prop
   const [currentUser, setCurrentUser] = useState(null);
-  const location = useLocation();
-  const [isInternView, setIsInternView] = useState(
-    location.pathname === "/intern"
-  );
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
+
   useEffect(() => {
     const internID = JSON.parse(sessionStorage.getItem("currentUserID"));
 
@@ -79,13 +75,9 @@ export default function MenuLogo() {
       navigate("/");
     } else if (action === "profile") {
       navigate("/profile");
-      // } else if (action === "addIntern") {
-      //   navigate("/addIntern");
     } else if (action === "intern") {
-      setIsInternView(true);
       navigate("/intern");
     } else if (action === "manager") {
-      setIsInternView(false);
       navigate("/MangerPage");
     }
     handleCloseUserMenu();
@@ -97,43 +89,28 @@ export default function MenuLogo() {
 
   const handleLogoClick = () => {
     if (currentUser?.isManager) {
-      navigate(isInternView ? "/intern" : "/MangerPage");
+      navigate(role === "intern" ? "/intern" : "/MangerPage");
     } else {
       navigate("/intern");
     }
   };
+
   const filteredSettings = currentUser?.isManager
-    ? isInternView
+    ? role === "intern"
       ? settings.filter((setting) => setting.action !== "intern")
       : settings.filter((setting) => setting.action !== "manager")
     : settings.filter(
         (setting) => setting.action !== "intern" && setting.action !== "manager"
       );
-  // const filteredSettings = currentUser?.isManager
-  // ? isInternView
-  //   ? settings.filter(
-  //     (setting) =>
-  //       setting.action !== "intern" && setting.action !== "addIntern"
-  //   )
-  //   : settings.filter((setting) => setting.action !== "manager")
-  // : settings.filter(
-  //   (setting) =>
-  //     setting.action !== "addIntern" &&
-  //     setting.action !== "intern" &&
-  //     setting.action !== "manager"
-  // );
 
   return (
     <AppBar sx={{ marginBottom: 12 }}>
       <Container maxWidth="100%">
         <Toolbar disableGutters>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-            }}
-          >
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {/* Hamburger Menu Component */}
+            <HamburgerMenu role={role} /> {/* Pass role directly to HamburgerMenu */}
+
             <IconButton
               onClick={handleLogoClick}
               sx={{ p: 0, "&:focus": { outline: "none" } }}
@@ -142,6 +119,7 @@ export default function MenuLogo() {
               <img width="100px" src={logoInternView} alt="logo" />
             </IconButton>
           </Box>
+
           <Box
             sx={{
               flexGrow: 1,
@@ -156,6 +134,7 @@ export default function MenuLogo() {
               </Typography>
             )}
           </Box>
+
           <Box
             sx={{
               display: "flex",
@@ -176,6 +155,7 @@ export default function MenuLogo() {
                 </IconButton>
               </Box>
             </Tooltip>
+
             <Tooltip title="פתח הגדרות">
               <IconButton
                 onClick={handleOpenUserMenu}

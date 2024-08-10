@@ -404,7 +404,7 @@ export default function SurgerySchedule() {
 
                 {events[day.format("YYYY-MM-DD")]?.map((event) => (
                   <Typography
-                    key={event.Case_number}
+                    key={event.Surgery_id} // שימוש ב-Surgery_id כמפתח ייחודי
                     variant="body2"
                     sx={{
                       color: "DarkBlue",
@@ -426,6 +426,7 @@ export default function SurgerySchedule() {
             </Grid>
           ))}
         </Grid>
+
         <Dialog
           dir="rtl"
           open={openDialog}
@@ -437,7 +438,7 @@ export default function SurgerySchedule() {
             <List>
               {selectedDayEvents.length > 0 ? (
                 selectedDayEvents.map((event) => (
-                  <React.Fragment key={event.Case_number}>
+                  <React.Fragment key={event.Surgery_id}>
                     <ListItem>
                       <ListItemAvatar>
                         <Avatar sx={{ bgcolor: "#85c1e9" }}>
@@ -496,6 +497,7 @@ export default function SurgerySchedule() {
                 <Typography>אין ניתוחים</Typography>
               )}
             </List>
+
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenDialog(false)} color="secondary">
