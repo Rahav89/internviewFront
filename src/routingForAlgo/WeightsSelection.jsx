@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import { Grid, Container, Typography, TextField, Box, Button } from "@mui/material";
+import { Container, Typography, TextField, Box, Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { Update_Algorithm_Weights, Get_Algorithm_Weights } from "../FFCompos/Server.jsx"; // Adjust the import path if needed
 
@@ -74,10 +73,13 @@ export default function WeightsSelection() {
 
   return (
     <Container maxWidth="md" sx={{ mt: 3, mb: 2 }}>
-      <Typography variant="h6" fontWeight={"bold"} gutterBottom>
+      <Typography variant="h6" fontWeight={"bold"}  sx={{ mb: 2 }} gutterBottom>
         בחירת משקלים לשיבוץ
       </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      .לפניך רמת החשיבות הניתנת לכל אחת מהתכונות באלגוריתם השיבוץ (גבוהה יותר = חשובה יותר)
+      <br></br>
+       .ביכולתך לבחור את רמת החשיבות לכל תכונה בהתאם להעדפותיך
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2 }}>
         <TextField
           dir="rtl"
           label="רמת קושי של הניתוח"

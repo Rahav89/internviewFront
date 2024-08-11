@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi"; 
+import TodayIcon from '@mui/icons-material/Today';
+import Tooltip from '@mui/material/Tooltip';  // ייבוא Tooltip
 
 const daysOfWeek = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
-const hours = ["7:00 AM", "9:00 AM", "11:00 AM", "12:00 PM", "15:00 PM", "17:00 PM", "19:00 PM"];
+const hours = ["8:00 AM", "10:00 AM", "12:00 AM", "14:00 PM", "16:00 PM", "18:00 PM"];
 
 function WeeklySchedule() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -29,16 +32,30 @@ function WeeklySchedule() {
     setCurrentDate(nextWeek);
   };
 
+  const goToToday = () => {
+    setCurrentDate(new Date());
+  };
+
   const weekDates = getWeekDates();
 
   return (
     <div style={styles.weeklySchedule}>
-      <div style={styles.weekNavigation}>
-        <button style={styles.button} onClick={previousWeek}>שבוע קודם</button>
-        <button style={styles.button} onClick={nextWeek}>שבוע הבא</button>
+      <div style={styles.header}>
+        <div style={styles.weekNavigation}>
+          <FiChevronRight style={styles.navIcon} onClick={previousWeek} />
+          <div style={styles.dateDisplay}>
+            {currentDate.toLocaleDateString("he-IL", { month: "long", year: "numeric" })}
+          </div>
+          <FiChevronLeft style={styles.navIcon} onClick={nextWeek} />
+        </div>
       </div>
       <div style={styles.gridContainer}>
         <div style={styles.hourColumn}>
+          <Tooltip title="לתאריך הנוכחי" arrow>
+            <div style={styles.topLeftCell} onClick={goToToday}>
+              <TodayIcon style={styles.todayIcon} />
+            </div>
+          </Tooltip>
           {hours.map((hour, index) => (
             <div key={index} style={styles.hourCell}>{hour}</div>
           ))}
@@ -52,7 +69,7 @@ function WeeklySchedule() {
               </div>
               {hours.map((hour, hourIndex) => (
                 <div key={hourIndex} style={styles.dayCell}>
-                  {/* כאן תוכל להוסיף פעילויות מתוזמנות */}
+                  {/* Add scheduled activities here */}
                 </div>
               ))}
             </div>
@@ -69,71 +86,106 @@ const styles = {
     textAlign: "center",
     maxWidth: "1200px",
     margin: "0 auto",
-    fontFamily: "Arial, sans-serif",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    color: "#333",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+    padding: "0 20px",
+    borderBottom: "2px solid #ddd",
+  },
+  dateDisplay: {
+    fontSize: "24px",
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#444",
+    minWidth: "180px", // Set a minimum width to prevent shifting
   },
   weekNavigation: {
     display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "20px",
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
   },
-  button: {
-    padding: "10px 20px",
-    fontSize: "16px",
+  navIcon: {
+    fontSize: "24px",
     cursor: "pointer",
-    borderRadius: "5px",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    outline: "none",
-    transition: "background-color 0.3s ease",
+    color: "#007bff",
+    margin: "0 15px",
   },
   gridContainer: {
     display: "flex",
-    overflowX: "auto", // Allows horizontal scrolling
+    overflowX: "auto",
+    boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+    borderRadius: "8px",
   },
   hourColumn: {
     display: "flex",
     flexDirection: "column",
-    borderRight: "1px solid #ccc",
-    marginTop: "62px", // התאמה כדי שהשעות יתחילו מתחת לכותרת הימים
+    borderRight: "1px solid #ddd",
+    borderLeft: "1px solid #ddd",
+    marginTop:-1,
   },
   hourCell: {
     padding: "10px",
-    borderBottom: "1px solid #ccc",
-    backgroundColor: "#f9f9f9",
+    borderBottom: "1px solid #ddd",
+    backgroundColor: "#f7f7f7",
     textAlign: "center",
     minHeight: "50px",
-    minWidth: "80px", // Ensure a minimum width for small screens
+    minWidth: "80px",
+
   },
   daysColumn: {
     display: "flex",
     flex: 1,
   },
   dayColumn: {
+
     display: "flex",
     flexDirection: "column",
     flex: 1,
-    borderLeft: "1px solid #ccc",
-    minWidth: "100px", // Ensure a minimum width for each day column
+    borderLeft: "1px solid #ddd",
+    minWidth: "120px",
   },
   dayHeader: {
     padding: "10px",
-    borderBottom: "1px solid #ccc",
-    backgroundColor: "#f9f9f9",
+    borderBottom: "1px solid #ddd",
+    backgroundColor: "#f1f1f1",
     textAlign: "center",
   },
   dayCell: {
     padding: "10px",
-    borderBottom: "1px solid #ccc",
+    borderBottom: "1px solid #ddd",
     minHeight: "50px",
     textAlign: "center",
+    backgroundColor: "#fff",
+    transition: "background-color 0.3s ease",
+    cursor: "pointer",
+  },
+  topLeftCell: {
+    height: "66px",  // Adjust height to match other header cells
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottom: "1px solid #ddd",
+    borderRight: "1px solid #ddd",
+    backgroundColor: "#ffffff",  // Ensure the background is white
+  },
+  todayIcon: {
+    fontSize: "24px",
+    cursor: "pointer",
+    color: "#007bff",
   },
   dayName: {
     fontWeight: "bold",
+    color: "#007bff",
   },
   date: {
     fontSize: "14px",
-    color: "#555",
+    color: "#888",
   },
 };
 

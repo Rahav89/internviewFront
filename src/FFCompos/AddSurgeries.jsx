@@ -27,7 +27,7 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import * as XLSX from "xlsx";
 import MenuLogo from "../FFCompos/MenuLogo";
 import excelImage from "../Image/exelPhoto.png";
-import { styled } from "@mui/material/styles";
+import styled from '@mui/system/styled';
 import { InsertSurgery, GetAllProcedure, AddProcedureInSurgery } from "../FFCompos/Server.jsx";
 import Swal from "sweetalert2";
 

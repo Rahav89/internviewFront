@@ -1,17 +1,17 @@
 import React, { useState,useEffect } from "react";
 import { Container, Grid, Box } from "@mui/material";
 import MenuLogo from "../FFCompos/MenuLogo";
-import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
 import PeopleIcon from "@mui/icons-material/People";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import WeightsSelection from "../routingForAlgo/WeightsSelection";
 import SurgerySchedule from "../routingForAlgo/SurgerySchedule";
 import InternScheduling from "../routingForAlgo/InternScheduling";
 import WeeklySchedule from "../routingForAlgo/weeklySchedule";
+import ScaleIcon from '@mui/icons-material/Scale';
+import {CalendarMonth} from "@mui/icons-material";
 
 export default function MatchingAlgo({ defaultComponent }) {
   const theme = useTheme();
@@ -103,13 +103,13 @@ export default function MatchingAlgo({ defaultComponent }) {
   const getIconForButton = (buttonType) => {
     switch (buttonType) {
       case "weeklySchedule":
-        return <CloudUploadIcon />;
+        return <CalendarMonth />;
       case "weights":
-        return <PublishedWithChangesIcon />;
+        return <ScaleIcon />;
       case "internScheduling":
         return <PeopleIcon />;
       case "schedule":
-        return <CalendarViewMonthIcon />;
+        return <DashboardCustomizeIcon />;
       default:
         return null;
     }
@@ -118,13 +118,13 @@ export default function MatchingAlgo({ defaultComponent }) {
   const getLabelForButton = (buttonType) => {
     switch (buttonType) {
       case "weeklySchedule":
-        return "לו״ז שבועי";
+        return "התאמות הניתוחים";
       case "weights":
         return "בחירת משקלים לשיבוץ";
       case "internScheduling":
         return "שיבוץ תורנויות";
       case "schedule":
-        return "לוח ניתוחים ושיבוץ";
+        return "לוח ניתוחים לשיבוץ";
       default:
         return "";
     }

@@ -1,10 +1,14 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, ListItem, ListItemIcon, ListItemText, Divider, Typography } from "@mui/material";
 import { Home, AssignmentTurnedIn, Visibility, GroupAdd, UploadFile, CalendarMonth } from "@mui/icons-material";
+import ScaleIcon from '@mui/icons-material/Scale';
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
+import PeopleIcon from "@mui/icons-material/People";
 
 const HamburgerMenu = ({ role }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -15,6 +19,19 @@ const HamburgerMenu = ({ role }) => {
     setIsOpen(false); // Close the menu when a menu item is clicked
     navigate(link); // Navigate to the selected page
   };
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setIsOpen(false); // Close the menu if clicked outside
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const homeMenuItem = {
     text: "בית",
@@ -36,16 +53,16 @@ const HamburgerMenu = ({ role }) => {
   ];
 
   const algorithmMenuItems = [
-    { text: "בחירת ניתוחים לשיבוץ", icon: <AssignmentTurnedIn />, link: "/SurgerySchedule" },
-    { text: "שיבוץ מתמחים לתורנויות", icon: <AssignmentTurnedIn />, link: "/InternScheduling" },
+    { text: "בחירת ניתוחים לשיבוץ", icon: <DashboardCustomizeIcon />, link: "/SurgerySchedule" },
+    { text: "שיבוץ מתמחים לתורנויות", icon: <PeopleIcon />, link: "/InternScheduling" },
     { text: "צפייה בשיבוצים לניתוחים", icon: <CalendarMonth />, link: "/WeeklySchedule" },
-    { text: "בחירת משקלים לאלגוריתם השיבוץ", icon: <AssignmentTurnedIn />, link: "/weights" },
+    { text: "בחירת משקלים לאלגוריתם", icon: <ScaleIcon />, link: "/weights" },
   ];
 
   const menuItems = role === "intern" ? internMenuItems : managerMenuItems;
 
   return (
-    <div style={styles.hamburgerContainer}>
+    <div style={styles.hamburgerContainer} ref={menuRef}>
       <button onClick={toggleMenu} style={styles.hamburgerButton}>
         ☰
       </button>
