@@ -28,7 +28,7 @@ export default function MangerPage() {
       link: "/addIntern",
     },
     {
-      title: "שיבוץ תורנויות",
+      title: "הוספת תורנויות",
       icon: <AssignmentTurnedInIcon fontSize="large" color="primary" />,
       link: "/InternScheduling",
     },

@@ -292,7 +292,7 @@ export default function InternScheduling() {
       <MenuLogo />
       <Box sx={{ mt: 3, mb: 2, direction: "rtl", px: isMobile ? 1 : 4 }}>
         <Typography variant="h6" fontWeight={"bold"} gutterBottom>
-          שיבוץ תורנויות
+          הוספת תורנויות
         </Typography>
         <Box sx={{ mb: 2 }}>
           <TextField
