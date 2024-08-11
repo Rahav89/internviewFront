@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Container, Grid, Box } from "@mui/material";
 import MenuLogo from "../FFCompos/MenuLogo";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
@@ -8,20 +8,29 @@ import PeopleIcon from "@mui/icons-material/People";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-// Import your components
 import WeightsSelection from "../routingForAlgo/WeightsSelection";
 import SurgerySchedule from "../routingForAlgo/SurgerySchedule";
 import InternScheduling from "../routingForAlgo/InternScheduling";
-import WeeklySchedule from "../routingForAlgo/weeklySchedule"; // Import your new component
+import WeeklySchedule from "../routingForAlgo/weeklySchedule";
 
 export default function MatchingAlgo({ defaultComponent }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Use the default component from props or fallback to "schedule"
   const [selectedComponent, setSelectedComponent] = useState(
     defaultComponent || "schedule"
   );
+
+    // Watch for changes in the defaultComponent prop
+    useEffect(() => {
+      if (defaultComponent) {
+        setSelectedComponent(defaultComponent);
+      }
+    }, [defaultComponent]);
+
+  const handleComponentChange = (component) => {
+    setSelectedComponent(component);
+  };
 
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
@@ -54,7 +63,7 @@ export default function MatchingAlgo({ defaultComponent }) {
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "row",
-            width: { xs: "45%", sm: "170px" }, // Adjust width for small screens
+            width: { xs: "45%", sm: "170px" },
             height: { xs: "45px", sm: "45px" },
             borderRadius: "15px",
             borderStyle: "solid",
@@ -75,9 +84,9 @@ export default function MatchingAlgo({ defaultComponent }) {
               selectedComponent === buttonType ? "#1976d2" : "#90caf9",
             whiteSpace: "nowrap",
             boxSizing: "border-box",
-            margin: isMobile ? "5px" : "0", // Add margin to separate buttons on mobile
+            margin: isMobile ? "5px" : "0",
           }}
-          onClick={() => setSelectedComponent(buttonType)}
+          onClick={() => handleComponentChange(buttonType)}
         >
           {getIconForButton(buttonType)}
           {getLabelForButton(buttonType)}
@@ -94,7 +103,7 @@ export default function MatchingAlgo({ defaultComponent }) {
   const getIconForButton = (buttonType) => {
     switch (buttonType) {
       case "weeklySchedule":
-        return <CloudUploadIcon />; // Replace with an appropriate icon
+        return <CloudUploadIcon />;
       case "weights":
         return <PublishedWithChangesIcon />;
       case "internScheduling":
@@ -113,7 +122,7 @@ export default function MatchingAlgo({ defaultComponent }) {
       case "weights":
         return "בחירת משקלים לשיבוץ";
       case "internScheduling":
-        return "הוספת תורנויות";
+        return "שיבוץ תורנויות";
       case "schedule":
         return "לוח ניתוחים ושיבוץ";
       default:
@@ -132,8 +141,8 @@ export default function MatchingAlgo({ defaultComponent }) {
               alignItems: "center",
               justifyContent: "center",
               flexDirection: { xs: "row", sm: "row" },
-              flexWrap: "wrap", // Enable wrapping
-              gap: { xs: 2, md: 3 }, // Define gap for spacing
+              flexWrap: "wrap",
+              gap: { xs: 2, md: 3 },
             }}
           >
             {renderButtons()}

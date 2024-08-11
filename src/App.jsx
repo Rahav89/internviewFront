@@ -60,8 +60,7 @@ function App() {
           {/* New routes for routingForAlgo components */}
           <Route path="/InternScheduling" element={<MatchingAlgo defaultComponent="internScheduling" />} />
           {<Route path="/AddSurgeries" element={<AddSurgeries />} /> }
-          <Route path="/SurgerySchedule" element={<SurgerySchedule />} />
-          <Route path="/WeightsSelection" element={<WeightsSelection />} />
+          <Route path="/SurgerySchedule" element={<MatchingAlgo defaultComponent="schedule" />} />
           {/* Add the new weeklySchedule route */}
           <Route path="/WeeklySchedule" element={<MatchingAlgo defaultComponent="weeklySchedule" />} />
           <Route path="/weights" element={<MatchingAlgo defaultComponent="weights" />} />
