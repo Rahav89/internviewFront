@@ -122,7 +122,7 @@ export default function MatchingAlgo({ defaultComponent }) {
       case "weights":
         return "בחירת משקלים לשיבוץ";
       case "internScheduling":
-        return "שיבוץ תורנויות";
+        return "הוספת תורנויות";
       case "schedule":
         return "לוח ניתוחים לשיבוץ";
       default:
