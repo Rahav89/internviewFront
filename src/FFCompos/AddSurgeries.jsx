@@ -30,6 +30,7 @@ import excelImage from "../Image/exelPhoto.png";
 import styled from '@mui/system/styled';
 import { InsertSurgery, GetAllProcedure, AddProcedureInSurgery } from "../FFCompos/Server.jsx";
 import Swal from "sweetalert2";
+import "../App.css";
 
 const VisuallyHiddenInput = styled("input")({
   position: "absolute",
@@ -191,7 +192,7 @@ export default function AddSurgeries() {
           const isSurgeryDateValid = !isNaN(new Date(surgeryDate).getTime());
           const isSurgeryTimeValid = /^([01]\d|2[0-3]):([0-5]\d)$/.test(surgeryTime);
 
-          const isDifficultyLevelValid = difficultyLevel >= 1 && difficultyLevel <= 5;
+          const isDifficultyLevelValid = difficultyLevel >= 1 && difficultyLevel <= 3;
           const areProductionCodesValid = productionCodes.every(code => /^[0-9]+$/.test(code));
 
           if (
@@ -268,7 +269,7 @@ export default function AddSurgeries() {
               surgery.surgeryDate + "T" + surgery.surgeryTime + ":00",
             difficulty_level: surgery.difficultyLevel,
             production_codes: surgery.productionCodes.join(", "),  // שילוב קודי הפרוצדורות למחרוזת
-            hospital_name: "",
+            hospital_name: "הלל יפה",
           });
 
           console.log("Surgery inserted:", response);
@@ -610,7 +611,7 @@ export default function AddSurgeries() {
           />
           <TextField
             margin="dense"
-            label="רמת מורכבות"
+            label="רמת מורכבות הניתוח"
             name="difficultyLevel"
             select
             fullWidth
@@ -619,7 +620,7 @@ export default function AddSurgeries() {
             error={errors.difficultyLevel}
             helperText={errors.difficultyLevel ? "שדה חובה" : ""}
           >
-            {[1, 2, 3, 4, 5].map((level) => (
+            {[1, 2, 3].map((level) => (
               <MenuItem key={level} value={level}>
                 {level}
               </MenuItem>

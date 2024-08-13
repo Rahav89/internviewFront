@@ -167,7 +167,7 @@ export const GetCountProceduresByIntern = () => {
       return response.json();
     })
     .catch((error) => {
-      console.error("Error in GetInternByID: ", error);
+      console.error("Error in GetCountProceduresByIntern: ", error);
       throw error;
     });
 };
