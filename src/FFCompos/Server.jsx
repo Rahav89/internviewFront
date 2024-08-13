@@ -642,3 +642,53 @@ export const UpdateSurgeries = (Surgery_id, formData) => {
       throw error;
     });
 };
+
+
+//function add or update interns in gurgery made by the algorithm
+export const PutOptimalAssignmentsAlgo = (startDate, endDate) => {
+  console.log(startDate, endDate);
+
+  const formattedStartDate = encodeURIComponent(startDate);
+  const formattedEndDate = encodeURIComponent(endDate);
+
+  const url = `${api}Algorithm/GetOptimalAssignments/${formattedStartDate}/${formattedEndDate}`;
+
+  return fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in PutOptimalAssignmentsAlgo: ", error);
+      throw error;
+    });
+};
+
+export const GetAllSurgeriesWithInterns = () => {
+  const url = `${api}Surgeries/AllSurgeriesWithInterns`;
+
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in PutOptimalAssignmentsAlgo: ", error);
+      throw error;
+    });
+};
+

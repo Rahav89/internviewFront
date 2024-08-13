@@ -33,6 +33,7 @@ import {
   GetAllProcedure,
   DeleteSurgeryFromSurgeriesSchedule,
   UpdateSurgeries,
+  PutOptimalAssignmentsAlgo
 } from "../FFCompos/Server.jsx";
 
 dayjs.extend(isSameOrBefore);
@@ -73,6 +74,8 @@ export default function SurgerySchedule() {
     Difficulty_level: "",
     procedureName: [],
   });
+
+  const days = generateCalendar(currentMonth);
 
   useEffect(() => {
     GetAllSurgeriesWithProcedures()
@@ -273,7 +276,42 @@ export default function SurgerySchedule() {
     );
   };
 
-  const days = generateCalendar(currentMonth);
+
+
+
+  const handleOptimalAssignments = () => {
+    if (selectedDates.length > 0) {
+      const startDate = selectedDates[0].format("YYYY-MM-DD") + " 00:00:00";
+      const endDate =
+        selectedDates[selectedDates.length - 1].format("YYYY-MM-DD") +
+        " 23:59:59";
+  
+      // Check if there are any surgeries in the selected range
+      const surgeriesInRange = selectedDates.some((date) => {
+        const formattedDate = date.format("YYYY-MM-DD");
+        return events[formattedDate] && events[formattedDate].length > 0;
+      });
+  
+      if (!surgeriesInRange) {
+        Swal.fire("לא נבחרו ניתוחים", "אין ניתוחים בטווח התאריכים שנבחר, נסה שוב", "info");
+        return;
+      }
+  
+      // If there are surgeries, proceed to run the algorithm
+      PutOptimalAssignmentsAlgo(startDate, endDate)
+        .then((response) => {
+          Swal.fire("הצלחה!", "האלגוריתם הורץ בהצלחה!", "success");
+        })
+        .catch((error) => {
+          console.error("Error in PutOptimalAssignmentsAlgo: ", error);
+          Swal.fire("שגיאה", "אירעה שגיאה בהרצת האלגוריתם.", "error");
+        });
+    } else {
+      Swal.fire("שגיאה", "אנא בחר טווח תאריכים לפני הרצת האלגוריתם.", "error");
+    }
+  };
+  
+
 
   return (
     <>
@@ -299,6 +337,7 @@ export default function SurgerySchedule() {
               padding: 0.5,
               mt: { xs: 0.5, sm: -0.5 },
             }}
+            onClick={handleOptimalAssignments} 
           >
             חשב אלגוריתם שיבוץ
           </Button>
