@@ -24,7 +24,9 @@ import {
 const daysOfWeek = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 
 function WeeklySchedule() {
-  const [currentDate, setCurrentDate] = useState(new Date());
+    const queryParams = new URLSearchParams(location.search);
+    const initialDate = queryParams.get('startDate') ? new Date(queryParams.get('startDate')) : new Date();
+    const [currentDate, setCurrentDate] = useState(initialDate);
   const [surgeries, setSurgeries] = useState([]);
   const [interns, setInterns] = useState([]); // Adding state for interns
   const [openDialog, setOpenDialog] = useState(false);

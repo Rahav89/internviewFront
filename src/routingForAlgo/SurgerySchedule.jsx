@@ -16,8 +16,9 @@ import {
   Avatar,
   Divider,
   FormControl,
-  InputLabel,
   Chip,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -33,8 +34,11 @@ import {
   GetAllProcedure,
   DeleteSurgeryFromSurgeriesSchedule,
   UpdateSurgeries,
-  PutOptimalAssignmentsAlgo
+  PutOptimalAssignmentsAlgo,
+  GetAllIntern,
 } from "../FFCompos/Server.jsx";
+import * as XLSX from "xlsx";
+import { useNavigate } from "react-router-dom";
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
@@ -54,6 +58,7 @@ const generateCalendar = (month) => {
 };
 
 export default function SurgerySchedule() {
+  const navigate = useNavigate();
   const [events, setEvents] = useState({});
   const [procedures, setProcedures] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(dayjs());
@@ -65,7 +70,8 @@ export default function SurgerySchedule() {
   const [selectedDates, setSelectedDates] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(null);
-
+  const [loading, setLoading] = useState(false); // for loading spinner
+  const [interns, setInterns] = useState([]);
   const [newSurgery, setNewSurgery] = useState({
     Surgery_date: "",
     Hospital_name: "הלל יפה",
@@ -80,7 +86,6 @@ export default function SurgerySchedule() {
   useEffect(() => {
     GetAllSurgeriesWithProcedures()
       .then((data) => {
-        //console.log(data);
         let allEvents = {};
         data.forEach((surgery) => {
           if (surgery.Surgery_date) {
@@ -110,7 +115,20 @@ export default function SurgerySchedule() {
       .catch((error) => {
         console.error("Error in GetAllProcedure: ", error);
       });
+
+    GetAllIntern()
+      .then((data) => {
+        setInterns(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching interns:", error);
+      });
   }, []);
+
+  const getInternNameById = (id) => {
+    const intern = interns.find((intern) => intern.id === id);
+    return intern ? `${intern.first_name} ${intern.last_name}` : "לא הוקצה";
+  };
 
   const handleDayClick = (day) => {
     const formattedDay = day.format("YYYY-MM-DD");
@@ -204,11 +222,8 @@ export default function SurgerySchedule() {
       cancelButtonText: "בטל",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Logic to update the surgery
         UpdateSurgeries(selectedEvent.Surgery_id, newSurgery)
           .then(() => {
-            //console.log(events);
-
             const dateKey = newSurgery.Surgery_date.slice(0, 10);
             let updatedEvents = { ...events };
             // Remove the old event
@@ -255,7 +270,6 @@ export default function SurgerySchedule() {
   };
 
   const handleRemoveSurgery = () => {
-    // Logic to remove the selected surgery
     DeleteSurgeryFromSurgeriesSchedule(selectedEvent.Surgery_id).then(
       (data) => {
         const dateKey = selectedEvent.Surgery_date.slice(0, 10);
@@ -276,45 +290,98 @@ export default function SurgerySchedule() {
     );
   };
 
-
-
-
   const handleOptimalAssignments = () => {
-    if (selectedDates.length > 0) {
-      const startDate = selectedDates[0].format("YYYY-MM-DD") + " 00:00:00";
-      const endDate =
-        selectedDates[selectedDates.length - 1].format("YYYY-MM-DD") +
-        " 23:59:59";
-  
-      // Check if there are any surgeries in the selected range
-      const surgeriesInRange = selectedDates.some((date) => {
-        const formattedDate = date.format("YYYY-MM-DD");
-        return events[formattedDate] && events[formattedDate].length > 0;
-      });
-  
-      if (!surgeriesInRange) {
-        Swal.fire("לא נבחרו ניתוחים", "אין ניתוחים בטווח התאריכים שנבחר, נסה שוב", "info");
+    if (selectedDates.length === 0) {
+        Swal.fire("שגיאה", "אנא בחר טווח תאריכים לפני הרצת האלגוריתם.", "error");
         return;
-      }
-  
-      // If there are surgeries, proceed to run the algorithm
-      PutOptimalAssignmentsAlgo(startDate, endDate)
+    }
+
+    const startDate = selectedDates[0].format("YYYY-MM-DD") + " 00:00:00";
+    const endDate = selectedDates[selectedDates.length - 1].format("YYYY-MM-DD") + " 23:59:59";
+
+    setLoading(true);
+
+    PutOptimalAssignmentsAlgo(startDate, endDate)
         .then((response) => {
-          Swal.fire("הצלחה!", "האלגוריתם הורץ בהצלחה!", "success");
+            setLoading(false);
+
+            Swal.fire({
+                title: "האלגוריתם הורץ בהצלחה!",
+                text: "נמצא שיבוץ אופטימלי לכל הניתוחים. האם תרצה להוריד את ההתאמות לאקסל?",
+                icon: "success",
+                showCancelButton: true,
+                confirmButtonText: "כן, הורד אקסל",
+                cancelButtonText: "לא, עבור ללוח ההתאמות",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    downloadExcel(response);
+                    navigate(`/weeklySchedule?startDate=${selectedDates[0].format("YYYY-MM-DD")}`);
+                    window.location.reload();
+                } else {
+                    navigate(`/weeklySchedule?startDate=${selectedDates[0].format("YYYY-MM-DD")}`);
+                    window.location.reload();
+                }
+            });
         })
         .catch((error) => {
-          console.error("Error in PutOptimalAssignmentsAlgo: ", error);
-          Swal.fire("שגיאה", "אירעה שגיאה בהרצת האלגוריתם.", "error");
+            setLoading(false);
+            console.error("Error in PutOptimalAssignmentsAlgo:", error);
+            Swal.fire("שגיאה", "אירעה שגיאה בהרצת האלגוריתם.", "error");
         });
-    } else {
-      Swal.fire("שגיאה", "אנא בחר טווח תאריכים לפני הרצת האלגוריתם.", "error");
-    }
   };
-  
 
+  const downloadExcel = (assignments) => {
+    const sortedAssignments = assignments.sort((a, b) => {
+      const surgeryA = Object.values(events)
+        .flat()
+        .find((event) => event.Surgery_id === a.surgeryId);
+      const surgeryB = Object.values(events)
+        .flat()
+        .find((event) => event.Surgery_id === b.surgeryId);
+
+      return new Date(surgeryA.Surgery_date) - new Date(surgeryB.Surgery_date);
+    });
+
+    const data = sortedAssignments.map((assignment) => {
+      const surgery = Object.values(events)
+        .flat()
+        .find((event) => event.Surgery_id === assignment.surgeryId);
+
+      return {
+        "תאריך ושעת ניתוח": surgery
+          ? dayjs(surgery.Surgery_date).format("DD/MM/YYYY HH:mm")
+          : "תאריך לא זמין",
+        פרוצדורות:
+          surgery &&
+          Array.isArray(surgery.procedureName) &&
+          surgery.procedureName.length > 0
+            ? surgery.procedureName.join(", ")
+            : "אין פרוצדורות",
+        "שם מנתח ראשי": getInternNameById(assignment.mainInternId),
+        "שם עוזר ראשון": getInternNameById(assignment.firstAssistantInternId),
+        "שם עוזר שני": getInternNameById(assignment.secondAssistantInternId),
+      };
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "שיבוץ ניתוחים");
+    XLSX.writeFile(workbook, "Surgery_Assignments.xlsx");
+  };
 
   return (
     <>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <div style={{ textAlign: "center" }}>
+          <CircularProgress color="inherit" />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            :)  טוען את ההתאמות של האלגוריתם, כבר מוכנים 
+          </Typography>
+        </div>
+      </Backdrop>
       <Box
         sx={{
           width: "100%",
@@ -326,8 +393,8 @@ export default function SurgerySchedule() {
         <Typography sx={{ textAlign: "right", flexGrow: 1, fontSize: 17 }}>
           לפניך לוח שנה המציג את כלל הניתוחים במערך הכירורגיה.
           <br />
-          כדי לחשב שיבוץ מתמחים לניתוחים, בחר שבוע רלוונטי על ידי לחיצה וגרירה
-          בלוח השנה ,ולאחר מכן לחץ על ←
+          כדי לחשב שיבוץ מתמחים לניתוחים, בחר שבוע רלוונטי על ידי לחיצה
+          וגרירה בלוח השנה ,ולאחר מכן לחץ על ←
           <Button
             variant="outlined"
             color="secondary"
@@ -337,7 +404,7 @@ export default function SurgerySchedule() {
               padding: 0.5,
               mt: { xs: 0.5, sm: -0.5 },
             }}
-            onClick={handleOptimalAssignments} 
+            onClick={handleOptimalAssignments}
           >
             חשב אלגוריתם שיבוץ
           </Button>
@@ -384,7 +451,7 @@ export default function SurgerySchedule() {
               </Grid>
             )
           )}
-          {days.map((day, index) => (
+          {days.map((day) => (
             <Grid
               item
               xs={1.714}
@@ -536,7 +603,6 @@ export default function SurgerySchedule() {
                 <Typography>אין ניתוחים</Typography>
               )}
             </List>
-
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenDialog(false)} color="secondary">

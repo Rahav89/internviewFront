@@ -27,7 +27,10 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import * as XLSX from "xlsx";
 import MenuLogo from "../FFCompos/MenuLogo";
 import excelImage from "../Image/exelPhoto.png";
-import styled from "@mui/system/styled";
+// import styled from '@emotion/styled';
+
+
+
 import {
   InsertSurgery,
   GetAllProcedure,
@@ -36,15 +39,15 @@ import {
 import Swal from "sweetalert2";
 import "../App.css";
 
-const VisuallyHiddenInput = styled("input")({
-  position: "absolute",
-  left: "-9999px",
-  width: "1px",
-  height: "1px",
-  overflow: "hidden",
-  opacity: 0,
-  pointerEvents: "none",
-});
+// const VisuallyHiddenInput = styled("input")({
+//   position: "absolute",
+//   left: "-9999px",
+//   width: "1px",
+//   height: "1px",
+//   overflow: "hidden",
+//   opacity: 0,
+//   pointerEvents: "none",
+// });
 
 // Helper functions to convert Excel data
 function convertExcelTimeToReadableTime(excelTime) {
@@ -484,13 +487,13 @@ export default function AddSurgeries() {
               }}
             >
               העלאת ניתוחים בקובץ אקסל
-              <VisuallyHiddenInput
+              {/* <VisuallyHiddenInput
                 type="file"
                 accept=".xlsx, .xls"
                 onChange={handleFileUpload}
                 aria-label="Upload Excel file"
                 tabIndex="-1"
-              />
+              /> */}
             </Button>
           </Box>
 
