@@ -15,7 +15,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import logoImage from "/src/Image/doctor1.png";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+
 import { useState, useEffect } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -83,9 +83,9 @@ export default function MenuLogo({ role }) { // Use role prop
     handleCloseUserMenu();
   };
 
-  const handleCalenderPage = () => {
-    navigate("/calender");
-  };
+  // const handleCalenderPage = () => {
+  //   navigate("/calender");
+  // };
 
   const handleLogoClick = () => {
     if (currentUser?.isManager) {
@@ -129,7 +129,7 @@ export default function MenuLogo({ role }) { // Use role prop
             }}
           >
             {currentUser && (
-              <Typography variant="h6" sx={{ textAlign: "center" }}>
+              <Typography variant="h6" sx={{ textAlign: "center",mr:1,fontSize:"19px"}}>
                 👋 שלום, {currentUser.first_name + " " + currentUser.last_name}
               </Typography>
             )}
@@ -142,7 +142,7 @@ export default function MenuLogo({ role }) { // Use role prop
               alignItems: "center",
             }}
           >
-            <Tooltip title="לוח שנה">
+            {/* <Tooltip title="לוח שנה">
               <Box>
                 <IconButton
                   onClick={handleCalenderPage}
@@ -154,7 +154,7 @@ export default function MenuLogo({ role }) { // Use role prop
                   />
                 </IconButton>
               </Box>
-            </Tooltip>
+            </Tooltip> */}
 
             <Tooltip title="פתח הגדרות">
               <IconButton

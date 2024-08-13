@@ -10,7 +10,7 @@ import TableChartIcon from '@mui/icons-material/TableChart';
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import { GetInternByID } from './Server.jsx';
 import FloatingChatButton from './FloatingChatButton';
-
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 export default function InternPage() {
 
   // משתנה מצב לאחסון נתוני המשתמש הנוכחי
@@ -42,6 +42,11 @@ export default function InternPage() {
   const handleViewAllSurgeries = () => {
     navigate('/details/:id');
   }
+
+  const handleCalenderPage = () => {
+    navigate("/calender");
+  };
+
 
   return (
     <>
@@ -102,6 +107,30 @@ export default function InternPage() {
             >
               צפייה בניתוחים שבוצעו
               <DomainVerificationIcon sx={{ mr: 1 }} />
+            </Button>
+          </Grid>
+
+            {/* Calender Page Button */}
+            <Grid item xs={12} display="flex" justifyContent="center">
+            <Button
+              variant="contained"
+              onClick={handleCalenderPage}
+              sx={{
+                width: '100%',
+                maxWidth: 300,
+                backgroundColor: 'white',       // Set background color to white
+                color: '#1976d2',                  // Set text color to blue
+                borderColor: '#1976d2',            // Set border color to blue
+                borderWidth: 2,                 // Set border width
+                borderStyle: 'solid',           // Define border as solid
+                '&:hover': {
+                  backgroundColor: '#f0f0f0', // Light grey background on hover for slight effect
+                  borderColor: 'darkblue'     // Darker blue border on hover
+                }
+              }}
+            >
+              צפייה בלוח שנה
+              <CalendarMonthIcon sx={{ mr: 1 }} />
             </Button>
           </Grid>
 
