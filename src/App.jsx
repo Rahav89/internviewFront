@@ -17,6 +17,8 @@ import MangerPage from "./FFCompos/MangerPage";
 import AddInterns from "./FFCompos/AddInterns";
 import ShowSyllabusPerIntern from "./FFCompos/ShowSyllabusPerIntern";
 import CalenderAllSurgeries from "./FFCompos/CalenderAllSurgeries";
+import styled from 'styled-components';
+
 
 // Import new components
 import InternScheduling from "./routingForAlgo/InternScheduling";
