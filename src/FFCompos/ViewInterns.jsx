@@ -87,13 +87,13 @@ export default function ViewInterns() {
         backgroundColor: "CornflowerBlue",
         borderColor: "DarkBlue",
         data: filteredData.map((item) => item.procedureCount),
-        barThickness: 50,
+        barThickness: 15,
       },
       {
         label: "חוסר",
         backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgba(54, 162, 235, 1)",
-        barThickness: 50,
+        barThickness: 15,
         data: filteredData.map(
           (item) => item.overallNeed - item.procedureCount
         ),
@@ -181,14 +181,16 @@ export default function ViewInterns() {
             md: "80%",
           },
           height: "400px",
-          overflowY: "auto",
-          display: "flex",
-          justifyContent: "center",
+          overflowX: "auto", // Enable horizontal scrolling
+          overflowY: "visible", // Allow Y-axis to remain visible
+          display: "block",
           mb: 2,
           mx: "auto",
         }}
       >
-        <Bar data={chartData} options={options} />
+        <Box sx={{ minWidth: `${filteredData.length * 60}px` }}> {/* Adjust the minimum width dynamically */}
+          <Bar data={chartData} options={options} />
+        </Box>
       </Box>
       
       {/* {selectedInternDetails && (
