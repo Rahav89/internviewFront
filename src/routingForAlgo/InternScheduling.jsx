@@ -150,47 +150,83 @@ export default function InternScheduling() {
             }
           });
         });
-
-        // Track successful and problematic assignments
-        const successfulAssignments = [];
+  
+        const responses = []; // מערך לאיסוף כל התגובות
+        const successfulAssignments = []; // מערך לאיסוף השיבוצים שהצליחו
+  
         // Make API call for each scheduling entry
         Promise.all(schedulingData.map((schedule) =>
           AddInternDutySchedule(schedule)
             .then((response) => {
+              responses.push(response); // שמור כל תגובה במערך
               if (response === 1) {
-                successfulAssignments.push(schedule);
-                Swal.fire("!אושר", ".השיבוץ אושר בהצלחה", "success");
-                setScheduledData((prevData) => [
-                  ...prevData,
-                  ...successfulAssignments.map((schedule) => ({
-                    dutyDate: schedule.DutyDate,
-                    intern_id: schedule.Intern_id,
-                  })),
-                ]);
-              } else {
-                if (response === -1) {
-                  Swal.fire({
-                    icon: "warning",
-                    title: "...הפעולה בוצעה בהצלחה :) אבל",
-                    html: "אחד מהשיבוצים שבחרת כבר קיימים במערכת ועל כן לא התווספו",
-                  });
-                } else if (response === -2) {
-                  Swal.fire({
-                    icon: "warning",
-                    title: "...הפעולה בוצעה בהצלחה :) אבל",
-                    html: "לאחד או יותר מהשיבוצים שבחרת יש כבר 2 מתמחים תורנים",
-                  });;
-                }
+                successfulAssignments.push(schedule); // שמור את השיבוצים שהצליחו
               }
             })
             .catch((error) => {
               console.error("Error in AddInternDutySchedule: ", error);
               Swal.fire("שגיאה", ".לא הצלחנו לאשר את השיבוץ", "error");
             })
-        ))
+        )).then(() => {
+          // ניתוח התגובות
+          const hasSuccess = responses.includes(1);
+          const hasMinus1 = responses.includes(-1);
+          const hasMinus2 = responses.includes(-2);
+  
+          // Update the state regardless of the result to ensure rendering
+          setScheduledData((prevData) => [
+            ...prevData,
+            ...successfulAssignments.map((schedule) => ({
+              dutyDate: schedule.DutyDate,
+              intern_id: schedule.Intern_id,
+            })),
+          ]);
+  
+          if (hasSuccess && !hasMinus1 && !hasMinus2) {
+            Swal.fire("!אושר", ".השיבוץ אושר בהצלחה", "success");
+          } else if (!hasSuccess && hasMinus1 && hasMinus2) {
+            Swal.fire({
+              icon: "error",
+              title: "לא בוצע שיבוץ",
+              html: "בחרת בשיבוץ שכבר קיים , ולא ניתן לשבץ יותר מ 2 מתמחים ביום",
+            });
+          } else if (hasSuccess && hasMinus1 && hasMinus2) {
+            Swal.fire({
+              icon: "warning",
+              title: "...הפעולה בוצעה בהצלחה :) אבל",
+              html: " בחרת בשיבוץ שכבר קיים , ולא ניתן לשבץ יותר מ 2 מתמחים ביום ועל כן לא התווספו",
+            });
+          } else if (!hasSuccess && hasMinus1 && !hasMinus2) {
+            Swal.fire({
+              icon: "error",
+              title: "בחרת בשיבוץ שכבר קיים",
+              html:"נסה שוב",
+            });
+          } else if (!hasSuccess && !hasMinus1 && hasMinus2) {
+            Swal.fire({
+              icon: "error",
+              title: "לא ניתן לשבץ יותר מ 2 מתמחים ביום",
+              html:"נסה שוב",
+            });
+          } else if (hasSuccess && hasMinus1 && !hasMinus2) {
+            Swal.fire({
+              icon: "warning",
+              title: "...הפעולה בוצעה בהצלחה :) אבל",
+              html: "אחד מהשיבוצים שבחרת כבר קיימים במערכת ועל כן לא התווספו",
+            });
+          } else if (hasSuccess && !hasMinus1 && hasMinus2) {
+            Swal.fire({
+              icon: "warning",
+              title: "...הפעולה בוצעה בהצלחה :) אבל",
+              html: " לא ניתן לשבץ יותר מ 2 מתמחים ביום ועל כן לא התווספו",
+            });
+          }
+        });
       }
     });
   };
+  
+  
 
   // Clear all assignments and optionally clear confirmed assignments
   const clearAssignments = () => {
@@ -212,10 +248,16 @@ export default function InternScheduling() {
   // Open the dialog to show assigned interns with delete option
   const openInternsDialog = (day) => {
     const internsForDay = generateWeeklyScheduleFromServer[day]?.interns || [];
+
+    // סינון מתמחים כפולים לפי ID
+    const uniqueInternsForDay = Array.from(new Set(internsForDay.map(intern => intern.id)))
+      .map(id => internsForDay.find(intern => intern.id === id));
+
     setSelectedDay(day);
-    setSelectedInternsForDay(internsForDay);
+    setSelectedInternsForDay(uniqueInternsForDay);
     setOpenDialog(true);
   };
+
 
   // Handle intern removal
   const handleRemoveIntern = (internId) => {
@@ -532,11 +574,15 @@ export default function InternScheduling() {
                           }}
                           onClick={() => openInternsDialog(day)} // Open dialog on cell click
                         >
-                          {generateWeeklyScheduleFromServer[day]?.interns.map((intern, index) => (
-                            <Typography key={index} variant="body2" sx={{ mb: 1 }}>
-                              {intern.name}
-                            </Typography>
-                          ))}
+                          {generateWeeklyScheduleFromServer[day]?.interns
+                            .filter((intern, index, self) =>
+                              index === self.findIndex((t) => t.id === intern.id))
+                            .map((intern, index) => (
+                              <Typography key={`${intern.id}-${index}`} variant="body2" sx={{ mb: 1 }}>
+                                {intern.name}
+                              </Typography>
+                            ))}
+
                         </TableCell>
                       ))}
                     </TableRow>
@@ -564,13 +610,13 @@ export default function InternScheduling() {
                 <DeleteIcon />
               </IconButton>
             </Box>
-
           ))}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>סגור</Button>
         </DialogActions>
       </Dialog>
+
     </>
   );
 }
