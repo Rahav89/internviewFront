@@ -27,8 +27,12 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import * as XLSX from "xlsx";
 import MenuLogo from "../FFCompos/MenuLogo";
 import excelImage from "../Image/exelPhoto.png";
-import styled from '@mui/system/styled';
-import { InsertSurgery, GetAllProcedure, AddProcedureInSurgery } from "../FFCompos/Server.jsx";
+import styled from "@mui/system/styled";
+import {
+  InsertSurgery,
+  GetAllProcedure,
+  AddProcedureInSurgery,
+} from "../FFCompos/Server.jsx";
 import Swal from "sweetalert2";
 import "../App.css";
 
@@ -181,7 +185,9 @@ export default function AddSurgeries() {
           const surgeryTimeRaw = row[3];
           const difficultyLevel = parseInt(row[4]);
 
-          const productionCodes = String(row[5]).split(",").map(code => code.trim());
+          const productionCodes = String(row[5])
+            .split(",")
+            .map((code) => code.trim());
 
           const isCaseNumberValid = /^[0-9]+$/.test(caseNumber);
           const isPatientAgeValid = patientAge >= 0 && patientAge <= 120;
@@ -190,10 +196,15 @@ export default function AddSurgeries() {
           const surgeryDate = convertExcelDateToJSDate(surgeryDateRaw);
           const surgeryTime = convertExcelTimeToReadableTime(surgeryTimeRaw);
           const isSurgeryDateValid = !isNaN(new Date(surgeryDate).getTime());
-          const isSurgeryTimeValid = /^([01]\d|2[0-3]):([0-5]\d)$/.test(surgeryTime);
+          const isSurgeryTimeValid = /^([01]\d|2[0-3]):([0-5]\d)$/.test(
+            surgeryTime
+          );
 
-          const isDifficultyLevelValid = difficultyLevel >= 1 && difficultyLevel <= 3;
-          const areProductionCodesValid = productionCodes.every(code => /^[0-9]+$/.test(code));
+          const isDifficultyLevelValid =
+            difficultyLevel >= 1 && difficultyLevel <= 3;
+          const areProductionCodesValid = productionCodes.every((code) =>
+            /^[0-9]+$/.test(code)
+          );
 
           if (
             !isCaseNumberValid ||
@@ -203,12 +214,12 @@ export default function AddSurgeries() {
             !isDifficultyLevelValid ||
             !areProductionCodesValid
           ) {
-            console.log(isCaseNumberValid, "isCaseNumberValid")
-            console.log(isPatientAgeValid, "isPatientAgeValid")
-            console.log(isSurgeryDateValid, "isSurgeryDateValid")
-            console.log(isSurgeryTimeValid, "isSurgeryTimeValid")
-            console.log(isDifficultyLevelValid, "isDifficultyLevelValid")
-            console.log(areProductionCodesValid, "areProductionCodesValid")
+            console.log(isCaseNumberValid, "isCaseNumberValid");
+            console.log(isPatientAgeValid, "isPatientAgeValid");
+            console.log(isSurgeryDateValid, "isSurgeryDateValid");
+            console.log(isSurgeryTimeValid, "isSurgeryTimeValid");
+            console.log(isDifficultyLevelValid, "isDifficultyLevelValid");
+            console.log(areProductionCodesValid, "areProductionCodesValid");
             invalid = true;
             console.warn(`Invalid data on row ${index + 1}:`, row);
             return false;
@@ -222,7 +233,9 @@ export default function AddSurgeries() {
           surgeryDate: convertExcelDateToJSDate(row[2]),
           surgeryTime: convertExcelTimeToReadableTime(row[3]),
           difficultyLevel: parseInt(row[4]),
-          productionCodes: String(row[5]).split(",").map(code => code.trim()),
+          productionCodes: String(row[5])
+            .split(",")
+            .map((code) => code.trim()),
         }));
 
       if (invalid) {
@@ -268,7 +281,7 @@ export default function AddSurgeries() {
             surgery_date:
               surgery.surgeryDate + "T" + surgery.surgeryTime + ":00",
             difficulty_level: surgery.difficultyLevel,
-            production_codes: surgery.productionCodes.join(", "),  // שילוב קודי הפרוצדורות למחרוזת
+            production_codes: surgery.productionCodes.join(", "), // שילוב קודי הפרוצדורות למחרוזת
             hospital_name: "הלל יפה",
           });
 
@@ -289,7 +302,8 @@ export default function AddSurgeries() {
             if (response === -1) {
               errorMsg = `- הוספת ניתוח אחד או יותר נכשלה <br> קיים ניתוח חופף בזמנים בתאריך ניתן`;
             } else if (response === -2) {
-              errorMsg = "- הוספת ניתוח אחד או יותר נכשלה <br> קיימים כבר 2 ניתוחים בתאריך ניתן";
+              errorMsg =
+                "- הוספת ניתוח אחד או יותר נכשלה <br> קיימים כבר 2 ניתוחים בתאריך ניתן";
             }
 
             Swal.fire({
@@ -351,7 +365,6 @@ export default function AddSurgeries() {
     }
 
     try {
-
       const response = await InsertSurgery({
         surgery_id: 0,
         case_number: newSurgery.caseNumber,
@@ -401,8 +414,13 @@ export default function AddSurgeries() {
     <>
       <MenuLogo />
       <Container maxWidth="lg" sx={{ mt: 12, mb: 3 }}>
-        <Box spacing={3} alignItems="center" justifyContent="center" direction="column">
-          <Box >
+        <Box
+          spacing={3}
+          alignItems="center"
+          justifyContent="center"
+          direction="column"
+        >
+          <Box>
             <Button
               component="label"
               variant="contained"
@@ -425,7 +443,7 @@ export default function AddSurgeries() {
             </Button>
           </Box>
 
-          <Box >
+          <Box>
             <Typography variant="h6" align="center">
               ניתן להעלות גם ניתוחים בעזרת אקסל <br />
               שים ❤️️ - על האקסל להיות <b> בפורמט המתאים</b>
@@ -446,14 +464,14 @@ export default function AddSurgeries() {
             </Typography>
           </Box>
 
-          <Box >
+          <Box>
             <Button
               component="label"
               variant="contained"
               startIcon={<CloudUploadIcon />}
               sx={{
                 width: "300px",
-                m:1,
+                m: 1,
                 backgroundColor: "white",
                 color: "#1976d2",
                 borderColor: "#1976d2",
@@ -477,33 +495,63 @@ export default function AddSurgeries() {
           </Box>
 
           {isConfirmed && (
-            <Box >
+            <Box>
               {surgeries.length > 0 ? (
                 <>
-                  <Typography variant="h6" align="center" fontWeight={'bold'}>
+                  <Typography variant="h6" align="center" fontWeight={"bold"}>
                     :ניתוחים שהועלו מקובץ האקסל
                   </Typography>
                   <TableContainer component={Paper} sx={{ mt: 2 }}>
                     <Table sx={{ direction: "rtl" }}>
                       <TableHead>
-                        <TableRow sx={{ backgroundColor: "rgb(25 118 210)", color: 'white', textAlign: 'center' }}>
-                          <TableCell align="right" sx={{ color: 'white' }}>מספר מקרה</TableCell>
-                          <TableCell align="right" sx={{ color: 'white' }}>גיל מטופל</TableCell>
-                          <TableCell align="right" sx={{ color: 'white' }}>תאריך הניתוח</TableCell>
-                          <TableCell align="right" sx={{ color: 'white' }}>שעת הניתוח</TableCell>
-                          <TableCell align="right" sx={{ color: 'white' }}>רמת מורכבות</TableCell>
-                          <TableCell align="right" sx={{ color: 'white' }}>קודי הפרוצדורות</TableCell>
+                        <TableRow
+                          sx={{
+                            backgroundColor: "rgb(25 118 210)",
+                            color: "white",
+                            textAlign: "center",
+                          }}
+                        >
+                          <TableCell align="center" sx={{ color: "white" }}>
+                            מספר מקרה
+                          </TableCell>
+                          <TableCell align="center" sx={{ color: "white" }}>
+                            גיל מטופל
+                          </TableCell>
+                          <TableCell align="center" sx={{ color: "white" }}>
+                            תאריך הניתוח
+                          </TableCell>
+                          <TableCell align="center" sx={{ color: "white" }}>
+                            שעת הניתוח
+                          </TableCell>
+                          <TableCell align="center" sx={{ color: "white" }}>
+                            רמת מורכבות
+                          </TableCell>
+                          <TableCell align="center" sx={{ color: "white" }}>
+                            קודי הפרוצדורות
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {surgeries.map((obj, index) => (
                           <TableRow key={index}>
-                            <TableCell>{obj.caseNumber}</TableCell>
-                            <TableCell>{obj.patientAge}</TableCell>
-                            <TableCell>{obj.surgeryDate}</TableCell>
-                            <TableCell>{obj.surgeryTime}</TableCell>
-                            <TableCell>{obj.difficultyLevel}</TableCell>
-                            <TableCell>{obj.productionCodes.join(", ")}</TableCell>
+                            <TableCell align="center">
+                              {obj.caseNumber}
+                            </TableCell>
+                            <TableCell align="center">
+                              {obj.patientAge}
+                            </TableCell>
+                            <TableCell align="center">
+                              {obj.surgeryDate}
+                            </TableCell>
+                            <TableCell align="center">
+                              {obj.surgeryTime}
+                            </TableCell>
+                            <TableCell align="center">
+                              {obj.difficultyLevel}
+                            </TableCell>
+                            <TableCell align="center">
+                              {obj.productionCodes.join(", ")}
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -650,7 +698,9 @@ export default function AddSurgeries() {
                 </MenuItem>
               ))}
             </Select>
-            {errors.productionCodes && <Typography color="error">שדה חובה</Typography>}
+            {errors.productionCodes && (
+              <Typography color="error">שדה חובה</Typography>
+            )}
           </FormControl>
         </DialogContent>
         <DialogActions>
