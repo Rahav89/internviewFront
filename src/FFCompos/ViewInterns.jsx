@@ -25,7 +25,6 @@ import { GetCountProceduresByIntern } from "./Server.jsx";
 import DetailedSyllabusTable from "./TableFullSyllabus.jsx";
 import FloatingChatButton from "./FloatingChatButton.jsx";
 
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -42,8 +41,6 @@ export default function ViewInterns() {
   const [selectedInternId, setSelectedInternId] = useState(null); // Changed to null for better null-checking
   const [selectedInternDetails, setSelectedInternDetails] = useState(null); // פרטי המתמחה הנבחר
   const [currentUserId, setCurrentUserId] = useState(null); //פרטי המשתמש הנוכחי המחובר לאתר
-
-
 
   //טעינת הנתונים מהשרת
   useEffect(() => {
@@ -87,13 +84,13 @@ export default function ViewInterns() {
         backgroundColor: "CornflowerBlue",
         borderColor: "DarkBlue",
         data: filteredData.map((item) => item.procedureCount),
-        barThickness: 15,
+        barThickness: 20,
       },
       {
         label: "חוסר",
         backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgba(54, 162, 235, 1)",
-        barThickness: 15,
+        barThickness: 20,
         data: filteredData.map(
           (item) => item.overallNeed - item.procedureCount
         ),
@@ -176,24 +173,37 @@ export default function ViewInterns() {
       </Box>
       <Box
         sx={{
-          width: {
-            xs: "100%",
-            md: "80%",
-          },
-          height: "400px",
-          overflowX: "auto", // Enable horizontal scrolling
-          overflowY: "visible", // Allow Y-axis to remain visible
           display: "block",
+          justifyContent: "center",
+          width: "90%", // Reduce the width to leave some space on the sides
+          maxWidth: "1200px", // Optionally, set a maximum width for the chart
+          height: "400px",
+          overflowX: "auto",
+          overflowY: "visible",
           mb: 2,
-          mx: "auto",
+          mx: "auto", // Center the box within its parent
+          textAlign: "center",
+          padding: "0 20px", // Add padding to the sides
         }}
       >
-        <Box sx={{ minWidth: `${filteredData.length * 60}px` }}> {/* Adjust the minimum width dynamically */}
+        <Box
+          sx={{
+            minWidth: `${filteredData.length * 80}px`,
+            margin: "0 auto",
+            height: "100%",
+          }}
+        >
           <Bar data={chartData} options={options} />
         </Box>
       </Box>
-      
-      {/* {selectedInternDetails && (
+
+      <FloatingChatButton />
+    </>
+  );
+}
+
+{
+  /* {selectedInternDetails && (
         <>
           <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
             <h3>
@@ -202,8 +212,5 @@ export default function ViewInterns() {
           </Box>
           <DetailedSyllabusTable internIdFromView={selectedInternId} />
         </>
-      )} */}
-      <FloatingChatButton />
-    </>
-  );
+      )} */
 }
