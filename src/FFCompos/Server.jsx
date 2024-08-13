@@ -1,5 +1,5 @@
 // Define the base URLs for API endpoints
-//const localHost = "https://localhost:7220/api/";
+//const localHost = "https://localhost:7220/api/";/
 const ruppinApi = "https://proj.ruppin.ac.il/cgroup14/test2/tar1/api/";
 
 // Set the API to use, in this case, the local host API
