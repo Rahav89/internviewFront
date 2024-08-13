@@ -83,10 +83,6 @@ export default function MenuLogo({ role }) { // Use role prop
     handleCloseUserMenu();
   };
 
-  // const handleCalenderPage = () => {
-  //   navigate("/calender");
-  // };
-
   const handleLogoClick = () => {
     if (currentUser?.isManager) {
       navigate(role === "intern" ? "/intern" : "/MangerPage");
@@ -105,15 +101,15 @@ export default function MenuLogo({ role }) { // Use role prop
 
   return (
     <AppBar sx={{ marginBottom: 12 }}>
-      <Container maxWidth="100%">
-        <Toolbar disableGutters>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Container maxWidth="100%" sx={{ paddingLeft: 0 }}>
+        <Toolbar disableGutters sx={{ paddingLeft: 0 }}>
+          <Box sx={{ display: "flex", alignItems: "center", paddingLeft: 0 }}>
             {/* Hamburger Menu Component */}
             <HamburgerMenu role={role} /> {/* Pass role directly to HamburgerMenu */}
 
             <IconButton
               onClick={handleLogoClick}
-              sx={{ p: 0, "&:focus": { outline: "none" } }}
+              sx={{ p: 0, "&:focus": { outline: "none" }, marginLeft: -2 }} // Add negative margin here
               disableRipple
             >
               <img width="100px" src={logoInternView} alt="logo" />
@@ -129,7 +125,7 @@ export default function MenuLogo({ role }) { // Use role prop
             }}
           >
             {currentUser && (
-              <Typography variant="h6" sx={{ textAlign: "center",mr:1,fontSize:"19px"}}>
+              <Typography variant="h6" sx={{ textAlign: "center", mr: 1, fontSize: "19px" }}>
                 👋 שלום, {currentUser.first_name + " " + currentUser.last_name}
               </Typography>
             )}
@@ -142,24 +138,10 @@ export default function MenuLogo({ role }) { // Use role prop
               alignItems: "center",
             }}
           >
-            {/* <Tooltip title="לוח שנה">
-              <Box>
-                <IconButton
-                  onClick={handleCalenderPage}
-                  sx={{ mr: 2, "&:focus": { outline: "none" } }}
-                >
-                  <CalendarMonthIcon
-                    style={{ color: "white" }}
-                    fontSize="medium"
-                  />
-                </IconButton>
-              </Box>
-            </Tooltip> */}
-
             <Tooltip title="פתח הגדרות">
               <IconButton
                 onClick={handleOpenUserMenu}
-                sx={{ p: 0, "&:focus": { outline: "none" } }}
+                sx={{ p: 1, "&:focus": { outline: "none" } }}
               >
                 <Avatar src={logoImage} />
               </IconButton>

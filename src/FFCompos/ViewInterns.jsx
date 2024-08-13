@@ -24,6 +24,7 @@ import MenuLogo from "./MenuLogo";
 import { GetCountProceduresByIntern } from "./Server.jsx";
 import DetailedSyllabusTable from "./TableFullSyllabus.jsx";
 import FloatingChatButton from "./FloatingChatButton.jsx";
+import { useMediaQuery } from "@mui/material";
 
 ChartJS.register(
   CategoryScale,
@@ -41,6 +42,17 @@ export default function ViewInterns() {
   const [selectedInternId, setSelectedInternId] = useState(null); // Changed to null for better null-checking
   const [selectedInternDetails, setSelectedInternDetails] = useState(null); // פרטי המתמחה הנבחר
   const [currentUserId, setCurrentUserId] = useState(null); //פרטי המשתמש הנוכחי המחובר לאתר
+  // Define media queries
+  const isXs = useMediaQuery("(max-width:600px)");
+  const isMd = useMediaQuery("(min-width:600px) and (max-width:960px)");
+
+  // Determine the margin based on screen size
+  let marginTop = "5%"; // Default for larger screens
+  if (isXs) {
+    marginTop = "15%";
+  } else if (isMd) {
+    marginTop = "10%";
+  }
 
   //טעינת הנתונים מהשרת
   useEffect(() => {
@@ -138,7 +150,7 @@ export default function ViewInterns() {
   return (
     <>
       <MenuLogo />
-      <h3 style={{ marginTop: "6%" }}>התקדמות המתמחים</h3>
+      <h3 style={{ marginTop }}>התקדמות המתמחים</h3>
       <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
         <FormControl sx={{ width: 300, m: 1 }}>
           <InputLabel>מיון</InputLabel>
