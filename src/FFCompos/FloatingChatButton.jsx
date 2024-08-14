@@ -12,21 +12,24 @@ export default function FloatingChatButton() {
 
     const internID = JSON.parse(sessionStorage.getItem('currentUserID'));
     const [internsToTalk, setInternsToTalk] = useState([]);
-    //for opening the chat
     const [open, setOpen] = useState(false);
     const [selectedUser, setSelectedIntern] = useState(null);
-    //GET all the partners to chat
+
+    // GET all the partners to chat
     useEffect(() => {
         GetInternsForChat(internID)
-            .then((data) => { setInternsToTalk(data) })
+            .then((data) => {
+                setInternsToTalk(data);
+                // Load messages as soon as we have the list of interns
+                loadMessages(data);
+            })
             .catch((error) => {
                 console.error("Error in GetInternsForChat: ", error);
             });
 
     }, []);
 
-    useEffect(() => {
-        // Reference to messages in Firebase
+    const loadMessages = (interns) => {
         const messagesRef = ref(database, 'messages/');
 
         // Listen for realtime updates
@@ -56,7 +59,6 @@ export default function FloatingChatButton() {
                     if (b.notReadMessages !== a.notReadMessages) {
                         return b.notReadMessages - a.notReadMessages;
                     }
-                    // בדיקה אם ל-message יש את המאפיין messages_date לפני שמנסים לגשת אליו
                     const dateA = a.lastMessage && a.lastMessage.messages_date ? new Date(a.lastMessage.messages_date) : new Date(0);
                     const dateB = b.lastMessage && b.lastMessage.messages_date ? new Date(b.lastMessage.messages_date) : new Date(0);
                     return dateB - dateA;
@@ -68,7 +70,7 @@ export default function FloatingChatButton() {
 
         // Cleanup function to detach the listener
         return () => off(messagesRef);
-    }, []);
+    };
 
     const allUnreadMessages = () => {
         return internsToTalk.reduce((sum, intern) => {
@@ -118,12 +120,14 @@ export default function FloatingChatButton() {
                 sx={{
                     '& .MuiPopover-paper': {
                         maxHeight: 'calc(80vh - 48px)', // Adjust the height relative to the view height and the button size
-                        maxWidth: '300px',
+                        maxWidth: '300px', // כאן אתה יכול להגדיר את הרוחב הרצוי
                         overflow: 'auto',
                         mt: '-75px',
+                        width: '500px', // או כל רוחב אחר שאתה רוצה לקבוע
                     }
                 }}
             >
+
                 {selectedUser == null ? (
                     <>
                         <DialogTitle id="user-select-title" sx={{ textAlign: 'right', mr: 2 }}>צ'אטים </DialogTitle>
