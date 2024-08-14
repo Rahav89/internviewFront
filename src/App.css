@@ -98,7 +98,7 @@
 }
 
 
-/****** STYLED SCROLLBAR OF THE HOLE APP ******/
+/* STYLED SCROLLBAR OF THE HOLE APP */
 ::-webkit-scrollbar {
   width: 12px;  /* for vertical scrollbars */
   height: 12px; /* for horizontal scrollbars */
@@ -121,5 +121,5 @@
 ::-webkit-scrollbar-button {
   display: none; /* This can be set to 'block' if you want arrows on your scrollbar */
 }
-/************ STYLED SCROLLBAR OF THE HOLE APP ************ /
+/* STYLED SCROLLBAR OF THE HOLE APP* /
 
