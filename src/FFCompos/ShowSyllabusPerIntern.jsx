@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import MenuLogo from "./MenuLogo";
+import HamburgerMenu from "./HamburgerMenu"; // Import the HamburgerMenu component
 import {
   Autocomplete,
   TextField,
@@ -7,7 +8,7 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { GetInterns } from "./Server.jsx"; // Importing only the required function
+import { GetInterns } from "./Server.jsx";
 import DetailedSyllabusTable from "./TableFullSyllabus.jsx";
 import { useParams } from "react-router-dom";
 
@@ -64,7 +65,8 @@ export default function ShowSyllabusPerIntern() {
 
   return (
     <>
-      <MenuLogo />
+      <MenuLogo role="manager"/>
+      {/* <HamburgerMenu  /> הצגת תפריט מותאם למנהל */}
       <Box
         sx={{
           display: "flex",
@@ -72,7 +74,7 @@ export default function ShowSyllabusPerIntern() {
           justifyContent: "center",
           alignItems: "center",
           height: "240px",
-          mt:5
+          mt: 5,
         }}
       >
         <Typography variant="h5" gutterBottom fontWeight={600}>
@@ -90,7 +92,11 @@ export default function ShowSyllabusPerIntern() {
             )}
             sx={{ width: 300, m: 2, direction: "rtl" }}
             onChange={handleAutocompleteChange}
-            value={selectedInternDetails ? `${selectedInternDetails.first_name} ${selectedInternDetails.last_name}` : null}
+            value={
+              selectedInternDetails
+                ? `${selectedInternDetails.first_name} ${selectedInternDetails.last_name}`
+                : null
+            }
           />
         )}
       </Box>

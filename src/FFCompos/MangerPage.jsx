@@ -9,6 +9,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd"; // אייקון עבו�
 import UploadFileIcon from "@mui/icons-material/UploadFile"; // אייקון עבור העלאת ניתוחים
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"; // אייקון עבור שיבוצים לניתוחים שבועיים
 import FloatingChatButton from "./FloatingChatButton";
+import HamburgerMenu from "./HamburgerMenu";
 
 export default function MangerPage() {
   // מערך שמכיל את כל הפעולות האפשריות עבור המנהל, כולל הכותרת, האייקון והקישור הרלוונטי
@@ -47,7 +48,7 @@ export default function MangerPage() {
 
   return (
     <>
-      <MenuLogo role="manager" /> {/* רכיב שמציג את הלוגו או תפריט המנהל */}
+      <MenuLogo role="manager"  /> {/* רכיב שמציג את הלוגו או תפריט המנהל */}
       <ViewInterns /> {/* רכיב להצגת מתמחים */}
       <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
         <Grid

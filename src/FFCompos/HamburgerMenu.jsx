@@ -21,6 +21,8 @@ import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import PeopleIcon from "@mui/icons-material/People";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const HamburgerMenu = ({ role }) => {
+  console.log(role);
+
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -50,7 +52,7 @@ const HamburgerMenu = ({ role }) => {
   const homeMenuItem = {
     text: "בית",
     icon: <Home />,
-    link: role === "intern" ? "/intern" : "/MangerPage",
+    link: "intern" === role ? "/intern" : "/MangerPage",
   };
 
   const internMenuItems = [
@@ -97,8 +99,7 @@ const HamburgerMenu = ({ role }) => {
     },
     { text: "בחירת משקלים לאלגוריתם", icon: <ScaleIcon />, link: "/weights" },
   ];
-
-  const menuItems = role === "intern" ? internMenuItems : managerMenuItems;
+  const menuItems = "intern" === role ? internMenuItems : managerMenuItems;
 
   return (
     <div style={styles.hamburgerContainer} ref={menuRef}>
@@ -138,11 +139,11 @@ const HamburgerMenu = ({ role }) => {
               <ListItemIcon sx={styles.icon}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} sx={styles.listItemText} />
             </ListItem>
-            {index === menuItems.length - 2 && role !== "intern" && <Divider />}
+            {index === menuItems.length - 2 && "intern" !== role && <Divider />}
           </Box>
         ))}
 
-        {role !== "intern" && (
+        {"intern" !== role && (
           <Box sx={styles.algorithmSection}>
             <Typography variant="subtitle1" sx={styles.sectionTitle}>
               אלגוריתם
@@ -176,9 +177,9 @@ const styles = {
     fontSize: "24px",
     cursor: "pointer",
     color: "white",
-    paddingLeft: "0",    
+    paddingLeft: "0",
     marginright: "22px",
-    marginLeft: "10px"
+    marginLeft: "10px",
   },
   hamburgerMenu: {
     position: "absolute",
