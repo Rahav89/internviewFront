@@ -34,14 +34,13 @@ export default function FloatingChatButton() {
             const data = snapshot.val();
             setInternsToTalk(currentInterns => {
                 // Map current interns to incorporate updates
-                return currentInterns.map(intern => {
+                const updatedInterns = currentInterns.map(intern => {
                     let notReadMessages = 0;
                     let lastMessage = null;
                     for (const key in data) {
                         const message = data[key];
                         if (message.to_id === internID && message.from_id === intern.Intern_id && !message.read) {
                             notReadMessages++; // Increment unread messages if unread
-
                         }
                         if ((message.from_id === internID && message.to_id === intern.Intern_id) ||
                             (message.from_id === intern.Intern_id && message.to_id === internID)) {
@@ -51,15 +50,25 @@ export default function FloatingChatButton() {
                     // Return a new intern object with updated data
                     return { ...intern, notReadMessages, lastMessage };
                 });
+
+                // Sort the interns by the number of unread messages, so those with unread messages appear first
+                updatedInterns.sort((a, b) => {
+                    if (b.notReadMessages !== a.notReadMessages) {
+                        return b.notReadMessages - a.notReadMessages;
+                    }
+                    // בדיקה אם ל-message יש את המאפיין messages_date לפני שמנסים לגשת אליו
+                    const dateA = a.lastMessage && a.lastMessage.messages_date ? new Date(a.lastMessage.messages_date) : new Date(0);
+                    const dateB = b.lastMessage && b.lastMessage.messages_date ? new Date(b.lastMessage.messages_date) : new Date(0);
+                    return dateB - dateA;
+                });
+
+                return updatedInterns;
             });
-
-
         });
+
         // Cleanup function to detach the listener
         return () => off(messagesRef);
     }, [selectedUser]);
-
-    //console.log(internsToTalk);
 
     const allUnreadMessages = () => {
         return internsToTalk.reduce((sum, intern) => {
@@ -70,8 +79,6 @@ export default function FloatingChatButton() {
             }
         }, 0);
     };
-
-
 
     const anchorRef = useRef(null);
 
@@ -85,10 +92,8 @@ export default function FloatingChatButton() {
 
     return (
         <>
-            {/* {console.log(internsToTalk)} */}
             <Fab color="primary" aria-label="chat" onClick={handleClickOpen}
                 style={{ position: 'fixed', bottom: 20, right: 20 }} ref={anchorRef}>
-                {/* הודעות שלא נקראו*/}
                 <Badge badgeContent={allUnreadMessages()} color="error"
                     sx={{
                         '.MuiBadge-badge':
@@ -128,15 +133,14 @@ export default function FloatingChatButton() {
                                     <ListItem button onClick={() => { setSelectedIntern(intern) }}>
                                         <Badge badgeContent={intern.notReadMessages} color="primary" anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                                             <Avatar sx={{ width: "4vh", height: "4vh", bgcolor: '#99cfe0' }}>
-                                                {/* Using the first letter of the first name as the Avatar content */}
-                                                { `${intern.First_name[0]}${intern.Last_name[0]}`}
+                                                {`${intern.First_name[0]}${intern.Last_name[0]}`}
                                             </Avatar>
                                         </Badge>
                                         <ListItemText
                                             sx={{ textAlign: 'right', mr: 2 }}
                                             primary={`${intern.First_name} ${intern.Last_name}`}
                                             secondary={intern.lastMessage ? intern.lastMessage.content : 'ללא הודעות'} />
-                                        <Typography sx={{ ml: 1 , mr: 0.3, fontSize: '13.5px', mt: 2, color: 'text.secondary', width: '30px' }}>
+                                        <Typography sx={{ ml: 1, mr: 0.3, fontSize: '13.5px', mt: 2, color: 'text.secondary', width: '30px' }}>
                                             {intern.lastMessage ? intern.lastMessage.messages_date.slice(11, 16) : ''}
                                         </Typography>
                                     </ListItem>
