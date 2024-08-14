@@ -89,7 +89,7 @@ export default function Calendar() {
 
   return (
     <>
-      <MenuLogo />
+      <MenuLogo role="intern"/>
       <Box
         sx={{
           width: "100%",

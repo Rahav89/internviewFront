@@ -72,7 +72,7 @@
 
 .css-1xsq4dq-MuiModal-root-MuiPopover-root .MuiPopover-paper {
   margin-right: 50px;
-  width: 100%;
+  width:1000px !important;
   border-radius: 15px; 
 }
 

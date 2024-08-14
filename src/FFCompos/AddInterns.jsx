@@ -172,7 +172,7 @@ export default function AddInterns() {
 
   return (
     <>
-      <MenuLogo />
+      <MenuLogo role="intern"/>
       <Container component="main" dir="rtl">
         <CssBaseline />
         <Grid container justifyContent="center">
