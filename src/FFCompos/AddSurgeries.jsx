@@ -428,6 +428,7 @@ export default function AddSurgeries() {
               onClick={handleOpenSingleForm}
               startIcon={<ContentPasteIcon />}
               sx={{
+                mb: 2.5,
                 width: "300px",
                 backgroundColor: "white",
                 color: "#1976d2",
