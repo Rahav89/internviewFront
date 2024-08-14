@@ -172,12 +172,12 @@ export default function AddInterns() {
 
   return (
     <>
-      <MenuLogo role="intern"/>
+      <MenuLogo role="manager"/>
       <Container component="main" dir="rtl">
-        <CssBaseline />
+       
         <Grid container justifyContent="center">
           <Grid item xs={12} sm={8} md={8} lg={6}>
-            <Card sx={{ mt: 7, width: "100%", mb: 2 }}>
+            <Card sx={{ mt: 9, width: "100%", mb: 2 }}>
               <CardContent>
                 <Box
                   sx={{

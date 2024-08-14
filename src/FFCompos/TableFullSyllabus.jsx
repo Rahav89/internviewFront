@@ -32,6 +32,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 //-----------------------------------------------------------
 
 function displayColor(requiredAsPosition) {
@@ -94,11 +95,13 @@ function transformArray(procedures) {
   return result;
 }
 
-export default function DetailedSyllabusTable(props) {
+export default function DetailedSyllabusTable({ propsInternId, role: propsRole }) {
   const [data, setData] = useState([]);
-  console.log("props.internIdFromView  ", props.internIdFromView);
+  const location = useLocation();
+  const role = propsRole || (location.state && location.state.role) || "intern";
 
-  let internIdFromBar = props.internIdFromView;
+
+  let internIdFromBar = propsInternId;
   let internID =
     internIdFromBar == undefined
       ? JSON.parse(sessionStorage.getItem("currentUserID"))
@@ -116,9 +119,24 @@ export default function DetailedSyllabusTable(props) {
   const rows = transformArray(data);
 
   function Row(props) {
+    console.log(role, "role")
     const navigate = useNavigate();
     const { row } = props;
     const [open, setOpen] = useState(false);
+    const handleRowClick = (procedureId) => {
+      console.log('Row clicked', procedureId);  // Add this
+      if (procedureId) {
+        console.log("Navigating with role:", role);
+        navigate(`/details/${procedureId}`, {
+          state: {
+            procedureId,
+            internsID,
+            role,
+          },
+        });
+      }
+    };
+
     let pName = row.procedureName;
     let reqAsAdmin = row.requiredAsMain;
     let doneAsAsmin = row.doneAsMain;
@@ -152,17 +170,14 @@ export default function DetailedSyllabusTable(props) {
               color: row.procedure_Id ? "blue" : "black",
               textDecoration: row.procedure_Id ? "underline" : "none",
             }}
-            onClick={() =>
-              row.procedure_Id
-                ? navigate(`/details/${row.procedure_Id}`, {
-                  state: { procedureId: row.procedure_Id, internID },
-                })
-                : null
-            }
+            onClick={() => {
+              console.log('TableCell clicked');
+              handleRowClick(row.procedure_Id);
+            }}
           >
-            {" "}
-            {pName}{" "}
+            {pName}
           </TableCell>
+
 
           <TableCell
             align="center"
@@ -273,7 +288,7 @@ export default function DetailedSyllabusTable(props) {
                                 categoryRow.id
                                   ? navigate(`/details/${categoryRow.id}`, {
                                     state: {
-                                      procedureId: categoryRow.id, internID
+                                      procedureId: categoryRow.id, internID, role
                                     },
                                   })
                                   : null
@@ -379,7 +394,7 @@ export default function DetailedSyllabusTable(props) {
 
   return (
     <>
-      <MenuLogo role="intern" />
+      <MenuLogo role={role} />
       <Grid container spacing={2}>
         <Box display="flex" justifyContent="center">
           <Grid item xs={11} alignItems="center">

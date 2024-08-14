@@ -107,10 +107,10 @@ export default function ShowSyllabusPerIntern() {
               m: 4,
               display: "flex",
               justifyContent: "center",
-              marginTop: -2,
+              marginTop: -13,
             }}
           >
-            <DetailedSyllabusTable internIdFromView={selectedInternId} />
+           <DetailedSyllabusTable propsInternId={selectedInternId} role="manager" /> {/* Updated prop name */}
           </Box>
         </>
       )}

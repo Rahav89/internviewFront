@@ -38,7 +38,8 @@ export default function CardsDetailsInterns() {
   const { internID } = location.state || {};
   const internId =
     internID ?? JSON.parse(sessionStorage.getItem("currentUserID")) ?? 0; // שליפת מזהה המתמחה מאחסון הסשן
-
+  const role = location.state.role || "manager";
+  console.log("location.state:", location.state);
   // הוק לשליפת כל שמות הפרוצדורות
   useEffect(() => {
     GetAllProcedure()
@@ -118,7 +119,7 @@ export default function CardsDetailsInterns() {
 
   return (
     <>
-         <MenuLogo role="intern" />
+       <MenuLogo role={role || "intern"} />
       <Typography
         variant="h6"
         sx={{ marginTop: 8, textAlign: "center", fontWeight: "bold" }}

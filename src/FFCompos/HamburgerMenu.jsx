@@ -20,20 +20,21 @@ import ScaleIcon from "@mui/icons-material/Scale";
 import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
 import PeopleIcon from "@mui/icons-material/People";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-const HamburgerMenu = ({ role }) => {
-  console.log(role);
 
+const HamburgerMenu = ({ role }) => {
+  
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+    console.log(role);
   };
 
-  const handleMenuItemClick = (link) => {
+  const handleMenuItemClick = (link, state) => {
     setIsOpen(false); // Close the menu when a menu item is clicked
-    navigate(link); // Navigate to the selected page
+    navigate(link, { state }); // Navigate to the selected page with state
   };
 
   const handleClickOutside = (event) => {
@@ -52,7 +53,7 @@ const HamburgerMenu = ({ role }) => {
   const homeMenuItem = {
     text: "בית",
     icon: <Home />,
-    link: "intern" === role ? "/intern" : "/MangerPage",
+    link: role === "intern" ? "/intern" : "/MangerPage",
   };
 
   const internMenuItems = [
@@ -67,6 +68,7 @@ const HamburgerMenu = ({ role }) => {
       text: "צפייה בניתוחים שבוצעו",
       icon: <AssignmentTurnedIn />,
       link: "/details/:id",
+      state: { role: "intern" }, // Passing state here
     },
   ];
 
@@ -99,7 +101,8 @@ const HamburgerMenu = ({ role }) => {
     },
     { text: "בחירת משקלים לאלגוריתם", icon: <ScaleIcon />, link: "/weights" },
   ];
-  const menuItems = "intern" === role ? internMenuItems : managerMenuItems;
+  
+  const menuItems = role === "intern" ? internMenuItems : managerMenuItems;
 
   return (
     <div style={styles.hamburgerContainer} ref={menuRef}>
@@ -133,17 +136,17 @@ const HamburgerMenu = ({ role }) => {
           <Box key={index}>
             <ListItem
               button
-              onClick={() => handleMenuItemClick(item.link)}
+              onClick={() => handleMenuItemClick(item.link, item.state)} // Pass state here
               sx={styles.menuItem}
             >
               <ListItemIcon sx={styles.icon}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} sx={styles.listItemText} />
             </ListItem>
-            {index === menuItems.length - 2 && "intern" !== role && <Divider />}
+            {index === menuItems.length - 2 && role !== "intern" && <Divider />}
           </Box>
         ))}
 
-        {"intern" !== role && (
+        {role !== "intern" && (
           <Box sx={styles.algorithmSection}>
             <Typography variant="subtitle1" sx={styles.sectionTitle}>
               אלגוריתם

@@ -40,7 +40,11 @@ export default function InternPage() {
 
   // פונקציה לניווט לדף הצגת כל הניתוחים
   const handleViewAllSurgeries = () => {
-    navigate('/details/:id');
+    navigate('/details/:id', {
+      state: {
+        role: 'intern'
+      }
+    });
   }
 
   const handleCalenderPage = () => {

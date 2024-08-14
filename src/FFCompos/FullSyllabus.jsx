@@ -186,7 +186,7 @@ function FullSyllabus() {
         const clickedIndex = chartElement[0].index;
         // Extract the item ID associated with the clicked bar
         const procedureId = topTenData[clickedIndex]?.procedure_Id; // Assuming each item has a unique ID property
-        navigate(`/details/${procedureId}`, { state: { procedureId: procedureId } }); // Navigate to the details page using the item ID
+        navigate(`/details/${procedureId}`, { state: { procedureId: procedureId , role: 'intern'} }); // Navigate to the details page using the item ID
       }
     },
     plugins: {

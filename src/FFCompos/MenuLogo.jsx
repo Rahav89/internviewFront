@@ -74,7 +74,11 @@ export default function MenuLogo({ role }) { // Use role prop
       sessionStorage.removeItem("currentUserID");
       navigate("/");
     } else if (action === "profile") {
-      navigate("/profile");
+      navigate('/profile', {
+        state: {
+          role: role
+        }
+      });
     } else if (action === "intern") {
       navigate("/intern");
     } else if (action === "manager") {

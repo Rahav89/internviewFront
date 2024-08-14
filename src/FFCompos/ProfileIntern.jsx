@@ -15,6 +15,7 @@ import { Container, Box } from "@mui/material";
 import { updateIntern, GetInternByID } from "./Server.jsx";
 import FloatingChatButton from './FloatingChatButton';
 import EditIcon from '@mui/icons-material/Edit';
+import { useLocation } from 'react-router-dom';
 
 // Mapping of year numbers to Hebrew letters
 const yearToHebrew = {
@@ -34,11 +35,11 @@ function calculateHebrewYear(startYear) {
   return yearToHebrew[yearDifference] || "";
 }
 
-//------------------------------------------------------------------
-
 export default function ProfileIntern() {
+  const location = useLocation();
+  const role = location.state.role || "manager"; // Corrected line
   const [currentUser, setCurrentUser] = useState(null);
-  // הגדרת הטופס עם הנתונים הנוכחיים של המשתמש
+  // Form data state
   const [formData, setFormData] = useState({
     currentPassword: "",
     password_i: "",
@@ -69,12 +70,10 @@ export default function ProfileIntern() {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-  // Function to handle button click
   const handleCancelClick = () => {
     navigate("/intern"); // Navigate to the intern page
   };
 
-  //הפונקציות הללו משמשות לשינוי מצב ההצגה של סיסמאות, ממצב מוסתר למצב מוצג ולהפך
   const handleToggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -83,7 +82,7 @@ export default function ProfileIntern() {
     setShowNewPassword(!showNewPassword);
   };
 
-  // ניהול שגיאות בטופס
+  // Form error handling
   const [formErrors, setFormErrors] = useState({
     password_i: false,
     passwordConfirmation: false,
@@ -92,7 +91,6 @@ export default function ProfileIntern() {
     email_i: false
   });
 
-  // טיפול בשינויים בשדות הטופס
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -100,7 +98,6 @@ export default function ProfileIntern() {
       [name]: value,
     }));
 
-    // אם מדובר בשדה האימייל, בצע ולידציה
     if (name === "email_i") {
       const isValidEmail = validateEmail(value);
       setFormErrors((prevErrors) => ({
@@ -110,30 +107,23 @@ export default function ProfileIntern() {
     }
   };
 
-  //פונקציה הבודקת את הולידציה של הסיסמא
   function validatCurrentePassword(password) {
-    //לאפשר למשתמש לא להכניס סיסמאות (כדי לשנות משהו אחר)
     if (password === "" && formData.password_i === "" ||
       password === "" && formData.password_i === currentUser.password_i) {
       return true;
     }
-    //בודק שהסיסמה שהכניס היא הסיסמה הנוכחית שלו
     return currentUser.password_i === password;
   }
 
-  // ולידציה לטקסט בלבד
   const validateTextOnly = (value) => {
     return /^[a-zA-Zא-ת ]*$/.test(value) && value !== "";
   };
 
-  //פונקציה הבודקת את הולידציה של הסיסמא החדשה
   function validateNewPassword(password) {
-    //לאפשר למשתמש לא להכניס סיסמאות (כדי לשנות משהו אחר)
     if (password === "" && formData.currentPassword === "" ||
       password === currentUser.password_i && formData.currentPassword === "") {
       return true;
     }
-    //בודק שהסיסמא מכילה לפחות אות גדולה אחת ומספר אחד
     const uppercaseLetter = /[A-Z]/;
     const digit = /[0-9]/;
     return (
@@ -141,7 +131,6 @@ export default function ProfileIntern() {
     );
   }
 
-  // פונקציה לבדיקת תקינות כתובת מייל
   function validateEmail(email) {
     console.log(email);
     const regex = /^[a-zA-Z0-9.+_-]+@gmail\.com$/;
@@ -165,12 +154,9 @@ export default function ProfileIntern() {
       email_i: !isEmailIValid
     });
 
-    //אם כל הולידציות תקינות - שלח עדכון לשרת
     if (isPasswordConfirmationValid && isPasswordValid && isFirstNameValid && isLastNameValid && isEmailIValid) {
-      //טיפול במקרה שלא הכניס סיסמאות - ניתן לעדכן בכל זאת עם הסיסמה הקודמת
       let newPass = formData.password_i;
       if (formData.currentPassword === "" && formData.password_i === "") { newPass = currentUser.password_i; }
-      // פונקציה לעדכון פרטי המתמחה בשרת
       updateIntern(currentUser.id, formData, newPass)
         .then((data) => {
           console.log('Submitting form data:', data);
@@ -198,7 +184,7 @@ export default function ProfileIntern() {
 
   return (
     <>
-      <MenuLogo />
+      <MenuLogo role={role}/>
       <Container component="main" dir="rtl">
         <CssBaseline />
         <Grid container justifyContent="center">
