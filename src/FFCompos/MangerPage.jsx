@@ -8,6 +8,7 @@ import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck"; // אי
 import GroupAddIcon from "@mui/icons-material/GroupAdd"; // אייקון עבור הוספת מתמחים
 import UploadFileIcon from "@mui/icons-material/UploadFile"; // אייקון עבור העלאת ניתוחים
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"; // אייקון עבור שיבוצים לניתוחים שבועיים
+import FloatingChatButton from "./FloatingChatButton";
 
 export default function MangerPage() {
   // מערך שמכיל את כל הפעולות האפשריות עבור המנהל, כולל הכותרת, האייקון והקישור הרלוונטי
@@ -94,6 +95,7 @@ export default function MangerPage() {
           )}
         </Grid>
       </Box>
+      <FloatingChatButton/>
     </>
   );
 }

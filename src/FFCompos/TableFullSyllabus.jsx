@@ -387,7 +387,7 @@ export default function DetailedSyllabusTable(props) {
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
-                mt: "100Px",
+                mt: "86px",
                 mb: "40px",
               }}
             >

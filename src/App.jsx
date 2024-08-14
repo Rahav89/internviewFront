@@ -50,6 +50,7 @@ function App() {
           <Route path="/ViewInterns" element={<ViewInterns />} />
           <Route path="/details/:id" element={<CardsDetailsInterns />} />
           <Route path="/MatchingAlgo" element={<MatchingAlgo />} />
+          <Route path="/ShowSyllabusPerIntern" element={<ShowSyllabusPerIntern />} />
           <Route path="/ShowSyllabusPerIntern/:id" element={<ShowSyllabusPerIntern />} />
           <Route path="/CalenderAllSurgeries" element={<CalenderAllSurgeries />} />
 

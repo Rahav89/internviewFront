@@ -35,6 +35,7 @@ import {
 } from "../FFCompos/Server.jsx";
 import Swal from "sweetalert2";
 import "../App.css";
+import FloatingChatButton from "./FloatingChatButton.jsx";
 
 const VisuallyHiddenInput = styled("input")({
   position: "absolute",
@@ -720,6 +721,7 @@ export default function AddSurgeries() {
           </Button>
         </DialogActions>
       </Dialog>
+      <FloatingChatButton />
     </>
   );
 }

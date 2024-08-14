@@ -12,6 +12,7 @@ import InternScheduling from "../routingForAlgo/InternScheduling";
 import WeeklySchedule from "../routingForAlgo/weeklySchedule";
 import ScaleIcon from '@mui/icons-material/Scale';
 import {CalendarMonth} from "@mui/icons-material";
+import FloatingChatButton from "./FloatingChatButton";
 
 export default function MatchingAlgo({ defaultComponent }) {
   const theme = useTheme();
@@ -153,6 +154,7 @@ export default function MatchingAlgo({ defaultComponent }) {
           </Grid>
         </Grid>
       </Container>
+      <FloatingChatButton/>
     </>
   );
 }

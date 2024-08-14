@@ -71,8 +71,8 @@ export default function ShowSyllabusPerIntern() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          minHeight: "300px",
-          padding: "20px",
+          height: "240px",
+          mt:5
         }}
       >
         <Typography variant="h5" gutterBottom fontWeight={600}>
