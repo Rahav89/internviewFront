@@ -27,10 +27,7 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import * as XLSX from "xlsx";
 import MenuLogo from "../FFCompos/MenuLogo";
 import excelImage from "../Image/exelPhoto.png";
-import styled from '@emotion/styled';
-
-
-
+import styled from "@mui/system/styled";
 import {
   InsertSurgery,
   GetAllProcedure,
@@ -691,6 +688,13 @@ export default function AddSurgeries() {
               }
               label="קודי הפרוצדורות"
               multiple
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 38 * 5 + 8, // 5 items at 48px each plus some padding
+                  },
+                },
+              }}
             >
               {procedures.map((procedure) => (
                 <MenuItem
@@ -705,6 +709,7 @@ export default function AddSurgeries() {
               <Typography color="error">שדה חובה</Typography>
             )}
           </FormControl>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseSingleForm} color="primary">

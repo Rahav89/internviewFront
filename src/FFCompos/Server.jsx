@@ -484,6 +484,7 @@ export const GetAllSurgeries = () => {
 
 //function to ADD surgery
 export const InsertSurgery = (Surgery) => {
+  //console.log("Surgery" , Surgery);
   return fetch(`${api}Surgeries/AddSurgery`, {
     method: "POST",
     headers: {
@@ -507,6 +508,7 @@ export const InsertSurgery = (Surgery) => {
 
 //function to ADD surgery
 export const AddProcedureInSurgery = (surgery_id , procedure_Id) => {
+  //console.log("surgery_id , procedure_Id" ,surgery_id ,procedure_Id );
   return fetch(`${api}Surgeries/AddProcedureInSurgery/${surgery_id}/${procedure_Id}`, {
     method: "POST",
     headers: {
