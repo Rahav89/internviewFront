@@ -3,7 +3,7 @@ const localHost = "https://localhost:7220/api/";
 const ruppinApi = "https://proj.ruppin.ac.il/cgroup14/test2/tar1/api/";
 const railwayApi = "https://finalprojserver-production.up.railway.app/swagger/index.html";
 // Set the API to use, in this case, the local host API
-export const api = railwayApi;
+export const api = localHost;
 
 // Function to get intern details 
 export const GetAllIntern = () => {
