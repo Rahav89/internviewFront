@@ -68,7 +68,7 @@ export default function FloatingChatButton() {
 
         // Cleanup function to detach the listener
         return () => off(messagesRef);
-    }, [selectedUser]);
+    }, []);
 
     const allUnreadMessages = () => {
         return internsToTalk.reduce((sum, intern) => {
