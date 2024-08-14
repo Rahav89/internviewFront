@@ -176,6 +176,9 @@ const styles = {
     fontSize: "24px",
     cursor: "pointer",
     color: "white",
+    paddingLeft: "0",    
+    marginright: "22px",
+    marginLeft: "10px"
   },
   hamburgerMenu: {
     position: "absolute",

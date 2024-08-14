@@ -1,9 +1,9 @@
 // Define the base URLs for API endpoints
-//const localHost = "https://localhost:7220/api/";/
+//const localHost = "https://localhost:7220/api/";
 const ruppinApi = "https://proj.ruppin.ac.il/cgroup14/test2/tar1/api/";
-
+const railwayApi = "https://finalprojserver-production.up.railway.app/swagger/index.html";
 // Set the API to use, in this case, the local host API
-export const api = ruppinApi;
+export const api = railwayApi;
 
 // Function to get intern details 
 export const GetAllIntern = () => {
@@ -687,8 +687,29 @@ export const GetAllSurgeriesWithInterns = () => {
       return response.json();
     })
     .catch((error) => {
-      console.error("Error in PutOptimalAssignmentsAlgo: ", error);
+      console.error("Error in GetAllSurgeriesWithInterns: ", error);
       throw error;
     });
 };
 
+
+//function to update interns in gurgery by the user
+export const PutOptimalAssignmentsForUser = (internInSurgery) => {
+  return fetch(`${api}Interns/UpdateOrAddInternInSurgery`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },  
+    body: JSON.stringify(internInSurgery),   
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in PutOptimalAssignmentsForUser: ", error);
+      throw error;
+    });
+};

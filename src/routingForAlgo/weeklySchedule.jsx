@@ -19,18 +19,27 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   GetAllSurgeriesWithInterns,
   GetAllIntern,
+  PutOptimalAssignmentsForUser
 } from "../FFCompos/Server.jsx";
+import Swal from "sweetalert2";
 
 const daysOfWeek = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 
 function WeeklySchedule() {
-    const queryParams = new URLSearchParams(location.search);
-    const initialDate = queryParams.get('startDate') ? new Date(queryParams.get('startDate')) : new Date();
-    const [currentDate, setCurrentDate] = useState(initialDate);
+  const queryParams = new URLSearchParams(location.search);
+  const initialDate = queryParams.get("startDate")
+    ? new Date(queryParams.get("startDate"))
+    : new Date();
+  const [currentDate, setCurrentDate] = useState(initialDate);
   const [surgeries, setSurgeries] = useState([]);
   const [interns, setInterns] = useState([]); // Adding state for interns
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedSurgery, setSelectedSurgery] = useState(null);
+  const [inputErrors, setInputErrors] = useState({
+    Lead_Surgeon: false,
+    First_Assistant: false,
+    Second_Assistant: false,
+  });
 
   useEffect(() => {
     // Fetch surgeries data on component mount
@@ -98,22 +107,109 @@ function WeeklySchedule() {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setSelectedSurgery(null);
-  };
+    // reset the selected surgery and input errors
+    setTimeout(() => {
+        setSelectedSurgery(null);
+        setInputErrors({ Lead_Surgeon: false, First_Assistant: false, Second_Assistant: false });
+    }, 100); // Slight delay to ensure smooth closing
+};
 
-  const handleSaveChanges = () => {
-    // Perform save operation here, such as making an API call to update the surgery details
-    console.log("Saving changes:", selectedSurgery);
-    handleCloseDialog();
-  };
+
+const handleSaveChanges = () => {
+    if (selectedSurgery) {
+        const surgeryId = selectedSurgery.Surgery_id;
+
+        // בדיקת שיבוצים כפולים
+        const internIds = [
+            selectedSurgery.Lead_Surgeon?.Id,
+            selectedSurgery.First_Assistant?.Id,
+            selectedSurgery.Second_Assistant?.Id,
+        ];
+
+        const duplicateInterns = internIds.filter(
+            (id, index) => id && internIds.indexOf(id) !== index
+        );
+
+        if (duplicateInterns.length > 0) {
+            setInputErrors({
+                Lead_Surgeon: duplicateInterns.includes(selectedSurgery.Lead_Surgeon?.Id),
+                First_Assistant: duplicateInterns.includes(selectedSurgery.First_Assistant?.Id),
+                Second_Assistant: duplicateInterns.includes(selectedSurgery.Second_Assistant?.Id),
+            });
+
+            Swal.fire({
+                icon: "error",
+                title: "שגיאה",
+                text: "לא ניתן לבחור מתמחה ליותר מתפקיד אחד",
+            });
+            return;
+        }
+
+        const internAssignments = [
+            {
+                intern_role: "מנתח ראשי",
+                intern_id: selectedSurgery.Lead_Surgeon?.Id,
+            },
+            {
+                intern_role: "עוזר ראשון",
+                intern_id: selectedSurgery.First_Assistant?.Id,
+            },
+            {
+                intern_role: "עוזר שני",
+                intern_id: selectedSurgery.Second_Assistant?.Id,
+            },
+        ];
+
+        const validAssignments = internAssignments.filter(
+            (assignment) => assignment.intern_id
+        );
+
+        Promise.all(
+            validAssignments.map((assignment) =>
+                PutOptimalAssignmentsForUser({
+                    surgery_id: surgeryId,
+                    intern_id: assignment.intern_id,
+                    intern_role: assignment.intern_role,
+                })
+            )
+        )
+        .then((responses) => {
+            const success = responses.some(response => response === true);
+
+            if (success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "השיבוץ בוצע בהצלחה",
+                    text: "השיבוץ נשמר בהצלחה!",
+                });
+
+                // עדכון הניתוח ברשימת הניתוחים
+                setSurgeries((prevSurgeries) =>
+                    prevSurgeries.map((surgery) =>
+                        surgery.Surgery_id === surgeryId
+                            ? { ...surgery, ...selectedSurgery }
+                            : surgery
+                    )
+                );
+            }
+
+            handleCloseDialog();
+
+        })
+        .catch((error) => {
+            console.error("Error updating assignments:", error);
+        });
+    }
+};
+
+
+
 
   const handleInputChange = (field, value) => {
-    console.log("Before update:", selectedSurgery);
     setSelectedSurgery({
       ...selectedSurgery,
       [field]: value,
     });
-    console.log("After update:", { ...selectedSurgery, [field]: value });
   };
 
   function formatName(fullName) {
@@ -246,10 +342,12 @@ function WeeklySchedule() {
         <DialogContent sx={{ direction: "rtl", paddingTop: "8px" }}>
           {selectedSurgery && (
             <>
-              <FormControl fullWidth sx={{ marginBottom: "16px" ,marginTop:"10px"}}>
-                <InputLabel id="lead-surgeon-label" >
-                  מנתח ראשי
-                </InputLabel>
+              <FormControl
+                fullWidth
+                sx={{ marginBottom: "16px", marginTop: "10px" }}
+                error={inputErrors.Lead_Surgeon}
+              >
+                <InputLabel id="lead-surgeon-label">מנתח ראשי</InputLabel>
                 <Select
                   labelId="lead-surgeon-label"
                   value={selectedSurgery.Lead_Surgeon?.Id || ""}
@@ -276,10 +374,12 @@ function WeeklySchedule() {
                 </Select>
               </FormControl>
 
-              <FormControl fullWidth sx={{ marginBottom: "16px" }}>
-                <InputLabel id="first-assistant-label" >
-                  עוזר ראשון
-                </InputLabel>
+              <FormControl
+                fullWidth
+                sx={{ marginBottom: "16px" }}
+                error={inputErrors.First_Assistant}
+              >
+                <InputLabel id="first-assistant-label">עוזר ראשון</InputLabel>
                 <Select
                   labelId="first-assistant-label"
                   value={selectedSurgery.First_Assistant?.Id || ""}
@@ -306,10 +406,8 @@ function WeeklySchedule() {
                 </Select>
               </FormControl>
 
-              <FormControl fullWidth>
-                <InputLabel id="second-assistant-label" >
-                  עוזר שני
-                </InputLabel>
+              <FormControl fullWidth error={inputErrors.Second_Assistant}>
+                <InputLabel id="second-assistant-label">עוזר שני</InputLabel>
                 <Select
                   labelId="second-assistant-label"
                   value={selectedSurgery.Second_Assistant?.Id || ""}
