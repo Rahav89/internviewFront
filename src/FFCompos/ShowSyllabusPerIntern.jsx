@@ -1,8 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
 import MenuLogo from "./MenuLogo";
-import { Autocomplete, TextField, Box, Typography, CircularProgress } from "@mui/material";
-import { GetInterns, GetCountProceduresByIntern } from "./Server.jsx";
+import {
+  Autocomplete,
+  TextField,
+  Box,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { GetInterns } from "./Server.jsx"; // Importing only the required function
 import DetailedSyllabusTable from "./TableFullSyllabus.jsx";
+import { useParams } from "react-router-dom";
 
 export default function ShowSyllabusPerIntern() {
   const [data, setData] = useState([]); // Data from server
@@ -11,13 +18,21 @@ export default function ShowSyllabusPerIntern() {
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
 
+  const { id } = useParams(); // Get the internId from the URL, if provided
+  
   useEffect(() => {
     // Fetch data from the server
     async function fetchData() {
       try {
         const result = await GetInterns();
         setData(result);
-        console.log(result)
+        if (id) {
+          const selectedIntern = result.find((intern) => intern.id === parseInt(id));
+          if (selectedIntern) {
+            setSelectedInternId(selectedIntern.id);
+            setSelectedInternDetails(selectedIntern);
+          }
+        }
       } catch (error) {
         setError("Failed to fetch interns");
       } finally {
@@ -25,7 +40,7 @@ export default function ShowSyllabusPerIntern() {
       }
     }
     fetchData();
-  }, []);
+  }, [id]);
 
   const handleAutocompleteChange = (event, value) => {
     if (value === null) {
@@ -56,7 +71,8 @@ export default function ShowSyllabusPerIntern() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          height: "300px",
+          minHeight: "300px",
+          padding: "20px",
         }}
       >
         <Typography variant="h5" gutterBottom fontWeight={600}>
@@ -74,23 +90,18 @@ export default function ShowSyllabusPerIntern() {
             )}
             sx={{ width: 300, m: 2, direction: "rtl" }}
             onChange={handleAutocompleteChange}
+            value={selectedInternDetails ? `${selectedInternDetails.first_name} ${selectedInternDetails.last_name}` : null}
           />
         )}
       </Box>
       {selectedInternDetails && (
         <>
-          {/* Commenting out the intern's details display box */}
-          {/* <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
-            <Typography variant="h5">
-              התקדמות של {selectedInternDetails.firstName} {selectedInternDetails.lastName} בסילבוס הניתוחים
-            </Typography>
-          </Box> */}
           <Box
             sx={{
               m: 4,
               display: "flex",
               justifyContent: "center",
-              marginTop: -20,
+              marginTop: -2,
             }}
           >
             <DetailedSyllabusTable internIdFromView={selectedInternId} />

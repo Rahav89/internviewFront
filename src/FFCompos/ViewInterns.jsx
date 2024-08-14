@@ -25,6 +25,7 @@ import { GetCountProceduresByIntern } from "./Server.jsx";
 import DetailedSyllabusTable from "./TableFullSyllabus.jsx";
 import FloatingChatButton from "./FloatingChatButton.jsx";
 import { useMediaQuery } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -34,27 +35,25 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
 export default function ViewInterns() {
-  const [data, setData] = useState([]); //נתונים המגיעים מהשרת
-  const [searchTerm, setSearchTerm] = useState(""); //חיפוש נתונים
-  const [sortBy, setSortBy] = useState("ProcedureCount"); // אופציית מיון דיפולטיבית
-  const [selectedInternId, setSelectedInternId] = useState(null); // Changed to null for better null-checking
-  const [selectedInternDetails, setSelectedInternDetails] = useState(null); // פרטי המתמחה הנבחר
-  const [currentUserId, setCurrentUserId] = useState(null); //פרטי המשתמש הנוכחי המחובר לאתר
-  // Define media queries
+  const [data, setData] = useState([]); 
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [sortBy, setSortBy] = useState("ProcedureCount"); 
+  const [selectedInternId, setSelectedInternId] = useState(null); 
+  const [currentUserId, setCurrentUserId] = useState(null); 
+
   const isXs = useMediaQuery("(max-width:600px)");
   const isMd = useMediaQuery("(min-width:600px) and (max-width:960px)");
 
-  // Determine the margin based on screen size
-  let marginTop = "5%"; // Default for larger screens
+  const navigate = useNavigate(); 
+
+  let marginTop = "5%";
   if (isXs) {
     marginTop = "15%";
   } else if (isMd) {
     marginTop = "10%";
   }
 
-  //טעינת הנתונים מהשרת
   useEffect(() => {
     GetCountProceduresByIntern()
       .then((fetchedData) => {
@@ -70,12 +69,11 @@ export default function ViewInterns() {
     setCurrentUserId(userId);
   }, []);
 
-  // פילטור ומיון הנתונים בהתאם לקריטריונים שנבחרו
   const filteredData = data
     .filter(
       (item) =>
         item.firstName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        item.internId !== currentUserId // פילטור שלא כולל את המשתמש הנוכחי
+        item.internId !== currentUserId
     )
     .sort((a, b) => {
       if (sortBy === "ProcedureCount") {
@@ -87,7 +85,6 @@ export default function ViewInterns() {
       }
     });
 
-  // הגדרת מבנה הנתונים עבור הגרף
   const chartData = {
     labels: filteredData.map((item) => item.firstName),
     datasets: [
@@ -110,7 +107,6 @@ export default function ViewInterns() {
     ],
   };
 
-  // הגדרת אפשרויות להצגת הגרף
   const options = {
     scales: {
       x: {
@@ -134,17 +130,16 @@ export default function ViewInterns() {
       },
     },
     animation: {
-      duration: 2000, // Duration in milliseconds
+      duration: 2000,
       easing: "easeOutCubic",
     },
-    // // פונקציה שמופעלת בלחיצה על אלמנט בגרף
-    // onClick: (event, elements) => {
-    //   if (elements.length > 0) {
-    //     const elementIndex = elements[0].index;
-    //     setSelectedInternId(filteredData[elementIndex].internId);
-    //     setSelectedInternDetails(filteredData[elementIndex]);
-    //   }
-    // },
+    onClick: (event, elements) => {
+      if (elements.length > 0) {
+        const elementIndex = elements[0].index;
+        const internId = filteredData[elementIndex].internId;
+        navigate(`/ShowSyllabusPerIntern/${internId}`);
+      }
+    },
   };
 
   return (
@@ -187,15 +182,15 @@ export default function ViewInterns() {
         sx={{
           display: "block",
           justifyContent: "center",
-          width: "90%", // Reduce the width to leave some space on the sides
-          maxWidth: "1200px", // Optionally, set a maximum width for the chart
+          width: "90%",
+          maxWidth: "1200px",
           height: "400px",
           overflowX: "auto",
           overflowY: "visible",
           mb: 2,
-          mx: "auto", // Center the box within its parent
+          mx: "auto",
           textAlign: "center",
-          padding: "0 20px", // Add padding to the sides
+          padding: "0 20px",
         }}
       >
         <Box
@@ -208,21 +203,7 @@ export default function ViewInterns() {
           <Bar data={chartData} options={options} />
         </Box>
       </Box>
-
       <FloatingChatButton />
     </>
   );
-}
-
-{
-  /* {selectedInternDetails && (
-        <>
-          <Box sx={{ m: 2, display: "flex", justifyContent: "center" }}>
-            <h3>
-              התקדמות של {selectedInternDetails.firstName} בסילבוס הניתוחים
-            </h3>
-          </Box>
-          <DetailedSyllabusTable internIdFromView={selectedInternId} />
-        </>
-      )} */
 }

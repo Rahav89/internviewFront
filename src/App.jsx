@@ -5,11 +5,9 @@ import Login from "./FFCompos/Login";
 import ProfileIntern from "./FFCompos/ProfileIntern";
 import { useEffect } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-//import AllocationInterns from './FFCompos/AllocationInterns';
 import TableFullSyllabus from "./FFCompos/TableFullSyllabus";
 import ViewInterns from "./FFCompos/ViewInterns";
 import MatchingAlgo from "./FFCompos/MatchingAlgo";
-import "@fontsource/roboto/300.css";
 import CardsDetailsInterns from "./FFCompos/CardsDetailsInterns";
 import Calendar from "./FFCompos/Calendar";
 import ManagerOptions from "./FFCompos/ManagerOptions";
@@ -18,12 +16,11 @@ import AddInterns from "./FFCompos/AddInterns";
 import ShowSyllabusPerIntern from "./FFCompos/ShowSyllabusPerIntern";
 import CalenderAllSurgeries from "./FFCompos/CalenderAllSurgeries";
 
-// Import new components
 import InternScheduling from "./routingForAlgo/InternScheduling";
 import AddSurgeries from "./FFCompos/AddSurgeries";
 import SurgerySchedule from "./routingForAlgo/SurgerySchedule";
 import WeightsSelection from "./routingForAlgo/WeightsSelection";
-import WeeklySchedule from "./routingForAlgo/weeklySchedule"; // Import the new weeklySchedule component
+import WeeklySchedule from "./routingForAlgo/weeklySchedule";
 
 const theme = createTheme({
   typography: {
@@ -52,16 +49,13 @@ function App() {
           <Route path="/TableFullSyllabus/:id" element={<TableFullSyllabus />} />
           <Route path="/ViewInterns" element={<ViewInterns />} />
           <Route path="/details/:id" element={<CardsDetailsInterns />} />
-          {/* <Route path="/AllocationInterns" element={<AllocationInterns />} /> */}
           <Route path="/MatchingAlgo" element={<MatchingAlgo />} />
-          <Route path="/ShowSyllabusPerIntern" element={<ShowSyllabusPerIntern />} />
+          <Route path="/ShowSyllabusPerIntern/:id" element={<ShowSyllabusPerIntern />} />
           <Route path="/CalenderAllSurgeries" element={<CalenderAllSurgeries />} />
 
-          {/* New routes for routingForAlgo components */}
           <Route path="/InternScheduling" element={<MatchingAlgo defaultComponent="internScheduling" />} />
-          {<Route path="/AddSurgeries" element={<AddSurgeries />} /> }
+          <Route path="/AddSurgeries" element={<AddSurgeries />} />
           <Route path="/SurgerySchedule" element={<MatchingAlgo defaultComponent="schedule" />} />
-          {/* Add the new weeklySchedule route */}
           <Route path="/WeeklySchedule" element={<MatchingAlgo defaultComponent="weeklySchedule" />} />
           <Route path="/weights" element={<MatchingAlgo defaultComponent="weights" />} />
         </Routes>
