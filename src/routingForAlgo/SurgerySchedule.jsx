@@ -338,23 +338,25 @@ export default function SurgerySchedule() {
       const surgeryB = Object.values(events)
         .flat()
         .find((event) => event.Surgery_id === b.surgeryId);
-
+    
+      if (!surgeryA || !surgeryB) return 0; // Return 0 if one or both surgeries are undefined
+    
       return new Date(surgeryA.Surgery_date) - new Date(surgeryB.Surgery_date);
     });
+    
+    
 
     const data = sortedAssignments.map((assignment) => {
       const surgery = Object.values(events)
         .flat()
         .find((event) => event.Surgery_id === assignment.surgeryId);
-
+    
+      if (!surgery) return {}; // Handle the case where surgery is undefined
+    
       return {
-        "תאריך ושעת ניתוח": surgery
-          ? dayjs(surgery.Surgery_date).format("DD/MM/YYYY HH:mm")
-          : "תאריך לא זמין",
+        "תאריך ושעת ניתוח": dayjs(surgery.Surgery_date).format("DD/MM/YYYY HH:mm"),
         פרוצדורות:
-          surgery &&
-          Array.isArray(surgery.procedureName) &&
-          surgery.procedureName.length > 0
+          Array.isArray(surgery.procedureName) && surgery.procedureName.length > 0
             ? surgery.procedureName.join(", ")
             : "אין פרוצדורות",
         "שם מנתח ראשי": getInternNameById(assignment.mainInternId),
@@ -362,6 +364,7 @@ export default function SurgerySchedule() {
         "שם עוזר שני": getInternNameById(assignment.secondAssistantInternId),
       };
     });
+    
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
