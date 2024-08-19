@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Grid, Box } from "@mui/material";
 import MenuLogo from "../FFCompos/MenuLogo";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -11,7 +11,7 @@ import SurgerySchedule from "../routingForAlgo/SurgerySchedule";
 import InternScheduling from "../routingForAlgo/InternScheduling";
 import WeeklySchedule from "../routingForAlgo/weeklySchedule";
 import ScaleIcon from '@mui/icons-material/Scale';
-import {CalendarMonth} from "@mui/icons-material";
+import { CalendarMonth } from "@mui/icons-material";
 import FloatingChatButton from "./FloatingChatButton";
 
 export default function MatchingAlgo({ defaultComponent }) {
@@ -22,12 +22,12 @@ export default function MatchingAlgo({ defaultComponent }) {
     defaultComponent || "schedule"
   );
 
-    // Watch for changes in the defaultComponent prop
-    useEffect(() => {
-      if (defaultComponent) {
-        setSelectedComponent(defaultComponent);
-      }
-    }, [defaultComponent]);
+  // Watch for changes in the defaultComponent prop
+  useEffect(() => {
+    if (defaultComponent) {
+      setSelectedComponent(defaultComponent);
+    }
+  }, [defaultComponent]);
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -69,7 +69,7 @@ export default function MatchingAlgo({ defaultComponent }) {
             borderRadius: "15px",
             borderStyle: "solid",
             borderWidth: "2px",
-            borderColor: "#90caf9",
+            borderColor: selectedComponent === buttonType ? "#1976d2" : "#90caf9",
             padding: "5px 10px",
             cursor: "pointer",
             textAlign: "center",
@@ -79,10 +79,7 @@ export default function MatchingAlgo({ defaultComponent }) {
             transition: "background-color 0.3s, border-color 0.3s",
             gap: "8px",
             color: "#000",
-            backgroundColor:
-              selectedComponent === buttonType ? "#85beed" : "transparent",
-            borderColor:
-              selectedComponent === buttonType ? "#1976d2" : "#90caf9",
+            backgroundColor: selectedComponent === buttonType ? "#85beed" : "transparent",
             whiteSpace: "nowrap",
             boxSizing: "border-box",
             margin: isMobile ? "5px" : "0",
@@ -92,6 +89,7 @@ export default function MatchingAlgo({ defaultComponent }) {
           {getIconForButton(buttonType)}
           {getLabelForButton(buttonType)}
         </Box>
+
         {!isMobile && index < buttonOrder.length - 1 && (
           <Box
             sx={{ width: "80px", height: "2px", backgroundColor: "#90caf9" }}
@@ -154,7 +152,7 @@ export default function MatchingAlgo({ defaultComponent }) {
           </Grid>
         </Grid>
       </Container>
-      <FloatingChatButton/>
+      <FloatingChatButton />
     </>
   );
 }
