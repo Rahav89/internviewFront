@@ -116,7 +116,7 @@ export default function ViewInterns() {
         stacked: true,
         beginAtZero: true,
         min: 0,
-        max: 600,
+        max: 900,
         ticks: {
           stepSize: 100,
         },
